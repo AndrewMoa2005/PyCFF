@@ -19,6 +19,8 @@ hd_list = [
     "form_ui",
     "resource_rc",
 ]
+locale = ["zh_CN", "en"]
+trans_files = ["widget.py", "form.ui"]
 script_dir = os.path.dirname(os.path.abspath(__file__))
 files = ["application.py", "widget.py", "setup.py", "form.ui", "resource.qrc"]
 folders = ["image", "translations"]
@@ -162,12 +164,11 @@ def update_translations(dir=script_dir):
         print("add Qt6 bin path to PATH")
     else:
         print("lupdate already exists in PATH")
-    files = ("widget.py", "form.ui")
-    locale = ("zh_CN", "en")
+        r = False
     for loc in locale:
         cmd = []
         cmd.append("lupdate")
-        for f in files:
+        for f in trans_files:
             cmd.append(f)
         cmd.append("-ts")
         cmd.append(f"translations/PyCFF_{loc}.ts")
@@ -175,10 +176,11 @@ def update_translations(dir=script_dir):
         p.wait()
         if p.returncode == 0:
             print(f"update translations for {loc} success")
-            return True
+            r = True
         else:
             print(f"update translations for {loc} failed")
-            return False
+            r = False
+    return r
 
 
 def gen_pyd(

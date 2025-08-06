@@ -132,14 +132,7 @@ class Widget(QWidget):
         QMessageBox.about(
             self,
             self.tr("关于..."),
-            self.tr(
-                "      本程序是基于Python实现的函数曲线拟合程序，用于将离散数据拟合成函数曲线，旨在替代Excel、Origin中的函数曲线拟合功能，简化用户操作的同时提供简单的绘图和数据交互。\n"
-                "      本程序遵循LGPL开源许可，任何团体及个人不得将本程序用于商业目的，也不得将本程序的源代码用于商业目的。\n"
-                "      本程序的使用是完全免费的，但是本程序的作者不承担任何因使用本程序而产生的任何损失或损害。\n"
-                "\t\t\tDate:\t2025-8-4\n"
-                "\t\t\tAuthor:\tAndrew Moa\n"
-                "\t\t\tEmail:\tAndrew.Moa2005@163.com\n"
-                "\t\t\tWeb:\thttps://www.andrewmoa.site",
+            self.tr("...声明...\n"
             ),
         )
 
