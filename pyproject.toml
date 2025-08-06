@@ -1,0 +1,26 @@
+[project]
+name = "PyCFF"
+version = "0.1.0"
+description = "A function fitting tool"
+authors = [
+    {name = "Andrew Moa", email = "Andrew.Moa2005@163.com"},
+]
+license = "LGPL-3.0-or-later"
+keywords = ["PySide6", "application", "widget"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    # "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[tool.pyside6-project]
+files = ["resource.qrc", "application.py", "form.ui", "widget.py"]
+
+[dependencies]
+PySide6 = "6.4.0"
+numpy = "1.26.0"
+scipy = "1.11.0"

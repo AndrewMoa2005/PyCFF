@@ -1,3 +1,7 @@
+# pyside6 qt files
+form_ui.py
+resource_rc.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -9,6 +13,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+py_build/
 develop-eggs/
 dist/
 downloads/
