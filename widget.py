@@ -132,8 +132,7 @@ class Widget(QWidget):
         QMessageBox.about(
             self,
             self.tr("关于..."),
-            self.tr("...声明...\n"
-            ),
+            self.tr("...声明...\n"),
         )
 
     def onQtBtnClicked(self):
@@ -301,14 +300,11 @@ class Widget(QWidget):
         print("ChartView size:", self.chartView.size())
 
     def onSavePlotBtnClicked(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.ReadOnly
         fileName, _ = QFileDialog.getSaveFileName(
             self,
             self.tr("保存绘图"),
             self.plotTitle,
             self.tr("SVG Files (*.svg);;PNG Files (*.png);;All Files (*)"),
-            options=options,
         )
         cv = self.chartView
         if fileName:
@@ -335,6 +331,7 @@ class Widget(QWidget):
                 QMessageBox.warning(
                     self, self.tr("保存失败"), self.tr("不支持的文件格式")
                 )
+                return
             QMessageBox.information(
                 self, self.tr("保存成功"), self.tr(f"图表已保存为 {fileName}")
             )
@@ -630,7 +627,6 @@ class Widget(QWidget):
                         item = self.ui.inputTable.item(row, col)
                         row_data.append(item.text() if item else "")
                     writer.writerow(row_data)
-
             QMessageBox.information(
                 self, self.tr("保存成功"), self.tr(f"文件已保存至：{path}")
             )
