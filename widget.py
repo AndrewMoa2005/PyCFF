@@ -1,11 +1,11 @@
-# This Python file uses the following encoding: utf-8
+# -*- coding: utf-8 -*-
+
 import re
 import csv
 import numpy as np
 import scipy.optimize as opt
 
 from PySide6.QtWidgets import (
-    QApplication,
     QWidget,
     QMessageBox,
     QTableWidgetItem,
@@ -32,13 +32,12 @@ from PySide6.QtGui import (
     QPainter,
     QPen,
     QColor,
-    QPixmap,
-    #    QIcon,
 )
 from PySide6.QtCore import (
     Qt,
     QSize,
     QRect,
+    qDebug,
 )
 from PySide6.QtSvg import QSvgGenerator
 
@@ -58,10 +57,6 @@ class Widget(QWidget):
         # Connect signals to slots
         self.ui.aboutBtn.clicked.connect(self.onAboutBtnClicked)
         self.ui.qtBtn.clicked.connect(self.onQtBtnClicked)
-        self.ui.xDataBtn.clicked.connect(self.onXDataBtnClicked)
-        self.ui.xLabelBtn.clicked.connect(self.onXLabelBtnClicked)
-        self.ui.yDataBtn.clicked.connect(self.onYDataBtnClicked)
-        self.ui.yLabelBtn.clicked.connect(self.onYLabelBtnClicked)
         self.ui.plotBtn.clicked.connect(self.onPlotBtnClicked)
         self.ui.setPlotSizeBtn.clicked.connect(self.onSetPlotSizeBtn)
         self.ui.adjustPlotBtn.clicked.connect(self.onAdjustPlotBtnClicked)
@@ -69,26 +64,18 @@ class Widget(QWidget):
         self.ui.setPlotBtn.clicked.connect(self.onSetPlotBtnClicked)
         self.ui.loadBtn.clicked.connect(self.onLoadBtnClicked)
         self.ui.saveBtn.clicked.connect(self.onSaveBtnClicked)
-        self.ui.moveUpBtn.clicked.connect(self.onMoveUpBtnClicked)
-        self.ui.moveDownBtn.clicked.connect(self.onMoveDownBtnClicked)
-        self.ui.insertPreBtn.clicked.connect(self.onInsertPreBtnClicked)
-        self.ui.insertNextBtn.clicked.connect(self.onInsertNextBtnClicked)
-        self.ui.addRowBtn.clicked.connect(self.onAddRowBtnClicked)
-        self.ui.removeRowBtn.clicked.connect(self.onRemoveRowBtnClicked)
-        self.ui.exchangeBtn.clicked.connect(self.onExchangeBtnClicked)
         self.ui.refreshBtn.clicked.connect(self.onRefreshBtnClicked)
-        self.ui.sortBtn.clicked.connect(self.onSortBtnClicked)
-        self.ui.reverseBtn.clicked.connect(self.onReverseBtnClicked)
-        self.ui.transCheck.toggled.connect(self.onTransCheckToggled)
+        self.ui.transBtn.clicked.connect(self.onTransBtnClicked)
         self.ui.fitBtn.clicked.connect(self.onFitBtnClicked)
         self.ui.curveBtn.clicked.connect(self.onCurveBtnClicked)
         self.ui.calcYOut.clicked.connect(self.onCalcYOutClicked)
         self.ui.calcXOut.clicked.connect(self.onCalcXOutClicked)
-        self.ui.xDataPasteBtn.clicked.connect(self.onXDataPasteBtnClicked)
-        self.ui.yDataPasteBtn.clicked.connect(self.onYDataPasteBtnClicked)
-        self.ui.xLabelPasteBtn.clicked.connect(self.onXLabelPasteBtnClicked)
-        self.ui.yLabelPasteBtn.clicked.connect(self.onYLabelPasteBtnClicked)
         self.ui.comboBox.currentIndexChanged.connect(self.onComboBoxChanged)
+        self.ui.outputTable.disable_editing()
+        self.ui.rowSpin.valueChanged.connect(self.onRowSpinChanged)
+        self.ui.colSpin.valueChanged.connect(self.onColSpinChanged)
+        self.ui.xDataBox.activated.connect(self.onXDataBoxChanged)
+        self.ui.yDataBox.activated.connect(self.onYDataBoxChanged)
         # Add QCharts
         self.chart = QChart()
         self.chartView = QChartView(self.chart)
@@ -99,15 +86,12 @@ class Widget(QWidget):
         self.chartView.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.chartView.setFixedSize(720, 385)
         # data vars
-        self.plotTitle: str = self.ui.titleIn.text()
-        self.xLabel: str = self.ui.xLabelIn.text()
-        self.yLabel: str = self.ui.yLabelIn.text()
         self.xList: list = []
         self.yList: list = []
         self.aCoeff: list = []
         # plot vars
-        self.dataName = "Data Series"
-        self.curveName = "Fitted Curve"
+        self.dataName = self.tr("Data Series")
+        self.curveName = self.tr("Fitted Curve")
         self.dataColor = QColor(Qt.red)
         self.curveColor = QColor(Qt.black)
         self.dataColorTemp = QColor(Qt.red)
@@ -117,8 +101,9 @@ class Widget(QWidget):
         self.dataPenStyle = Qt.PenStyle.SolidLine
         self.curvePenSytle = Qt.PenStyle.DashLine
         # initialize default data
-        self.onXDataBtnClicked()
-        self.onYDataBtnClicked()
+        self.onRefreshBtnClicked()
+        self.onXDataBoxChanged()
+        self.onYDataBoxChanged()
         self.onPlotBtnClicked()
         self.onFitBtnClicked()
         self.onCurveBtnClicked()
@@ -131,29 +116,12 @@ class Widget(QWidget):
     def onAboutBtnClicked(self):
         QMessageBox.about(
             self,
-            self.tr("关于..."),
+            self.tr("版本: 1.1.0"),
             self.tr("...声明...\n"),
         )
 
     def onQtBtnClicked(self):
         QMessageBox.aboutQt(self, self.tr("Qt版本"))
-
-    def copyTextToQLineEdit(self, widget: QLineEdit):
-        clipboard = QApplication.clipboard()
-        str = clipboard.text()
-        widget.setText(str)
-
-    def onXDataPasteBtnClicked(self):
-        self.copyTextToQLineEdit(self.ui.xDataIn)
-
-    def onYDataPasteBtnClicked(self):
-        self.copyTextToQLineEdit(self.ui.yDataIn)
-
-    def onXLabelPasteBtnClicked(self):
-        self.copyTextToQLineEdit(self.ui.xLabelIn)
-
-    def onYLabelPasteBtnClicked(self):
-        self.copyTextToQLineEdit(self.ui.yLabelIn)
 
     def onSetPlotSizeBtn(self):
         dialog = QDialog(self)
@@ -177,7 +145,10 @@ class Widget(QWidget):
         if dialog.exec() == QDialog.Accepted:
             self.chartView.setFixedSize(widthSpinBox.value(), heightSpinBox.value())
             self.chartView.resize(widthSpinBox.value(), heightSpinBox.value())
-            print("ChartView size:", self.chartView.size())
+            qDebug(
+                "ChartView size: [%s x %s]"
+                % (self.chartView.width(), self.chartView.height())
+            )
 
     def onDataColorBtnClicked(self):
         dialog = QColorDialog(self)
@@ -297,7 +268,10 @@ class Widget(QWidget):
 
     def onAdjustPlotBtnClicked(self):
         self.chartView.setFixedSize(self.ui.sarea.width(), self.ui.sarea.height())
-        print("ChartView size:", self.chartView.size())
+        qDebug(
+            "ChartView size: [%s x %s]"
+            % (self.chartView.width(), self.chartView.height())
+        )
 
     def onSavePlotBtnClicked(self):
         fileName, _ = QFileDialog.getSaveFileName(
@@ -310,7 +284,7 @@ class Widget(QWidget):
         if fileName:
             if fileName.endswith(".png"):
                 cv.grab().save(fileName)
-                print("Save PNG file:", fileName)
+                qDebug("Save PNG file: %s" % fileName)
             elif fileName.endswith(".svg"):
                 generator = QSvgGenerator()
                 generator.setFileName(fileName)
@@ -326,7 +300,7 @@ class Widget(QWidget):
                 painter.begin(generator)
                 cv.render(painter)
                 painter.end()
-                print("Save SVG file:", fileName)
+                qDebug("Save SVG file: %s" % fileName)
             else:
                 QMessageBox.warning(
                     self, self.tr("保存失败"), self.tr("不支持的文件格式")
@@ -335,21 +309,6 @@ class Widget(QWidget):
             QMessageBox.information(
                 self, self.tr("保存成功"), self.tr(f"图表已保存为 {fileName}")
             )
-
-    def onExchangeBtnClicked(self):
-        self.xList, self.yList = self.yList, self.xList
-        self.appendListToTable(self.xList, 0)
-        self.appendListToTable(self.yList, 1)
-        self.xLabel, self.yLabel = self.yLabel, self.xLabel
-        self.ui.xLabelIn.setText(self.xLabel)
-        self.ui.yLabelIn.setText(self.yLabel)
-        self.onXLabelBtnClicked()
-        self.onYLabelBtnClicked()
-        self.onRefreshBtnClicked()
-
-    def disableTransCheck(self):
-        if self.ui.transCheck.isChecked():
-            self.ui.transCheck.setChecked(False)
 
     def createFormattedItem(self, value, scientific, decimals):
         if scientific:
@@ -368,30 +327,6 @@ class Widget(QWidget):
                 continue
         return output_list
 
-    def appendListToTable(
-        self,
-        input_list: list,
-        pos: int,
-        decimal_places: int = 2,
-        scientific: bool = False,
-    ):
-        num_rows = self.ui.inputTable.rowCount()
-        if num_rows < len(input_list):
-            self.ui.inputTable.setRowCount(len(input_list))
-        for i in range(self.ui.inputTable.rowCount()):
-            if i >= len(input_list):
-                self.ui.inputTable.setItem(i, pos, QTableWidgetItem(""))
-            else:
-                if scientific:
-                    self.ui.inputTable.setItem(
-                        i, pos, QTableWidgetItem(f"{input_list[i]:.{decimal_places}e}")
-                    )
-                else:
-                    self.ui.inputTable.setItem(
-                        i, pos, QTableWidgetItem(f"{input_list[i]:.{decimal_places}f}")
-                    )
-        self.clearEmptyRowsOfTableEnd(self.ui.inputTable.rowCount())
-
     def clearEmptyRowsOfTableEnd(self, loop: int = 1):
         if loop <= 0:
             loop = 1
@@ -409,60 +344,6 @@ class Widget(QWidget):
                 if not str1 and not str2:
                     self.ui.inputTable.removeRow(i)
 
-    def onXDataBtnClicked(self):
-        self.xList = self.filterStringToList(self.ui.xDataIn.text())
-        if not self.xList:
-            QMessageBox.warning(
-                self,
-                self.tr("输入错误"),
-                self.tr("未找到有效数字，请检查X轴数据格式"),
-            )
-            return
-        self.disableTransCheck()
-        print("xData: ", self.xList)
-        self.appendListToTable(
-            self.xList,
-            0,
-            self.ui.decimalXBox.value(),
-            self.ui.scientificXCheck.isChecked(),
-        )
-
-    def onYDataBtnClicked(self):
-        self.yList = self.filterStringToList(self.ui.yDataIn.text())
-        if not self.yList:
-            QMessageBox.warning(
-                self,
-                self.tr("输入错误"),
-                self.tr("未找到有效数字，请检查Y轴数据格式"),
-            )
-            return
-        self.disableTransCheck()
-        print("yData: ", self.yList)
-        self.appendListToTable(
-            self.yList,
-            1,
-            self.ui.decimalYBox.value(),
-            self.ui.scientificYCheck.isChecked(),
-        )
-
-    def onXLabelBtnClicked(self):
-        if not self.ui.xLabelIn.text():
-            QMessageBox.warning(self, self.tr("输入错误"), self.tr("X轴标签不能为空"))
-            return
-        self.disableTransCheck()
-        self.xLabel = self.ui.xLabelIn.text()
-        print("xLabel: ", self.xLabel)
-        self.ui.inputTable.setHorizontalHeaderLabels([self.xLabel, self.yLabel])
-
-    def onYLabelBtnClicked(self):
-        if not self.ui.yLabelIn.text():
-            QMessageBox.warning(self, self.tr("输入错误"), self.tr("Y轴标签不能为空"))
-            return
-        self.disableTransCheck()
-        self.yLabel = self.ui.yLabelIn.text()
-        print("yLabel: ", self.yLabel)
-        self.ui.inputTable.setHorizontalHeaderLabels([self.xLabel, self.yLabel])
-
     def onPlotBtnClicked(self):
         if not self.xList or not self.yList:
             QMessageBox.warning(
@@ -478,7 +359,6 @@ class Widget(QWidget):
             QMessageBox.warning(self, self.tr("输入错误"), self.tr("图表标题不能为空"))
             return
         self.plotTitle = self.ui.titleIn.text()
-        self.disableTransCheck()
         self.chart.removeAllSeries()
         # Clear existing axes
         if self.xAxis in self.chart.axes():
@@ -487,19 +367,31 @@ class Widget(QWidget):
             self.chart.removeAxis(self.yAxis)
         # Create new axes
         axis_x = self.xAxis
-        axis_x.setTitleText(self.xLabel)
+        if self.ui.xLabelCheck.isChecked():
+            axis_x.setTitleText(self.ui.xLabelIn.text())
+        else:
+            axis_x.setTitleText("")
         axis_x.setRange(min(self.xList), max(self.xList))
-        if self.ui.scientificXCheck.isChecked():
-            axis_x.setLabelFormat("%.{}e".format(self.ui.decimalXBox.value()))
+        if self.ui.xLabelCheck.isChecked():
+            if self.ui.scientificXCheck.isChecked():
+                axis_x.setLabelFormat("%.{}e".format(self.ui.decimalXBox.value()))
+            else:
+                axis_x.setLabelFormat("%.{}f".format(self.ui.decimalXBox.value()))
         else:
-            axis_x.setLabelFormat("%.{}f".format(self.ui.decimalXBox.value()))
+            axis_x.setLabelFormat("")
         axis_y = self.yAxis
-        axis_y.setTitleText(self.yLabel)
-        axis_y.setRange(min(self.yList), max(self.yList))
-        if self.ui.scientificYCheck.isChecked():
-            axis_y.setLabelFormat("%.{}e".format(self.ui.decimalYBox.value()))
+        if self.ui.yLabelCheck.isChecked():
+            axis_y.setTitleText(self.ui.yLabelIn.text())
         else:
-            axis_y.setLabelFormat("%.{}f".format(self.ui.decimalYBox.value()))
+            axis_y.setTitleText("")
+        axis_y.setRange(min(self.yList), max(self.yList))
+        if self.ui.yLabelCheck.isChecked():
+            if self.ui.scientificYCheck.isChecked():
+                axis_y.setLabelFormat("%.{}e".format(self.ui.decimalYBox.value()))
+            else:
+                axis_y.setLabelFormat("%.{}f".format(self.ui.decimalYBox.value()))
+        else:
+            axis_y.setLabelFormat("")
         series = QLineSeries()
         series.setName(self.dataName)
         series.setPen(QPen(self.dataColor, self.dataSize, self.dataPenStyle))
@@ -540,66 +432,57 @@ class Widget(QWidget):
                         self, self.tr("格式错误"), self.tr("CSV文件没有内容")
                     )
                     return
-                if len(rows[0]) != 2:
+                data_rows = rows[1:]
+                if len(data_rows) < 1:
                     QMessageBox.critical(
-                        self,
-                        self.tr("格式错误"),
-                        self.tr("CSV必须也只能包含2列数据"),
+                        self, self.tr("格式错误"), self.tr("CSV文件没有数据")
                     )
                     return
-                x_label, y_label = rows[0]
-                data_rows = rows[1:]
-                x_data = []
-                y_data = []
-                for i, row in enumerate(data_rows, start=1):
-                    if len(row) != 2:
+                clo_num = len(rows[0])
+                row_num = len(data_rows)
+                for row in range(row_num):
+                    if len(data_rows[row]) != clo_num:
                         QMessageBox.critical(
                             self,
-                            self.tr("数据错误"),
-                            self.tr(f"第{i}行数据不完整"),
+                            self.tr("格式错误"),
+                            self.tr("第%s行数据不完整") % (row + 1),
                         )
                         return
-                    try:
-                        x_val = float(row[0])
-                        y_val = float(row[1])
-                    except ValueError:
-                        QMessageBox.critical(
-                            self,
-                            self.tr("转换错误"),
-                            self.tr(f"第{i}行包含非数字数据"),
+                if self.ui.inputTable.columnCount() < clo_num:
+                    self.ui.inputTable.setColumnCount(clo_num)
+                for clo in range(clo_num):
+                    header = rows[0][clo]
+                    if not header or header in ("", " "):
+                        header = f"{clo+1}"
+                    header_item = self.ui.inputTable.horizontalHeaderItem(clo)
+                    if header_item:
+                        header_item.setText(header)
+                    else:
+                        self.ui.inputTable.setHorizontalHeaderItem(
+                            clo, QTableWidgetItem(header)
                         )
-                        return
-                    x_data.append(x_val)
-                    y_data.append(y_val)
-                self.ui.xLabelIn.setText(x_label)
-                self.ui.yLabelIn.setText(y_label)
-                self.onXLabelBtnClicked()
-                self.onYLabelBtnClicked()
-                self.xList = x_data
-                self.yList = y_data
-                self.appendListToTable(
-                    x_data,
-                    0,
-                    self.ui.decimalXBox.value(),
-                    self.ui.scientificXCheck.isChecked(),
-                )
-                self.appendListToTable(
-                    y_data,
-                    1,
-                    self.ui.decimalYBox.value(),
-                    self.ui.scientificYCheck.isChecked(),
-                )
-                self.onRefreshBtnClicked()
+                if self.ui.inputTable.rowCount() < row_num:
+                    self.ui.inputTable.setRowCount(row_num)
+                self.ui.inputTable.clearContents()
+                for row in range(row_num):
+                    for clo in range(clo_num):
+                        item = self.ui.inputTable.item(row, clo)
+                        if item:
+                            item.setText(data_rows[row][clo])
+                        else:
+                            self.ui.inputTable.setItem(
+                                row, clo, QTableWidgetItem(data_rows[row][clo])
+                            )
+            self.inputTableChanged()
+            qDebug("Loaded file: %s" % path)
         except Exception as e:
             QMessageBox.critical(
                 self, self.tr("加载错误"), self.tr(f"加载文件失败：{str(e)}")
             )
+            qDebug("Error loading file: %s" % e)
 
     def onSaveBtnClicked(self):
-        if (
-            not self.onRefreshBtnClicked()
-        ):  # Ensure the table is up-to-date before saving
-            return
+        # self.onRefreshBtnClicked()
         try:
             path, _ = QFileDialog.getSaveFileName(
                 self,
@@ -613,110 +496,34 @@ class Widget(QWidget):
                 writer = csv.writer(f)
                 # deal row header
                 headers = []
-                if self.ui.transCheck.isChecked():
-                    self.ui.transCheck.setChecked(False)
-                headers = [
-                    self.ui.inputTable.horizontalHeaderItem(i).text()
-                    for i in range(self.ui.inputTable.columnCount())
-                ]
+                for col in range(self.ui.inputTable.columnCount()):
+                    item = self.ui.inputTable.horizontalHeaderItem(col)
+                    text = item.text() if item else ""
+                    if text in ("", " ", None):
+                        text = " "
+                    headers.append(text)
                 writer.writerow(headers)
                 # deal row data
                 for row in range(self.ui.inputTable.rowCount()):
                     row_data = []
                     for col in range(self.ui.inputTable.columnCount()):
                         item = self.ui.inputTable.item(row, col)
-                        row_data.append(item.text() if item else "")
+                        text = item.text() if item else ""
+                        if text in ("", " ", None):
+                            text = " "
+                        row_data.append(text)
                     writer.writerow(row_data)
             QMessageBox.information(
                 self, self.tr("保存成功"), self.tr(f"文件已保存至：{path}")
             )
+            qDebug("Saved file: %s" % path)
         except Exception as e:
             QMessageBox.critical(
                 self,
                 self.tr("保存错误"),
                 self.tr(f"保存文件时出现错误：{str(e)}"),
             )
-
-    def onMoveUpBtnClicked(self):
-        selected_list = self.getSelectedRowsList()
-        if not selected_list:
-            QMessageBox.warning(
-                self, self.tr("移动错误"), self.tr("请先选择要移动的行")
-            )
-            return
-        if min(selected_list) == 0:
-            QMessageBox.warning(
-                self, self.tr("移动错误"), self.tr("不能将第一行向上移动")
-            )
-            return
-        if len(selected_list) > 1:
-            QMessageBox.warning(self, self.tr("移动错误"), self.tr("不能同时移动多行"))
-            return
-        for i in selected_list:
-            i = i + 1
-            self.ui.inputTable.insertRow(i - 2)
-            for j in range(self.ui.inputTable.columnCount()):
-                item = self.ui.inputTable.takeItem(i, j)
-                self.ui.inputTable.setItem(i - 2, j, item)
-            self.ui.inputTable.removeRow(i)
-            print("Move row: ", i, "to", i - 1)
-            self.ui.inputTable.selectRow(i - 2)
-
-    def onMoveDownBtnClicked(self):
-        selected_list = self.getSelectedRowsList()
-        if not selected_list:
-            QMessageBox.warning(
-                self, self.tr("移动错误"), self.tr("请先选择要移动的行")
-            )
-            return
-        if max(selected_list) == self.ui.inputTable.rowCount() - 1:
-            QMessageBox.warning(
-                self, self.tr("移动错误"), self.tr("不能将最后一行向下移动")
-            )
-            return
-        if len(selected_list) > 1:
-            QMessageBox.warning(self, self.tr("移动错误"), self.tr("不能同时移动多行"))
-            return
-        for i in selected_list:
-            self.ui.inputTable.insertRow(i + 2)
-            for j in range(self.ui.inputTable.columnCount()):
-                item = self.ui.inputTable.takeItem(i, j)
-                self.ui.inputTable.setItem(i + 2, j, item)
-            self.ui.inputTable.removeRow(i)
-            print("Move row: ", i + 1, "to", i + 2)
-            self.ui.inputTable.selectRow(i + 1)
-
-    def onInsertPreBtnClicked(self):
-        selected_list = self.getSelectedRowsList()
-        if not selected_list:
-            QMessageBox.warning(
-                self, self.tr("插入错误"), self.tr("请先选择要插入的位置")
-            )
-            return
-        row_num = min(selected_list)
-        self.ui.inputTable.insertRow(row_num)
-        print("Insert row: ", row_num + 1)
-        self.renumberTableRows()
-
-    def onInsertNextBtnClicked(self):
-        selected_list = self.getSelectedRowsList()
-        if not selected_list:
-            QMessageBox.warning(
-                self, self.tr("插入错误"), self.tr("请先选择要插入的位置")
-            )
-            return
-        row_num = max(selected_list)
-        self.ui.inputTable.insertRow(row_num + 1)
-        print("Insert row: ", row_num + 2)
-        self.renumberTableRows()
-
-    def onAddRowBtnClicked(self):
-        num_rows = self.ui.inputTable.rowCount()
-        self.ui.inputTable.setRowCount(num_rows + 1)
-        self.ui.inputTable.setItem(num_rows, 0, QTableWidgetItem(""))
-        self.ui.inputTable.setItem(num_rows, 1, QTableWidgetItem(""))
-        self.renumberTableRows()
-        print(f"Row {num_rows + 1} added.")
+            qDebug("Error saving file: %s" % e)
 
     def getSelectedRowsList(self):
         selected_items = self.ui.inputTable.selectedItems()
@@ -742,221 +549,26 @@ class Widget(QWidget):
         selected_list = list(set(selected_list))
         return selected_list
 
-    def onRemoveRowBtnClicked(self):
-        remove_list = self.getSelectedRowsList()
-        if not remove_list:
-            QMessageBox.warning(
-                self, self.tr("删除错误"), self.tr("请先选择要删除的行")
-            )
-            return
-        remove_list.sort(reverse=True)
-        for i in remove_list:
-            self.ui.inputTable.removeRow(i)
-            print(f"Row {i} removed.")
-        self.renumberTableRows()
-
-    def textToFloat(self, text: str):
-        b: bool = True
-        f: float = 0.0
-        try:
-            f = float(text)
-        except ValueError:
-            f = float("NaN")
-            b = False
-        return f, b
-
     def renumberTableRows(self):
         for i in range(self.ui.inputTable.rowCount()):
             self.ui.inputTable.setVerticalHeaderItem(i, QTableWidgetItem(f"{i + 1}"))
 
-    def onRefreshBtnClicked(self) -> bool:
-        xlabel = self.ui.inputTable.horizontalHeaderItem(0).text()
-        ylabel = self.ui.inputTable.horizontalHeaderItem(1).text()
-        if not xlabel or not ylabel:
-            QMessageBox.warning(
-                self, self.tr("输入错误"), self.tr("X轴和Y轴标签不能为空")
-            )
-            return False
-        xList = []
-        yList = []
-        for row in range(self.ui.inputTable.rowCount()):
-            try:
-                x_value, x_valid = self.textToFloat(
-                    self.ui.inputTable.item(row, 0).text()
-                )
-                y_value, y_valid = self.textToFloat(
-                    self.ui.inputTable.item(row, 1).text()
-                )
-            except AttributeError:
-                continue
-            if x_valid:
-                xList.append(x_value)
-            if y_valid:
-                yList.append(y_value)
-        if len(xList) == 0 or len(yList) == 0:
-            QMessageBox.warning(
-                self, self.tr("输入错误"), self.tr("X轴和Y轴数据不能为空")
-            )
-            return False
-        if len(xList) != len(yList):
-            QMessageBox.warning(
-                self, self.tr("输入错误"), self.tr("X轴和Y轴数据长度不一致")
-            )
-            return False
-        self.xLabel = xlabel
-        self.yLabel = ylabel
-        self.xList = xList
-        self.yList = yList
-        self.ui.xLabelIn.setText(self.xLabel)
-        self.ui.yLabelIn.setText(self.yLabel)
-        self.ui.xDataIn.setText(", ".join(map(str, self.xList)))
-        self.ui.yDataIn.setText(", ".join(map(str, self.yList)))
-        self.clearEmptyRowsOfTableEnd(self.ui.inputTable.rowCount())
-        self.renumberTableRows()
-        return True
+    def onRefreshBtnClicked(self):
+        # self.ui.inputTable.renumber_header()
+        self.ui.inputTable.selectAll()
+        self.ui.inputTable.float_clo()
+        self.ui.inputTable.clearSelection()
+        self.ui.inputTable.clear_empty_space()
+        self.inputTableChanged()
+        self.ui.rowSpin.setValue(self.ui.inputTable.rowCount())
+        self.ui.colSpin.setValue(self.ui.inputTable.columnCount())
+        self.onXDataBoxChanged()
+        self.onYDataBoxChanged()
 
-    def onSortBtnClicked(self):
-        if not self.ui.inputTable.selectedItems():
-            QMessageBox.warning(self, self.tr("操作错误"), self.tr("请选择要排序的列"))
-            return
-        selected_list = self.getSelectedColumnsList()
-        if not selected_list:
-            return
-        for selected_column in selected_list:
-            items = []
-            for row in range(self.ui.inputTable.rowCount()):
-                item = self.ui.inputTable.item(row, selected_column)
-                if item:
-                    items.append(item)
-
-            def get_numeric_value(item):
-                try:
-                    return float(item.text())
-                except ValueError:
-                    return float("inf")
-
-            items.sort(key=get_numeric_value)
-            for row in range(self.ui.inputTable.rowCount()):
-                self.ui.inputTable.takeItem(row, selected_column)
-            for new_row, item in enumerate(items):
-                self.ui.inputTable.setItem(new_row, selected_column, item)
-
-    def onReverseBtnClicked(self):
-        if not self.ui.inputTable.selectedItems():
-            QMessageBox.warning(self, self.tr("操作错误"), self.tr("请选择反序的列"))
-            return
-        selected_list = self.getSelectedColumnsList()
-        if not selected_list:
-            return
-        for selected_column in selected_list:
-            items = []
-            for row in range(self.ui.inputTable.rowCount()):
-                item = self.ui.inputTable.item(row, selected_column)
-                if item:
-                    items.append(item)
-            items = items[::-1]
-            for row in range(self.ui.inputTable.rowCount()):
-                self.ui.inputTable.takeItem(row, selected_column)
-            for new_row, item in enumerate(items):
-                self.ui.inputTable.setItem(new_row, selected_column, item)
-
-    def onTransCheckToggled(self, checked):
-        if checked:
-            self.ui.inputTable.clearContents()
-            self.ui.inputTable.setRowCount(2)
-            self.ui.inputTable.setVerticalHeaderLabels([self.xLabel, self.yLabel])
-            num_clos = max(len(self.xList), len(self.yList))
-            self.ui.inputTable.setColumnCount(num_clos)
-            hhead: list = []
-            for i in range(num_clos):
-                hhead.append(f"{i + 1}")
-                if i < len(self.xList):
-                    if self.ui.scientificXCheck.isChecked():
-                        self.ui.inputTable.setItem(
-                            0,
-                            i,
-                            QTableWidgetItem(
-                                f"{self.xList[i]:.{self.ui.decimalXBox.value()}e}"
-                            ),
-                        )
-                    else:
-                        self.ui.inputTable.setItem(
-                            0,
-                            i,
-                            QTableWidgetItem(
-                                f"{self.xList[i]:.{self.ui.decimalXBox.value()}f}"
-                            ),
-                        )
-                else:
-                    self.ui.inputTable.setItem(0, i, QTableWidgetItem(""))
-                if i < len(self.yList):
-                    if self.ui.scientificYCheck.isChecked():
-                        self.ui.inputTable.setItem(
-                            1,
-                            i,
-                            QTableWidgetItem(
-                                f"{self.yList[i]:.{self.ui.decimalYBox.value()}e}"
-                            ),
-                        )
-                    else:
-                        self.ui.inputTable.setItem(
-                            1,
-                            i,
-                            QTableWidgetItem(
-                                f"{self.yList[i]:.{self.ui.decimalYBox.value()}f}"
-                            ),
-                        )
-                else:
-                    self.ui.inputTable.setItem(i, 1, QTableWidgetItem(""))
-            self.ui.inputTable.setHorizontalHeaderLabels(hhead)
-        else:
-            self.ui.inputTable.clearContents()
-            self.ui.inputTable.setColumnCount(2)
-            self.ui.inputTable.setHorizontalHeaderLabels([self.xLabel, self.yLabel])
-            num_rows = max(len(self.xList), len(self.yList))
-            self.ui.inputTable.setRowCount(num_rows)
-            vhead: list = []
-            for i in range(num_rows):
-                vhead.append(f"{i + 1}")
-                if i < len(self.xList):
-                    if self.ui.scientificXCheck.isChecked():
-                        self.ui.inputTable.setItem(
-                            i,
-                            0,
-                            QTableWidgetItem(
-                                f"{self.xList[i]:.{self.ui.decimalXBox.value()}e}"
-                            ),
-                        )
-                    else:
-                        self.ui.inputTable.setItem(
-                            i,
-                            0,
-                            QTableWidgetItem(
-                                f"{self.xList[i]:.{self.ui.decimalXBox.value()}f}"
-                            ),
-                        )
-                else:
-                    self.ui.inputTable.setItem(i, 0, QTableWidgetItem(""))
-                if i < len(self.yList):
-                    if self.ui.scientificYCheck.isChecked():
-                        self.ui.inputTable.setItem(
-                            i,
-                            1,
-                            QTableWidgetItem(
-                                f"{self.yList[i]:.{self.ui.decimalYBox.value()}e}"
-                            ),
-                        )
-                    else:
-                        self.ui.inputTable.setItem(
-                            i,
-                            1,
-                            QTableWidgetItem(
-                                f"{self.yList[i]:.{self.ui.decimalYBox.value()}f}"
-                            ),
-                        )
-                else:
-                    self.ui.inputTable.setItem(i, 1, QTableWidgetItem(""))
-            self.ui.inputTable.setVerticalHeaderLabels(vhead)
+    def onTransBtnClicked(self):
+        self.ui.inputTable.transpose_table()
+        self.ui.rowSpin.setValue(self.ui.inputTable.rowCount())
+        self.ui.colSpin.setValue(self.ui.inputTable.columnCount())
 
     def onComboBoxChanged(self):
         text: str = None
@@ -964,25 +576,91 @@ class Widget(QWidget):
             self.ui.numberSpin.setEnabled(True)
             self.ui.interceptCheck.setEnabled(True)
             self.ui.interceptIn.setEnabled(self.ui.interceptCheck.isChecked())
-            print("Function: polynomial")
+            qDebug("Function: polynomial")
             text = "y = a<sub>0</sub> + a<sub>1</sub>x + a<sub>2</sub>x<sup>2</sup> + ... + a<sub>n</sub>x<sup>n</sup>"
         else:
             self.ui.numberSpin.setEnabled(False)
             self.ui.interceptCheck.setEnabled(False)
             self.ui.interceptIn.setEnabled(False)
             if self.ui.comboBox.currentIndex() == 1:
-                print("Function: exponential")
+                qDebug("Function: exponential")
                 text = (
                     "y = a<sub>0</sub> + a<sub>1</sub>e<span>^(a<sub>2</sub>x)</span>"
                 )
             elif self.ui.comboBox.currentIndex() == 2:
-                print("Function: logarithmic")
+                qDebug("Function: logarithmic")
                 text = "y = a<sub>0</sub> + a<sub>1</sub>ln(x)"
             elif self.ui.comboBox.currentIndex() == 3:
-                print("Function: power")
+                qDebug("Function: power")
                 text = "y = a<sub>0</sub>x<span>^(a<sub>1</sub>)</span>"
         if text:
             self.ui.funcLabel.setText(text)
+
+    def inputTableChanged(self):
+        column_num = self.ui.inputTable.columnCount()
+        column_list = []
+        x = self.ui.xDataBox.currentIndex()
+        y = self.ui.yDataBox.currentIndex()
+        self.ui.xDataBox.clear()
+        self.ui.yDataBox.clear()
+        for col in range(column_num):
+            header = self.ui.inputTable.horizontalHeaderItem(col)
+            if header is None:
+                text = ""
+            else:
+                text = header.text()
+            column_list.append(self.tr("第{}列 : {}").format(col + 1, text))
+            self.ui.xDataBox.addItem(column_list[col])
+            self.ui.yDataBox.addItem(column_list[col])
+        if x < column_num:
+            self.ui.xDataBox.setCurrentIndex(x)
+        else:
+            self.ui.xDataBox.setCurrentIndex(0)
+        if y < column_num:
+            self.ui.yDataBox.setCurrentIndex(y)
+        else:
+            self.ui.yDataBox.setCurrentIndex(column_num - 1)
+
+    def onRowSpinChanged(self, n):
+        self.ui.inputTable.setRowCount(n)
+
+    def onColSpinChanged(self, n):
+        self.ui.inputTable.setColumnCount(n)
+        self.inputTableChanged()
+
+    def onXDataBoxChanged(self):
+        col = self.ui.xDataBox.currentIndex()
+        self.xList = []
+        for row in range(self.ui.inputTable.rowCount()):
+            item = self.ui.inputTable.item(row, col)
+            if item is None:
+                continue
+            text = item.text()
+            if text in ("", " ", None):
+                continue
+            try:
+                num = float(text)
+            except Exception:
+                continue
+            self.xList.append(num)
+        qDebug("X data: %s" % self.xList)
+
+    def onYDataBoxChanged(self):
+        col = self.ui.yDataBox.currentIndex()
+        self.yList = []
+        for row in range(self.ui.inputTable.rowCount()):
+            item = self.ui.inputTable.item(row, col)
+            if item is None:
+                continue
+            text = item.text()
+            if text in ("", " ", None):
+                continue
+            try:
+                num = float(text)
+            except Exception:
+                continue
+            self.yList.append(num)
+        qDebug("Y data: %s" % self.yList)
 
     def onFitBtnClicked(self):
         if not self.xList or not self.yList:
@@ -1038,8 +716,8 @@ class Widget(QWidget):
                 return
         xlist = self.xList.copy()
         ylist = self.yList.copy()
-        print("xList: ", xlist)
-        print("yList: ", ylist)
+        qDebug("xList: %s" % xlist)
+        qDebug("yList: %s" % ylist)
 
         def pow_func(x, a0, a1):
             return a0 * x**a1
@@ -1062,8 +740,8 @@ class Widget(QWidget):
         # calculate r^2
         r_squared = self.calcFitRSquared(y_pred.tolist(), ylist)
         # print the fitted curve
-        print("Fitted coefficients: ", self.aCoeff)
-        print("R-squared: ", r_squared)
+        qDebug("Fitted coefficients: %s" % self.aCoeff)
+        qDebug("R-squared: %s" % r_squared)
         self.updateOutputTable(r_squared)
         # update text output
         of1_c = f"y={str(self.ui.outputTable.item(1, 0).text())}*pow(x,{str(self.ui.outputTable.item(2, 0).text())})"
@@ -1073,8 +751,8 @@ class Widget(QWidget):
         of1_ps = of1_c.replace("pow", "[math]::pow")
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
-        print("Output formula: ", of1_f)
-        print("Output r2: ", of2)
+        qDebug("Output formula: %s" % of1_f)
+        qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
         self.ui.outputEdit.setText(
             "[R²]\n"
@@ -1101,8 +779,8 @@ class Widget(QWidget):
                 return
         xlist = self.xList.copy()
         ylist = self.yList.copy()
-        print("xList: ", xlist)
-        print("yList: ", ylist)
+        qDebug("xList: %s" % xlist)
+        qDebug("yList: %s" % ylist)
 
         def log_func(x, a0, a1):
             return a0 + a1 * np.log(x)
@@ -1125,8 +803,8 @@ class Widget(QWidget):
         # calculate r^2
         r_squared = self.calcFitRSquared(y_pred.tolist(), ylist)
         # print the fitted curve
-        print("Fitted coefficients: ", self.aCoeff)
-        print("R-squared: ", r_squared)
+        qDebug("Fitted coefficients: %s" % self.aCoeff)
+        qDebug("R-squared: %s" % r_squared)
         self.updateOutputTable(r_squared)
         # update text output
         of1_c = f"y={str(self.ui.outputTable.item(1, 0).text())}+{str(self.ui.outputTable.item(2, 0).text())}*log(x)"
@@ -1138,8 +816,8 @@ class Widget(QWidget):
         of1_ps = of1_py.replace("math.log", "[math]::log")
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
-        print("Output formula: ", of1_f)
-        print("Output r2: ", of2)
+        qDebug("Output formula: %s" % of1_f)
+        qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
         self.ui.outputEdit.setText(
             "[R²]\n"
@@ -1158,8 +836,8 @@ class Widget(QWidget):
     def fitOnExponential(self):
         xlist = self.xList.copy()
         ylist = self.yList.copy()
-        print("xList: ", xlist)
-        print("yList: ", ylist)
+        qDebug("xList: %s" % xlist)
+        qDebug("yList: %s" % ylist)
 
         def exp_func(x, a0, a1, a2):
             return a0 + a1 * np.exp(a2 * x)
@@ -1182,8 +860,8 @@ class Widget(QWidget):
         # calculate r^2
         r_squared = self.calcFitRSquared(y_pred.tolist(), ylist)
         # print the fitted curve
-        print("Fitted coefficients: ", self.aCoeff)
-        print("R-squared: ", r_squared)
+        qDebug("Fitted coefficients: %s" % self.aCoeff)
+        qDebug("R-squared: %s" % r_squared)
         self.updateOutputTable(r_squared)
         # update text output
         of1_c = f"y={str(self.ui.outputTable.item(1, 0).text())}+{str(self.ui.outputTable.item(2, 0).text())}*exp({str(self.ui.outputTable.item(3, 0).text())}*x)"
@@ -1194,8 +872,8 @@ class Widget(QWidget):
         of1_ps = of1_py.replace("math.exp", "[math]::exp")
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
-        print("Output formula: ", of1_f)
-        print("Output r2: ", of2)
+        qDebug("Output formula: %s" % of1_f)
+        qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
         self.ui.outputEdit.setText(
             "[R²]\n"
@@ -1261,8 +939,8 @@ class Widget(QWidget):
                     xlist.insert(i, 0)
                     ylist.insert(i, y)
                     break
-        print("xList: ", xlist)
-        print("yList: ", ylist)
+        qDebug("xList: %s" % xlist)
+        qDebug("yList: %s" % ylist)
         deg = self.ui.numberSpin.value()
         coefficients = self.calcPolyCoeff(xlist, ylist, deg)
         if coefficients is None:
@@ -1275,8 +953,8 @@ class Widget(QWidget):
         # calculate r^2
         r_squared = self.calcFitRSquared(y_pred.tolist(), ylist)
         # print the fitted curve
-        print("Fitted coefficients: ", self.aCoeff)
-        print("R-squared: ", r_squared)
+        qDebug("Fitted coefficients: %s" % self.aCoeff)
+        qDebug("R-squared: %s" % r_squared)
         self.updateOutputTable(r_squared)
         # update text output
         of1_c = f"y={str(self.ui.outputTable.item(1, 0).text())}+{str(self.ui.outputTable.item(2, 0).text())}*x"
@@ -1291,8 +969,8 @@ class Widget(QWidget):
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
         of2 = f"r2={self.ui.outputTable.item(0, 0).text()}"
-        print("Output formula: ", of1_f)
-        print("Output r2: ", of2)
+        qDebug("Output formula: %s" % of1_f)
+        qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
         self.ui.outputEdit.setText(
             "[R²]\n"
@@ -1345,6 +1023,7 @@ class Widget(QWidget):
                     return
                 y_value = self.aCoeff[0] * x ** self.aCoeff[1]
                 yFitList.append(y_value)
+        self.ui.tabWidget.setCurrentIndex(1)
         self.onPlotBtnClicked()
         series = QSplineSeries()
         series.setName(self.curveName)
@@ -1398,7 +1077,7 @@ class Widget(QWidget):
         else:
             result = f"{y_value:.{decimals}f}"
         self.ui.yOut.setText(result)
-        print("X:", x_value, "Y:", y_value)
+        qDebug("X: %s, Y: %s" % (x_value, y_value))
 
     def onCalcXOutClicked(self):
         if len(self.aCoeff) <= 0:
@@ -1487,7 +1166,7 @@ class Widget(QWidget):
                     self.tr("未在最大迭代次数内找到解"),
                 )
                 return
-        print("X:", x_init, "Y:", target_y, "LoopNum:", n)
+        qDebug("X: %s, Y: %s, LoopNum: %s" % (x_init, target_y, n))
         decimals = self.ui.decimalOutBox.value()
         if self.ui.scientificOutCheck.isChecked():
             x_value = f"{x_init:.{decimals}e}"

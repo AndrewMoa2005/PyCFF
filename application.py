@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import sys
 import pathlib
 import argparse
@@ -46,7 +48,6 @@ if __name__ == "__main__":
         type=str,
     )
     args = parser.parse_args()
-
     app = MApp(sys.argv, language=args.locale)
     widget = Widget()
     widget.show()

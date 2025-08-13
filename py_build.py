@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import shutil
 import subprocess
@@ -18,11 +20,19 @@ hd_list = [
     "re",
     "form_ui",
     "resource_rc",
+    "clevertw",
 ]
 locale = ["zh_CN", "en"]
-trans_files = ["widget.py", "form.ui"]
+trans_files = ["widget.py", "form.ui", "clevertw.py"]
 script_dir = os.path.dirname(os.path.abspath(__file__))
-files = ["application.py", "widget.py", "setup.py", "form.ui", "resource.qrc"]
+files = [
+    "application.py",
+    "widget.py",
+    "setup.py",
+    "form.ui",
+    "resource.qrc",
+    "clevertw.py",
+]
 folders = ["image", "translations"]
 build_dir = "py_build"
 
@@ -156,7 +166,7 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False):
 
 def update_translations(dir=script_dir):
     """
-    run:  lupdate widget.py form.ui -ts translations/PyCFF_${locale}.ts
+    run:  lupdate widget.py form.ui -ts translations/PyCFF_${locale}.ts -no-obsolete
     :param target_dir: pwd
     """
     if shutil.which("lupdate") is None:
@@ -172,6 +182,7 @@ def update_translations(dir=script_dir):
             cmd.append(f)
         cmd.append("-ts")
         cmd.append(f"translations/PyCFF_{loc}.ts")
+        cmd.append("-no-obsolete")
         p = subprocess.Popen(cmd, cwd=dir)
         p.wait()
         if p.returncode == 0:

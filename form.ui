@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>815</width>
+    <width>800</width>
     <height>600</height>
    </rect>
   </property>
@@ -82,969 +82,828 @@ color: rgb(0, 0, 255);</string>
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBoxIn">
-     <property name="autoFillBackground">
-      <bool>false</bool>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <property name="title">
-      <string>输入</string>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <layout class="QHBoxLayout" name="hbox1">
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>X轴数据</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="xDataBtn">
-          <property name="toolTip">
-           <string>更新列表数据</string>
-          </property>
-          <property name="text">
-           <string>刷新</string>
-          </property>
-          <property name="icon">
-           <iconset theme="QIcon::ThemeIcon::SyncSynchronizing"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="xDataPasteBtn">
-          <property name="toolTip">
-           <string>从剪贴板获取数据</string>
-          </property>
-          <property name="text">
-           <string>粘贴</string>
-          </property>
-          <property name="icon">
-           <iconset theme="QIcon::ThemeIcon::EditPaste"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="xDataIn">
-          <property name="toolTip">
-           <string>输入X轴数据，以任意非数字符号分隔</string>
-          </property>
-          <property name="text">
-           <string notr="true">2 4 6 8 10</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_11">
-          <property name="text">
-           <string>小数位数</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="decimalXBox">
-          <property name="toolTip">
-           <string>X轴数据及绘图坐标数字显示的小数位数</string>
-          </property>
-          <property name="value">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="scientificXCheck">
-          <property name="toolTip">
-           <string>X轴数据及绘图坐标是否采用科学计数法</string>
-          </property>
-          <property name="text">
-           <string>科学记数法</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line">
-          <property name="orientation">
-           <enum>Qt::Orientation::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>X轴标题</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="xLabelBtn">
-          <property name="toolTip">
-           <string>更新列表数据</string>
-          </property>
-          <property name="text">
-           <string>刷新</string>
-          </property>
-          <property name="icon">
-           <iconset theme="QIcon::ThemeIcon::SyncSynchronizing"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="xLabelPasteBtn">
-          <property name="toolTip">
-           <string>从剪贴板获取数据</string>
-          </property>
-          <property name="text">
-           <string>粘贴</string>
-          </property>
-          <property name="icon">
-           <iconset theme="QIcon::ThemeIcon::EditPaste"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="xLabelIn">
-          <property name="toolTip">
-           <string>输入X轴标题</string>
-          </property>
-          <property name="text">
-           <string notr="true">L/min</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="hbox2">
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Y轴数据</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="yDataBtn">
-          <property name="toolTip">
-           <string>更新列表数据</string>
-          </property>
-          <property name="text">
-           <string>刷新</string>
-          </property>
-          <property name="icon">
-           <iconset theme="QIcon::ThemeIcon::SyncSynchronizing"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="yDataPasteBtn">
-          <property name="toolTip">
-           <string>从剪贴板获取数据</string>
-          </property>
-          <property name="text">
-           <string>粘贴</string>
-          </property>
-          <property name="icon">
-           <iconset theme="QIcon::ThemeIcon::EditPaste"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="yDataIn">
-          <property name="toolTip">
-           <string>输入Y轴数据，以任意非数字符号分隔</string>
-          </property>
-          <property name="text">
-           <string notr="true">0.1 0.3 0.6 1.1 1.7</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_12">
-          <property name="text">
-           <string>小数位数</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="decimalYBox">
-          <property name="toolTip">
-           <string>Y轴数据及绘图坐标数字显示的小数位数</string>
-          </property>
-          <property name="value">
-           <number>3</number>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="scientificYCheck">
-          <property name="toolTip">
-           <string>Y轴数据及绘图坐标是否采用科学计数法</string>
-          </property>
-          <property name="text">
-           <string>科学记数法</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line_2">
-          <property name="orientation">
-           <enum>Qt::Orientation::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Y轴标题</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="yLabelBtn">
-          <property name="toolTip">
-           <string>更新列表数据</string>
-          </property>
-          <property name="text">
-           <string>刷新</string>
-          </property>
-          <property name="icon">
-           <iconset theme="QIcon::ThemeIcon::SyncSynchronizing"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="yLabelPasteBtn">
-          <property name="toolTip">
-           <string>从剪贴板获取数据</string>
-          </property>
-          <property name="text">
-           <string>粘贴</string>
-          </property>
-          <property name="icon">
-           <iconset theme="QIcon::ThemeIcon::EditPaste"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="yLabelIn">
-          <property name="toolTip">
-           <string>输入Y轴标题</string>
-          </property>
-          <property name="text">
-           <string notr="true">kPa</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="Line" name="line_3">
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="hbox">
-        <item>
-         <layout class="QVBoxLayout" name="vbox">
-          <item>
-           <layout class="QHBoxLayout" name="hhbox">
-            <item>
-             <widget class="QToolButton" name="loadBtn">
-              <property name="toolTip">
-               <string>从文件加载数据</string>
-              </property>
-              <property name="text">
-               <string>加载</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::DocumentOpen"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="saveBtn">
-              <property name="toolTip">
-               <string>保存数据到文件</string>
-              </property>
-              <property name="text">
-               <string>保存</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::DocumentSaveAs"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="moveUpBtn">
-              <property name="toolTip">
-               <string>上移选中行</string>
-              </property>
-              <property name="text">
-               <string>上移</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::GoUp"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="moveDownBtn">
-              <property name="toolTip">
-               <string>下移选中行</string>
-              </property>
-              <property name="text">
-               <string>下移</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::GoDown"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="insertPreBtn">
-              <property name="toolTip">
-               <string>在选中行前方插入新行</string>
-              </property>
-              <property name="text">
-               <string>前方插入</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::GoPrevious"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="insertNextBtn">
-              <property name="toolTip">
-               <string>在选中行后方插入新行</string>
-              </property>
-              <property name="text">
-               <string>后方插入</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::GoNext"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="addRowBtn">
-              <property name="toolTip">
-               <string>添加新行</string>
-              </property>
-              <property name="text">
-               <string>添加</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::ListAdd"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="removeRowBtn">
-              <property name="toolTip">
-               <string>删除选中行</string>
-              </property>
-              <property name="text">
-               <string>删除</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::ListRemove"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="exchangeBtn">
-              <property name="toolTip">
-               <string>交换X轴和Y轴数据</string>
-              </property>
-              <property name="text">
-               <string>交换</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::MediaPlaylistShuffle"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="sortBtn">
-              <property name="toolTip">
-               <string>按从小到大排序选中列的数据</string>
-              </property>
-              <property name="text">
-               <string>排序</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::AppointmentNew"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="reverseBtn">
-              <property name="toolTip">
-               <string>逆向排序选中列的数据</string>
-              </property>
-              <property name="text">
-               <string>逆序</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::DocumentRevert"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="refreshBtn">
-              <property name="toolTip">
-               <string>刷新表格数据</string>
-              </property>
-              <property name="text">
-               <string>刷新</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::SystemReboot"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="transCheck">
-              <property name="toolTip">
-               <string>转置显示列表数据</string>
-              </property>
-              <property name="text">
-               <string>转置</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="hSpace1">
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QTableWidget" name="inputTable">
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <column>
-             <property name="text">
-              <string notr="true">L/min</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string notr="true">kPa</string>
-             </property>
-            </column>
-            <item row="0" column="0">
-             <property name="text">
-              <string notr="true">2</string>
-             </property>
-            </item>
-            <item row="0" column="1">
-             <property name="text">
-              <string notr="true">0.1</string>
-             </property>
-            </item>
-            <item row="1" column="0">
-             <property name="text">
-              <string notr="true">4</string>
-             </property>
-            </item>
-            <item row="1" column="1">
-             <property name="text">
-              <string notr="true">0.3</string>
-             </property>
-            </item>
-            <item row="2" column="0">
-             <property name="text">
-              <string notr="true">6</string>
-             </property>
-            </item>
-            <item row="2" column="1">
-             <property name="text">
-              <string notr="true">0.6</string>
-             </property>
-            </item>
-            <item row="3" column="0">
-             <property name="text">
-              <string notr="true">8</string>
-             </property>
-            </item>
-            <item row="3" column="1">
-             <property name="text">
-              <string notr="true">1.1</string>
-             </property>
-            </item>
-            <item row="4" column="0">
-             <property name="text">
-              <string notr="true">10</string>
-             </property>
-            </item>
-            <item row="4" column="1">
-             <property name="text">
-              <string notr="true">1.7</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="vbox1">
-          <item>
-           <layout class="QHBoxLayout" name="hhbox1">
-            <item>
-             <spacer name="hSpace2">
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="titleDisplayCheck">
-              <property name="toolTip">
-               <string>是否在绘图中显示标题</string>
-              </property>
-              <property name="text">
-               <string>显示标题</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="titleIn">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="toolTip">
-               <string>输入图表标题</string>
-              </property>
-              <property name="text">
-               <string notr="true">Flow-PressureDrop</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="legendShowCheck">
-              <property name="toolTip">
-               <string>是否显示图例标签</string>
-              </property>
-              <property name="text">
-               <string>显示图例</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="plotBtn">
-              <property name="toolTip">
-               <string>刷新绘图显示</string>
-              </property>
-              <property name="text">
-               <string>刷新</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::ViewRefresh"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="setPlotBtn">
-              <property name="toolTip">
-               <string>设置绘图参数</string>
-              </property>
-              <property name="text">
-               <string>设置绘图</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::DocumentProperties"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="setPlotSizeBtn">
-              <property name="toolTip">
-               <string>设置绘图区域大小</string>
-              </property>
-              <property name="text">
-               <string>设置大小</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::ViewFullscreen"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="adjustPlotBtn">
-              <property name="toolTip">
-               <string>自适应绘图区域大小</string>
-              </property>
-              <property name="text">
-               <string>自适应大小</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::ZoomFitBest"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="savePlotBtn">
-              <property name="toolTip">
-               <string>保存图片</string>
-              </property>
-              <property name="text">
-               <string>保存</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::CameraPhoto"/>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QScrollArea" name="sarea">
-            <property name="widgetResizable">
-             <bool>true</bool>
+     <widget class="QWidget" name="tabIn">
+      <attribute name="title">
+       <string>输入</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <layout class="QHBoxLayout" name="hhbox">
+         <item>
+          <widget class="QToolButton" name="loadBtn">
+           <property name="toolTip">
+            <string>从文件加载数据</string>
+           </property>
+           <property name="text">
+            <string>加载</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::DocumentOpen"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="saveBtn">
+           <property name="toolTip">
+            <string>保存数据到文件</string>
+           </property>
+           <property name="text">
+            <string>保存</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::DocumentSaveAs"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="transBtn">
+           <property name="toolTip">
+            <string>转置表格数据</string>
+           </property>
+           <property name="text">
+            <string>转置</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::MediaPlaylistShuffle"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_14">
+           <property name="text">
+            <string>行数</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="rowSpin">
+           <property name="toolTip">
+            <string>输入行数</string>
+           </property>
+           <property name="minimum">
+            <number>0</number>
+           </property>
+           <property name="value">
+            <number>5</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_15">
+           <property name="text">
+            <string>列数</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="colSpin">
+           <property name="toolTip">
+            <string>输入列数</string>
+           </property>
+           <property name="minimum">
+            <number>0</number>
+           </property>
+           <property name="value">
+            <number>2</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="hSpace1">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QToolButton" name="refreshBtn">
+           <property name="toolTip">
+            <string>刷新表格并初始化X轴和Y轴数据</string>
+           </property>
+           <property name="text">
+            <string>刷新</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::SystemReboot"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_16">
+           <property name="text">
+            <string>X轴数据(列)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="xDataBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>选择作为X轴数据输入的列</string>
+           </property>
+           <item>
+            <property name="text">
+             <string notr="true">1</string>
             </property>
-            <widget class="QWidget" name="scontents">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>357</width>
-               <height>135</height>
-              </rect>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">2</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_17">
+           <property name="text">
+            <string>Y轴数据(列)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="yDataBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>选择作为Y轴数据输入的列</string>
+           </property>
+           <property name="currentIndex">
+            <number>1</number>
+           </property>
+           <item>
+            <property name="text">
+             <string notr="true">1</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">2</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="CleverTableWidget" name="inputTable">
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <column/>
+         <column/>
+         <item row="0" column="0">
+          <property name="text">
+           <string notr="true">2</string>
+          </property>
+         </item>
+         <item row="0" column="1">
+          <property name="text">
+           <string notr="true">0.1</string>
+          </property>
+         </item>
+         <item row="1" column="0">
+          <property name="text">
+           <string notr="true">4</string>
+          </property>
+         </item>
+         <item row="1" column="1">
+          <property name="text">
+           <string notr="true">0.3</string>
+          </property>
+         </item>
+         <item row="2" column="0">
+          <property name="text">
+           <string notr="true">6</string>
+          </property>
+         </item>
+         <item row="2" column="1">
+          <property name="text">
+           <string notr="true">0.6</string>
+          </property>
+         </item>
+         <item row="3" column="0">
+          <property name="text">
+           <string notr="true">8</string>
+          </property>
+         </item>
+         <item row="3" column="1">
+          <property name="text">
+           <string notr="true">1.1</string>
+          </property>
+         </item>
+         <item row="4" column="0">
+          <property name="text">
+           <string notr="true">10</string>
+          </property>
+         </item>
+         <item row="4" column="1">
+          <property name="text">
+           <string notr="true">1.7</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabPlot">
+      <attribute name="title">
+       <string>绘图</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <layout class="QHBoxLayout" name="hbox1">
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>X轴</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="xLabelCheck">
+           <property name="text">
+            <string>显示轴标题</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="xLabelIn">
+           <property name="toolTip">
+            <string>输入X轴标题</string>
+           </property>
+           <property name="text">
+            <string notr="true">L/min</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_11">
+           <property name="text">
+            <string>小数位数</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="decimalXBox">
+           <property name="toolTip">
+            <string>X轴数据及绘图坐标数字显示的小数位数</string>
+           </property>
+           <property name="value">
+            <number>1</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="scientificXCheck">
+           <property name="toolTip">
+            <string>X轴数据及绘图坐标是否采用科学计数法</string>
+           </property>
+           <property name="text">
+            <string>科学记数法</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="hbox2">
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>Y轴</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="yLabelCheck">
+           <property name="text">
+            <string>显示轴标题</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="yLabelIn">
+           <property name="toolTip">
+            <string>输入Y轴标题</string>
+           </property>
+           <property name="text">
+            <string notr="true">kPa</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>小数位数</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="decimalYBox">
+           <property name="toolTip">
+            <string>Y轴数据及绘图坐标数字显示的小数位数</string>
+           </property>
+           <property name="value">
+            <number>3</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="scientificYCheck">
+           <property name="toolTip">
+            <string>Y轴数据及绘图坐标是否采用科学计数法</string>
+           </property>
+           <property name="text">
+            <string>科学记数法</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="hhbox1">
+         <item>
+          <spacer name="hSpace2">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="titleDisplayCheck">
+           <property name="toolTip">
+            <string>是否在绘图中显示标题</string>
+           </property>
+           <property name="text">
+            <string>显示图表标题</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="titleIn">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="toolTip">
+            <string>输入图表标题</string>
+           </property>
+           <property name="text">
+            <string notr="true">Flow-PressureDrop</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="legendShowCheck">
+           <property name="toolTip">
+            <string>是否显示图例标签</string>
+           </property>
+           <property name="text">
+            <string>显示图例</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="plotBtn">
+           <property name="toolTip">
+            <string>刷新绘图显示</string>
+           </property>
+           <property name="text">
+            <string>刷新</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::ViewRefresh"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="setPlotBtn">
+           <property name="toolTip">
+            <string>设置绘图参数</string>
+           </property>
+           <property name="text">
+            <string>设置绘图</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::DocumentProperties"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="setPlotSizeBtn">
+           <property name="toolTip">
+            <string>设置绘图区域大小</string>
+           </property>
+           <property name="text">
+            <string>设置大小</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::ViewFullscreen"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="adjustPlotBtn">
+           <property name="toolTip">
+            <string>自适应绘图区域大小</string>
+           </property>
+           <property name="text">
+            <string>自适应大小</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::ZoomFitBest"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="savePlotBtn">
+           <property name="toolTip">
+            <string>保存图片</string>
+           </property>
+           <property name="text">
+            <string>保存</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::CameraPhoto"/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QScrollArea" name="sarea">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scontents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>756</width>
+            <height>412</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <layout class="QVBoxLayout" name="sbox"/>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="taOut">
+      <attribute name="title">
+       <string>输出</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <layout class="QHBoxLayout" name="hbox6">
+         <item>
+          <layout class="QVBoxLayout" name="vl1">
+           <item>
+            <layout class="QHBoxLayout" name="hl1">
+             <item>
+              <widget class="QLabel" name="label_7">
+               <property name="text">
+                <string>方法</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBox">
+               <property name="toolTip">
+                <string>选择拟合的函数类型</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>多项式</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>指数</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>对数</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>乘幂</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="funcLabel">
+               <property name="text">
+                <string notr="true">...</string>
+               </property>
+               <property name="textFormat">
+                <enum>Qt::TextFormat::RichText</enum>
+               </property>
+               <property name="scaledContents">
+                <bool>false</bool>
+               </property>
+               <property name="wordWrap">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string notr="true"/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="hSpace3">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="hl2">
+             <item>
+              <widget class="QLabel" name="label_8">
+               <property name="text">
+                <string>多项式次数</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="numberSpin">
+               <property name="toolTip">
+                <string>输入多项式函数的次数，最小次数为1</string>
+               </property>
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="value">
+                <number>2</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="interceptCheck">
+               <property name="toolTip">
+                <string>设置截距</string>
+               </property>
+               <property name="text">
+                <string>设置截距</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="interceptIn">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="toolTip">
+                <string>输入截距数值</string>
+               </property>
+               <property name="text">
+                <string notr="true">0.0</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="CleverTableWidget" name="outputTable">
+             <property name="editTriggers">
+              <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <layout class="QVBoxLayout" name="sbox"/>
-              </item>
-             </layout>
+             <attribute name="horizontalHeaderVisible">
+              <bool>true</bool>
+             </attribute>
+             <row>
+              <property name="text">
+               <string notr="true">r^2</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string notr="true">a0</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string notr="true">a1</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string notr="true">a2</string>
+              </property>
+             </row>
+             <column>
+              <property name="text">
+               <string notr="true">x</string>
+              </property>
+             </column>
+             <item row="0" column="0">
+              <property name="text">
+               <string notr="true">0.96</string>
+              </property>
+             </item>
+             <item row="1" column="0">
+              <property name="text">
+               <string notr="true">.125</string>
+              </property>
+             </item>
+             <item row="2" column="0">
+              <property name="text">
+               <string notr="true">1.12</string>
+              </property>
+             </item>
+             <item row="3" column="0">
+              <property name="text">
+               <string notr="true">0.322</string>
+              </property>
+             </item>
             </widget>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxOut">
-     <property name="title">
-      <string>输出</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <layout class="QHBoxLayout" name="hbox6">
-        <item>
-         <layout class="QVBoxLayout" name="vl1">
-          <item>
-           <layout class="QHBoxLayout" name="hl1">
-            <item>
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>方法</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="comboBox">
-              <property name="toolTip">
-               <string>选择拟合的函数类型</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>多项式</string>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="vl2">
+           <item>
+            <layout class="QHBoxLayout" name="hbox5">
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>指数</string>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
                </property>
-              </item>
-              <item>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_4">
                <property name="text">
-                <string>对数</string>
+                <string>小数位数</string>
                </property>
-              </item>
-              <item>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="decimalOutBox">
+               <property name="toolTip">
+                <string>输出系数的小数位数</string>
+               </property>
+               <property name="value">
+                <number>6</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="scientificOutCheck">
+               <property name="toolTip">
+                <string>输出系数是否采用科学计数法</string>
+               </property>
                <property name="text">
-                <string>乘幂</string>
+                <string>科学记数法</string>
                </property>
-              </item>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="funcLabel">
-              <property name="text">
-               <string notr="true">...</string>
-              </property>
-              <property name="textFormat">
-               <enum>Qt::TextFormat::RichText</enum>
-              </property>
-              <property name="scaledContents">
-               <bool>false</bool>
-              </property>
-              <property name="wordWrap">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_13">
-              <property name="text">
-               <string notr="true"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="hSpace3">
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="hl2">
-            <item>
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>多项式次数</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="numberSpin">
-              <property name="toolTip">
-               <string>输入多项式函数的次数，最小次数为1</string>
-              </property>
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="value">
-               <number>2</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="interceptCheck">
-              <property name="toolTip">
-               <string>设置截距</string>
-              </property>
-              <property name="text">
-               <string>设置截距</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="interceptIn">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="toolTip">
-               <string>输入截距数值</string>
-              </property>
-              <property name="text">
-               <string notr="true">0.0</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QTableWidget" name="outputTable">
-            <property name="editTriggers">
-             <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
-            </property>
-            <attribute name="horizontalHeaderVisible">
-             <bool>true</bool>
-            </attribute>
-            <row>
-             <property name="text">
-              <string notr="true">r^2</string>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="fitBtn">
+               <property name="toolTip">
+                <string>根据输入散点数据计算拟合曲线的系数</string>
+               </property>
+               <property name="text">
+                <string>计算系数</string>
+               </property>
+               <property name="icon">
+                <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart"/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="curveBtn">
+               <property name="toolTip">
+                <string>更新绘图显示并添加拟合的函数曲线</string>
+               </property>
+               <property name="text">
+                <string>更新曲线</string>
+               </property>
+               <property name="icon">
+                <iconset theme="QIcon::ThemeIcon::ViewRefresh"/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QTextEdit" name="outputEdit">
+             <property name="documentTitle">
+              <string notr="true"/>
              </property>
-            </row>
-            <row>
-             <property name="text">
-              <string notr="true">a0</string>
+             <property name="readOnly">
+              <bool>true</bool>
              </property>
-            </row>
-            <row>
-             <property name="text">
-              <string notr="true">a1</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string notr="true">a2</string>
-             </property>
-            </row>
-            <column>
-             <property name="text">
-              <string notr="true">x</string>
-             </property>
-            </column>
-            <item row="0" column="0">
-             <property name="text">
-              <string notr="true">0.96</string>
-             </property>
-            </item>
-            <item row="1" column="0">
-             <property name="text">
-              <string notr="true">.125</string>
-             </property>
-            </item>
-            <item row="2" column="0">
-             <property name="text">
-              <string notr="true">1.12</string>
-             </property>
-            </item>
-            <item row="3" column="0">
-             <property name="text">
-              <string notr="true">0.322</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="vl2">
-          <item>
-           <layout class="QHBoxLayout" name="hbox5">
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>小数位数</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="decimalOutBox">
-              <property name="toolTip">
-               <string>输出系数的小数位数</string>
-              </property>
-              <property name="value">
-               <number>6</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="scientificOutCheck">
-              <property name="toolTip">
-               <string>输出系数是否采用科学计数法</string>
-              </property>
-              <property name="text">
-               <string>科学记数法</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="fitBtn">
-              <property name="toolTip">
-               <string>根据输入散点数据计算拟合曲线的系数</string>
-              </property>
-              <property name="text">
-               <string>计算系数</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart"/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="curveBtn">
-              <property name="toolTip">
-               <string>更新绘图显示并添加拟合的函数曲线</string>
-              </property>
-              <property name="text">
-               <string>更新曲线</string>
-              </property>
-              <property name="icon">
-               <iconset theme="QIcon::ThemeIcon::ViewRefresh"/>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QTextEdit" name="outputEdit">
-            <property name="documentTitle">
-             <string notr="true"/>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-            <property name="markdown">
-             <string notr="true">y=0.125+1.12\*x+0.322*pow(x,2)
+             <property name="markdown">
+              <string notr="true">y=0.125+1.12\*x+0.322*pow(x,2)
 
 r^2=0.96
 
 </string>
-            </property>
-            <property name="html">
-             <string notr="true">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+             </property>
+             <property name="html">
+              <string notr="true">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 hr { height: 1px; border-width: 0; }
@@ -1053,121 +912,129 @@ li.checked::marker { content: &quot;\2612&quot;; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Microsoft YaHei UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;y=0.125+1.12*x+0.322*pow(x,2)&lt;/p&gt;
 &lt;p style=&quot; margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;r^2=0.96&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="hbox4">
-        <item>
-         <widget class="QLabel" name="label_9">
-          <property name="text">
-           <string>X点</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="xIn">
-          <property name="toolTip">
-           <string>给定X值</string>
-          </property>
-          <property name="text">
-           <string notr="true"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="calcYOut">
-          <property name="toolTip">
-           <string>根据给定的X值计算Y值</string>
-          </property>
-          <property name="text">
-           <string>计算Y值</string>
-          </property>
-          <property name="icon">
-           <iconset theme="QIcon::ThemeIcon::MediaSeekForward"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="yOut">
-          <property name="toolTip">
-           <string>根据给定的X值计算Y值结果</string>
-          </property>
-          <property name="text">
-           <string notr="true"/>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="hSpace4">
-          <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_10">
-          <property name="text">
-           <string>Y点</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="yIn">
-          <property name="toolTip">
-           <string>给定Y值</string>
-          </property>
-          <property name="text">
-           <string notr="true"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="calcXOut">
-          <property name="toolTip">
-           <string>根据给定的Y值计算X值</string>
-          </property>
-          <property name="text">
-           <string>计算X值</string>
-          </property>
-          <property name="icon">
-           <iconset theme="QIcon::ThemeIcon::MediaSeekBackward"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="xOut">
-          <property name="toolTip">
-           <string>根据给定的Y值计算X值结果</string>
-          </property>
-          <property name="text">
-           <string notr="true"/>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="hbox4">
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>X点</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="xIn">
+           <property name="toolTip">
+            <string>给定X值</string>
+           </property>
+           <property name="text">
+            <string notr="true"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="calcYOut">
+           <property name="toolTip">
+            <string>根据给定的X值计算Y值</string>
+           </property>
+           <property name="text">
+            <string>计算Y值</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::MediaSeekForward"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="yOut">
+           <property name="toolTip">
+            <string>根据给定的X值计算Y值结果</string>
+           </property>
+           <property name="text">
+            <string notr="true"/>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="hSpace4">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>Y点</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="yIn">
+           <property name="toolTip">
+            <string>给定Y值</string>
+           </property>
+           <property name="text">
+            <string notr="true"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="calcXOut">
+           <property name="toolTip">
+            <string>根据给定的Y值计算X值</string>
+           </property>
+           <property name="text">
+            <string>计算X值</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::MediaSeekBackward"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="xOut">
+           <property name="toolTip">
+            <string>根据给定的Y值计算X值结果</string>
+           </property>
+           <property name="text">
+            <string notr="true"/>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CleverTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header>clevertw</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resource.qrc"/>
  </resources>
@@ -1189,166 +1056,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
    </hints>
   </connection>
   <connection>
-   <sender>transCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>loadBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>240</x>
-     <y>128</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>25</x>
-     <y>128</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>transCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>saveBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>240</x>
-     <y>128</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>48</x>
-     <y>128</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>transCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>moveUpBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>240</x>
-     <y>128</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>71</x>
-     <y>128</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>transCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>moveDownBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>240</x>
-     <y>128</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>94</x>
-     <y>128</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>transCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>insertPreBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>240</x>
-     <y>128</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>117</x>
-     <y>128</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>transCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>insertNextBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>240</x>
-     <y>128</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>140</x>
-     <y>128</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>transCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>addRowBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>240</x>
-     <y>128</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>163</x>
-     <y>128</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>transCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>removeRowBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>240</x>
-     <y>128</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>186</x>
-     <y>128</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>transCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>refreshBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>240</x>
-     <y>128</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>209</x>
-     <y>128</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>transCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>exchangeBtn</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>336</x>
-     <y>170</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>265</x>
-     <y>170</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>titleDisplayCheck</sender>
    <signal>toggled(bool)</signal>
    <receiver>titleIn</receiver>
@@ -1365,34 +1072,98 @@ li.checked::marker { content: &quot;\2612&quot;; }
    </hints>
   </connection>
   <connection>
-   <sender>transCheck</sender>
+   <sender>xLabelCheck</sender>
    <signal>toggled(bool)</signal>
-   <receiver>reverseBtn</receiver>
-   <slot>setDisabled(bool)</slot>
+   <receiver>xLabelIn</receiver>
+   <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>387</x>
-     <y>148</y>
+     <x>400</x>
+     <y>85</y>
     </hint>
     <hint type="destinationlabel">
-     <x>323</x>
-     <y>148</y>
+     <x>602</x>
+     <y>85</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>transCheck</sender>
+   <sender>xLabelCheck</sender>
    <signal>toggled(bool)</signal>
-   <receiver>sortBtn</receiver>
-   <slot>setDisabled(bool)</slot>
+   <receiver>decimalXBox</receiver>
+   <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>387</x>
-     <y>148</y>
+     <x>400</x>
+     <y>85</y>
     </hint>
     <hint type="destinationlabel">
-     <x>294</x>
-     <y>148</y>
+     <x>849</x>
+     <y>85</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>xLabelCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scientificXCheck</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>933</x>
+     <y>85</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>yLabelCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>yLabelIn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>115</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>yLabelCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>decimalYBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>849</x>
+     <y>115</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>yLabelCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scientificYCheck</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>933</x>
+     <y>115</y>
     </hint>
    </hints>
   </connection>
