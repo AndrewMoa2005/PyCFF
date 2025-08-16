@@ -3,7 +3,6 @@
 import re
 import csv
 import numpy as np
-import scipy.optimize as opt
 
 from PySide6.QtWidgets import (
     QWidget,
@@ -40,6 +39,8 @@ from PySide6.QtCore import (
     qDebug,
 )
 from PySide6.QtSvg import QSvgGenerator
+
+from cff import LinearFit, NonLinearFit
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -88,7 +89,6 @@ class Widget(QWidget):
         # data vars
         self.xList: list = []
         self.yList: list = []
-        self.aCoeff: list = []
         # plot vars
         self.dataName = self.tr("Data Series")
         self.curveName = self.tr("Fitted Curve")
@@ -100,6 +100,9 @@ class Widget(QWidget):
         self.curveSize = 2
         self.dataPenStyle = Qt.PenStyle.SolidLine
         self.curvePenSytle = Qt.PenStyle.DashLine
+        # fit class
+        self.fit_class: LinearFit | NonLinearFit = None
+        self.fit_nonl_func: str = None
         # initialize default data
         self.onRefreshBtnClicked()
         self.onXDataBoxChanged()
@@ -116,7 +119,7 @@ class Widget(QWidget):
     def onAboutBtnClicked(self):
         QMessageBox.about(
             self,
-            self.tr("版本: 1.1.0"),
+            self.tr("版本: 1.1.1"),
             self.tr("...声明...\n"),
         )
 
@@ -584,15 +587,13 @@ class Widget(QWidget):
             self.ui.interceptIn.setEnabled(False)
             if self.ui.comboBox.currentIndex() == 1:
                 qDebug("Function: exponential")
-                text = (
-                    "y = a<sub>0</sub> + a<sub>1</sub>e<span>^(a<sub>2</sub>x)</span>"
-                )
+                text = "y = a + b * e ^ (c * x)"
             elif self.ui.comboBox.currentIndex() == 2:
                 qDebug("Function: logarithmic")
-                text = "y = a<sub>0</sub> + a<sub>1</sub>ln(x)"
+                text = "y = a + b * ln(x) | (x > 0)"
             elif self.ui.comboBox.currentIndex() == 3:
                 qDebug("Function: power")
-                text = "y = a<sub>0</sub>x<span>^(a<sub>1</sub>)</span>"
+                text = "y = a * x ^ b | (x > 0)"
         if text:
             self.ui.funcLabel.setText(text)
 
@@ -682,75 +683,96 @@ class Widget(QWidget):
         elif self.ui.comboBox.currentIndex() == 3:
             self.fitOnPower()
 
-    def updateOutputTable(self, r_squared: float):
+    def updateOutputTable(
+        self, r_squared: float, args: list[str] = None, coef: list[float] = None
+    ):
         # update output table
         scientific = self.ui.scientificOutCheck.isChecked()
         decimals = self.ui.decimalOutBox.value()
         self.ui.outputTable.clearContents()
-        self.ui.outputTable.setRowCount(len(self.aCoeff) + 1)
-        for i in range(len(self.aCoeff) + 1):
+        if coef is None:
+            coef = self.fit_class.params[::-1]
+            args = []
+            for i in range(len(coef)):
+                args.append(f"a{i}")
+        else:
+            if args is None:
+                qDebug("Error in updateOutputTable : No args provided!")
+                return
+            elif len(args) != len(coef):
+                qDebug(
+                    "Error in updateOutputTable : length of args should match with coef!"
+                )
+                return
+
+        self.ui.outputTable.setRowCount(len(coef) + 1)
+        for i in range(len(coef) + 1):
             if i == 0:
                 self.ui.outputTable.setVerticalHeaderItem(i, QTableWidgetItem("r2"))
             else:
                 self.ui.outputTable.setVerticalHeaderItem(
-                    i, QTableWidgetItem(f"a{i - 1}")
+                    i, QTableWidgetItem(args[i - 1])
                 )
         self.ui.outputTable.setItem(
             0, 0, self.createFormattedItem(r_squared, scientific, decimals)
         )
-        for i in range(len(self.aCoeff)):
+        for i in range(len(coef)):
             self.ui.outputTable.setItem(
                 i + 1,
                 0,
-                self.createFormattedItem(self.aCoeff[i], scientific, decimals),
+                self.createFormattedItem(coef[i], scientific, decimals),
             )
 
     def fitOnPower(self):
-        for x in self.xList:
-            if x <= 0:
-                QMessageBox.warning(
-                    self,
-                    self.tr("输入错误"),
-                    self.tr("乘幂函数的自变量必须大于0"),
-                )
-                return
-        xlist = self.xList.copy()
-        ylist = self.yList.copy()
+        if min(self.xList) <= 0:
+            QMessageBox.warning(
+                self,
+                self.tr("输入错误"),
+                self.tr("乘幂函数的自变量必须大于0"),
+            )
+            return
+        xlist = self.xList
+        ylist = self.yList
         qDebug("xList: %s" % xlist)
         qDebug("yList: %s" % ylist)
-
-        def pow_func(x, a0, a1):
-            return a0 * x**a1
-
-        if (ylist[-1] - ylist[0]) / (xlist[-1] - xlist[0]) == 0:
-            a0 = a1 = 0.01
-        else:
-            a0 = a1 = (ylist[-1] - ylist[0]) / (xlist[-1] - xlist[0])
+        self.fit_nonl_func = "a * x**b"
+        self.fit_class = NonLinearFit(
+            xlist,
+            ylist,
+            lambda x, a, b: eval(self.fit_nonl_func),
+        )
         try:
-            popt, pcov = opt.curve_fit(pow_func, xlist, ylist, p0=[a0, a1])
-        except:
+            coef = self.fit_class.fit()
+        except Exception as e:
             QMessageBox.warning(
                 self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
             )
+            qDebug("Error in fitOnPower: %s" % e)
             return
-        a0, a1 = popt
-        self.aCoeff = [float(a0), float(a1)]
-
-        y_pred = pow_func(np.array(xlist), a0, a1)
-        # calculate r^2
-        r_squared = self.calcFitRSquared(y_pred.tolist(), ylist)
-        # print the fitted curve
-        qDebug("Fitted coefficients: %s" % self.aCoeff)
+        r_squared = self.fit_class.r_squared()
+        args = self.fit_class.args()
+        qDebug("Fitted coefficients: %s" % coef)
         qDebug("R-squared: %s" % r_squared)
-        self.updateOutputTable(r_squared)
+        self.updateOutputTable(r_squared, args=args[1:], coef=coef)
         # update text output
-        of1_c = f"y={str(self.ui.outputTable.item(1, 0).text())}*pow(x,{str(self.ui.outputTable.item(2, 0).text())})"
-        of1_py = f"y={str(self.ui.outputTable.item(1, 0).text())}*x**{str(self.ui.outputTable.item(2, 0).text())}"
+        of1_py = "y = %s" % self.fit_nonl_func
+        of1_c = of1_py.replace("x**b", "pow(x, b)")
+        a, b = coef
+        if self.ui.scientificOutCheck.isChecked():
+            a = f"{a:.{self.ui.decimalOutBox.value()}e}"
+            b = f"{b:.{self.ui.decimalOutBox.value()}e}"
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}e}"
+        else:
+            a = f"{a:.{self.ui.decimalOutBox.value()}f}"
+            b = f"{b:.{self.ui.decimalOutBox.value()}f}"
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}f}"
+        of1_py = of1_py.replace("a", a).replace("b", b)
+        of1_c = of1_c.replace("a", a).replace("b", b)
         of1_f = of1_py.replace("**", "^")
-        of2 = f"r2={self.ui.outputTable.item(0, 0).text()}"
         of1_ps = of1_c.replace("pow", "[math]::pow")
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
+        of2 = f"r2={r2}"
         qDebug("Output formula: %s" % of1_f)
         qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
@@ -769,53 +791,56 @@ class Widget(QWidget):
         )
 
     def fitOnLogarithmic(self):
-        for x in self.xList:
-            if x <= 0:
-                QMessageBox.warning(
-                    self,
-                    self.tr("输入错误"),
-                    self.tr("对数函数的自变量必须大于0"),
-                )
-                return
-        xlist = self.xList.copy()
-        ylist = self.yList.copy()
+        if min(self.xList) <= 0:
+            QMessageBox.warning(
+                self,
+                self.tr("输入错误"),
+                self.tr("乘幂函数的自变量必须大于0"),
+            )
+            return
+        xlist = self.xList
+        ylist = self.yList
         qDebug("xList: %s" % xlist)
         qDebug("yList: %s" % ylist)
-
-        def log_func(x, a0, a1):
-            return a0 + a1 * np.log(x)
-
-        if (ylist[-1] - ylist[0]) / (xlist[-1] - xlist[0]) == 0:
-            a0 = a1 = 0.01
-        else:
-            a0 = a1 = (ylist[-1] - ylist[0]) / (xlist[-1] - xlist[0])
+        self.fit_nonl_func = "a + b * np.log(x)"
+        self.fit_class = NonLinearFit(
+            xlist,
+            ylist,
+            lambda x, a, b: eval(self.fit_nonl_func),
+        )
         try:
-            popt, pcov = opt.curve_fit(log_func, xlist, ylist, p0=[a0, a1])
-        except:
+            coef = self.fit_class.fit()
+        except Exception as e:
             QMessageBox.warning(
                 self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
             )
+            qDebug("Error in fitOnLogarithmic: %s" % e)
             return
-        a0, a1 = popt
-        self.aCoeff = [float(a0), float(a1)]
-
-        y_pred = log_func(np.array(xlist), a0, a1)
-        # calculate r^2
-        r_squared = self.calcFitRSquared(y_pred.tolist(), ylist)
-        # print the fitted curve
-        qDebug("Fitted coefficients: %s" % self.aCoeff)
+        r_squared = self.fit_class.r_squared()
+        args = self.fit_class.args()
+        qDebug("Fitted coefficients: %s" % coef)
         qDebug("R-squared: %s" % r_squared)
-        self.updateOutputTable(r_squared)
+        self.updateOutputTable(r_squared, args=args[1:], coef=coef)
         # update text output
-        of1_c = f"y={str(self.ui.outputTable.item(1, 0).text())}+{str(self.ui.outputTable.item(2, 0).text())}*log(x)"
-        of1_c = of1_c.replace("+-", "-")
+        of1_c = "y = %s" % self.fit_nonl_func
+        of1_c = of1_c.replace("np.log", "log")
+        a, b = coef
+        if self.ui.scientificOutCheck.isChecked():
+            a = f"{a:.{self.ui.decimalOutBox.value()}e}"
+            b = f"{b:.{self.ui.decimalOutBox.value()}e}"
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}e}"
+        else:
+            a = f"{a:.{self.ui.decimalOutBox.value()}f}"
+            b = f"{b:.{self.ui.decimalOutBox.value()}f}"
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}f}"
+        of1_c = of1_c.replace("a", a).replace("b", b)
+        of1_c = of1_c.replace("+-", "-").replace("+ -", "-")
         of1_py = of1_c.replace("log", "math.log")
         of1_f = of1_c.replace("log", "ln")
-        of1_f = of1_f.replace("+-", "-")
-        of2 = f"r2={self.ui.outputTable.item(0, 0).text()}"
         of1_ps = of1_py.replace("math.log", "[math]::log")
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
+        of2 = f"r2={r2}"
         qDebug("Output formula: %s" % of1_f)
         qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
@@ -834,44 +859,51 @@ class Widget(QWidget):
         )
 
     def fitOnExponential(self):
-        xlist = self.xList.copy()
-        ylist = self.yList.copy()
+        xlist = self.xList
+        ylist = self.yList
         qDebug("xList: %s" % xlist)
         qDebug("yList: %s" % ylist)
-
-        def exp_func(x, a0, a1, a2):
-            return a0 + a1 * np.exp(a2 * x)
-
-        if (ylist[-1] - ylist[0]) / (xlist[-1] - xlist[0]) == 0:
-            a0 = a1 = a2 = 0.01
-        else:
-            a0 = a1 = a2 = (ylist[-1] - ylist[0]) / (xlist[-1] - xlist[0])
+        self.fit_nonl_func = "a + b * np.exp(c * x)"
+        self.fit_class = NonLinearFit(
+            xlist,
+            ylist,
+            lambda x, a, b, c: eval(self.fit_nonl_func),
+        )
         try:
-            popt, pcov = opt.curve_fit(exp_func, xlist, ylist, p0=[a0, a1, a2])
-        except:
+            coef = self.fit_class.fit()
+        except Exception as e:
             QMessageBox.warning(
                 self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
             )
+            qDebug("Error in fitOnExponential: %s" % e)
             return
-        a0, a1, a2 = popt
-        self.aCoeff = [float(a0), float(a1), float(a2)]
-
-        y_pred = exp_func(np.array(xlist), a0, a1, a2)
-        # calculate r^2
-        r_squared = self.calcFitRSquared(y_pred.tolist(), ylist)
-        # print the fitted curve
-        qDebug("Fitted coefficients: %s" % self.aCoeff)
+        r_squared = self.fit_class.r_squared()
+        args = self.fit_class.args()
+        qDebug("Fitted coefficients: %s" % coef)
         qDebug("R-squared: %s" % r_squared)
-        self.updateOutputTable(r_squared)
+        self.updateOutputTable(r_squared, args=args[1:], coef=coef)
         # update text output
-        of1_c = f"y={str(self.ui.outputTable.item(1, 0).text())}+{str(self.ui.outputTable.item(2, 0).text())}*exp({str(self.ui.outputTable.item(3, 0).text())}*x)"
-        of1_c = of1_c.replace("+-", "-")
+        of1_c = "y = %s" % self.fit_nonl_func
+        of1_c = of1_c.replace("np.exp", "exp")
+        a, b, c = coef
+        if self.ui.scientificOutCheck.isChecked():
+            a = f"{a:.{self.ui.decimalOutBox.value()}e}"
+            b = f"{b:.{self.ui.decimalOutBox.value()}e}"
+            c = f"{c:.{self.ui.decimalOutBox.value()}e}"
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}e}"
+        else:
+            a = f"{a:.{self.ui.decimalOutBox.value()}f}"
+            b = f"{b:.{self.ui.decimalOutBox.value()}f}"
+            c = f"{c:.{self.ui.decimalOutBox.value()}f}"
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}f}"
+        of1_c = of1_c.replace("a", a).replace("b", b).replace("c", c)
+        of1_c = of1_c.replace("+-", "-").replace("+ -", "-")
         of1_py = of1_c.replace("exp", "math.exp")
         of1_f = of1_c.replace("exp", "e^")
-        of2 = f"r2={self.ui.outputTable.item(0, 0).text()}"
         of1_ps = of1_py.replace("math.exp", "[math]::exp")
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
+        of2 = f"r2={r2}"
         qDebug("Output formula: %s" % of1_f)
         qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
@@ -889,34 +921,12 @@ class Widget(QWidget):
             + "\n"
         )
 
-    def calcPolyCoeff(self, xlist: list, ylist: list, deg: int):
-        try:
-            if len(xlist) <= deg:
-                raise ValueError(self.tr("数据点数不足以拟合该次数多项式"))
-            coefficients = np.polyfit(xlist, ylist, deg)
-            np.polyfit(xlist, ylist, deg, full=True)
-            return coefficients
-        except ValueError as e:
-            QMessageBox.warning(self, self.tr("拟合错误"), str(e))
-            return None
-
-    def calcFitRSquared(self, y_pred: list, y_true: list):
-        try:
-            if len(y_pred) != len(y_true):
-                raise ValueError(self.tr("预测值和拟合值数据长度不一致"))
-            # calculate r_squared
-            y_mean = np.mean(np.array(y_true))
-            SS_tot = np.sum((np.array(y_true) - y_mean) ** 2)
-            SS_res = np.sum((np.array(y_true) - np.array(y_pred)) ** 2)
-            r_squared = 1 - (SS_res / SS_tot)
-            return r_squared
-        except ValueError as e:
-            QMessageBox.warning(self, self.tr("计算R2错误"), str(e))
-            return None
-
     def fitOnPolynomial(self):
-        xlist = self.xList.copy()
-        ylist = self.yList.copy()
+        xlist = self.xList
+        ylist = self.yList
+        qDebug("xList: %s" % xlist)
+        qDebug("yList: %s" % ylist)
+        deg = self.ui.numberSpin.value()
         if self.ui.interceptCheck.isChecked():
             try:
                 y = float(self.ui.interceptIn.text())
@@ -925,50 +935,53 @@ class Widget(QWidget):
                     self, self.tr("输入错误"), self.tr("截距必须输入数字")
                 )
                 return
-            for i in range(len(xlist)):
-                if xlist[i] < 0:
-                    continue
-                elif xlist[i] == 0:
-                    QMessageBox.warning(
-                        self,
-                        self.tr("输入错误"),
-                        self.tr("X轴数据不能包含0，除非取消勾选截距选项"),
-                    )
-                    return
-                else:
-                    xlist.insert(i, 0)
-                    ylist.insert(i, y)
-                    break
-        qDebug("xList: %s" % xlist)
-        qDebug("yList: %s" % ylist)
-        deg = self.ui.numberSpin.value()
-        coefficients = self.calcPolyCoeff(xlist, ylist, deg)
-        if coefficients is None:
+            self.fit_class = LinearFit(
+                xlist,
+                ylist,
+                degree=deg,
+                y_intercept=y,
+            )
+        else:
+            self.fit_class = LinearFit(
+                xlist,
+                ylist,
+                degree=deg,
+            )
+        try:
+            coef = self.fit_class.fit()
+        except Exception as e:
+            QMessageBox.warning(
+                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
+            )
+            qDebug("Error in fitOnPolynomial: %s" % e)
             return
-        self.aCoeff = coefficients[::-1]
-        if self.ui.interceptCheck.isChecked():
-            self.aCoeff[0] = y
-        p = np.poly1d(self.aCoeff[::-1])
-        y_pred = p(xlist)
-        # calculate r^2
-        r_squared = self.calcFitRSquared(y_pred.tolist(), ylist)
-        # print the fitted curve
-        qDebug("Fitted coefficients: %s" % self.aCoeff)
+        r_squared = self.fit_class.r_squared()
+        qDebug("Fitted coefficients: %s" % coef[::-1])
         qDebug("R-squared: %s" % r_squared)
         self.updateOutputTable(r_squared)
         # update text output
-        of1_c = f"y={str(self.ui.outputTable.item(1, 0).text())}+{str(self.ui.outputTable.item(2, 0).text())}*x"
+        coef_str: list[str] = []
+        if self.ui.scientificOutCheck.isChecked():
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}e}"
+            for c in coef[::-1]:
+                coef_str.append(f"{c:.{self.ui.decimalOutBox.value()}e}")
+        else:
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}f}"
+            for c in coef[::-1]:
+                coef_str.append(f"{c:.{self.ui.decimalOutBox.value()}f}")
+
+        of1_c = f"y={coef_str[0]} + {coef_str[1]} * x"
         of1_py = of1_c
-        for i in range(3, deg + 2):
-            of1_c += f"+{self.ui.outputTable.item(i, 0).text()}*pow(x,{i-1})"
-            of1_py += f"+{self.ui.outputTable.item(i, 0).text()}*x**{i-1}"
-        of1_c = of1_c.replace("+-", "-")
-        of1_py = of1_py.replace("+-", "-")
+        for i in range(2, len(coef_str), 1):
+            of1_c += f" + {coef_str[i]} * pow(x, {i})"
+            of1_py += f" + {coef_str[i]} * x ** {i}"
+        of1_c = of1_c.replace("+-", "-").replace("+ -", "-")
+        of1_py = of1_py.replace("+-", "-").replace("+ -", "-")
         of1_f = of1_py.replace("**", "^")
         of1_ps = of1_c.replace("pow", "[math]::pow")
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
-        of2 = f"r2={self.ui.outputTable.item(0, 0).text()}"
+        of2 = f"r2={r2}"
         qDebug("Output formula: %s" % of1_f)
         qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
@@ -987,42 +1000,10 @@ class Widget(QWidget):
         )
 
     def onCurveBtnClicked(self):
-        if len(self.aCoeff) <= 0:
+        if len(self.fit_class.params) <= 0:
             QMessageBox.warning(self, self.tr("输入错误"), self.tr("请先进行拟合"))
             return
-        yFitList = []
-        if self.ui.comboBox.currentIndex() == 0:
-            for x in self.xList:
-                y_value = self.aCoeff[0]
-                for i in range(1, len(self.aCoeff)):
-                    y_value += self.aCoeff[i] * (x**i)
-                yFitList.append(y_value)
-        elif self.ui.comboBox.currentIndex() == 1:
-            for x in self.xList:
-                y_value = self.aCoeff[0] + self.aCoeff[1] * np.exp(self.aCoeff[2] * x)
-                yFitList.append(y_value)
-        elif self.ui.comboBox.currentIndex() == 2:
-            for x in self.xList:
-                if x <= 0:
-                    QMessageBox.warning(
-                        self,
-                        self.tr("输入错误"),
-                        self.tr("对数函数的自变量必须大于0"),
-                    )
-                    return
-                y_value = self.aCoeff[0] + self.aCoeff[1] * np.log(x)
-                yFitList.append(y_value)
-        elif self.ui.comboBox.currentIndex() == 3:
-            for x in self.xList:
-                if x <= 0:
-                    QMessageBox.warning(
-                        self,
-                        self.tr("输入错误"),
-                        self.tr("乘幂函数的自变量必须大于0"),
-                    )
-                    return
-                y_value = self.aCoeff[0] * x ** self.aCoeff[1]
-                yFitList.append(y_value)
+        yFitList = self.fit_class.ylist()
         self.ui.tabWidget.setCurrentIndex(1)
         self.onPlotBtnClicked()
         series = QSplineSeries()
@@ -1037,7 +1018,7 @@ class Widget(QWidget):
         self.chartView.show()
 
     def onCalcYOutClicked(self):
-        if len(self.aCoeff) <= 0:
+        if len(self.fit_class.params) <= 0:
             QMessageBox.warning(self, self.tr("输入错误"), self.tr("请先进行拟合"))
             return
         try:
@@ -1045,32 +1026,7 @@ class Widget(QWidget):
         except ValueError:
             QMessageBox.warning(self, self.tr("输入错误"), self.tr("请输入有效的数字"))
             return
-        if self.ui.comboBox.currentIndex() == 0:
-            for i in range(len(self.aCoeff)):
-                if i == 0:
-                    y_value = self.aCoeff[i]
-                else:
-                    y_value += self.aCoeff[i] * (x_value**i)
-        elif self.ui.comboBox.currentIndex() == 1:
-            y_value = self.aCoeff[0] + self.aCoeff[1] * np.exp(self.aCoeff[2] * x_value)
-        elif self.ui.comboBox.currentIndex() == 2:
-            if x_value <= 0:
-                QMessageBox.warning(
-                    self,
-                    self.tr("输入错误"),
-                    self.tr("对数函数的自变量必须大于0"),
-                )
-                return
-            y_value = self.aCoeff[0] + self.aCoeff[1] * np.log(x_value)
-        elif self.ui.comboBox.currentIndex() == 3:
-            if x_value <= 0:
-                QMessageBox.warning(
-                    self,
-                    self.tr("输入错误"),
-                    self.tr("乘幂函数的自变量必须大于0"),
-                )
-                return
-            y_value = self.aCoeff[0] * x_value ** self.aCoeff[1]
+        y_value = self.fit_class.yval(x_value)
         decimals = self.ui.decimalOutBox.value()
         if self.ui.scientificOutCheck.isChecked():
             result = f"{y_value:.{decimals}e}"
@@ -1080,7 +1036,7 @@ class Widget(QWidget):
         qDebug("X: %s, Y: %s" % (x_value, y_value))
 
     def onCalcXOutClicked(self):
-        if len(self.aCoeff) <= 0:
+        if len(self.fit_class.params) <= 0:
             QMessageBox.warning(self, self.tr("输入错误"), self.tr("请先进行拟合"))
             return
         try:
@@ -1088,98 +1044,31 @@ class Widget(QWidget):
         except ValueError:
             QMessageBox.warning(self, self.tr("输入错误"), self.tr("请输入有效的数字"))
             return
-        # Newton's iterative method
-        max_iterations = 100000
-        tolerance = 1e-8
-        x_init = self.xList[len(self.xList) // 2]
-        n = 0
-        if self.ui.comboBox.currentIndex() == 0:
-
-            def f(x):
-                return (
-                    sum(coeff * (x**i) for i, coeff in enumerate(self.aCoeff))
-                    - target_y
-                )
-
-            def df(x):
-                return sum(
-                    i * coeff * (x ** (i - 1))
-                    for i, coeff in enumerate(self.aCoeff)
-                    if i > 0
-                )
-
-            for t in range(max_iterations):
-                fx = f(x_init)
-                if abs(fx) < tolerance:
-                    break
-                dfx = df(x_init)
-                if abs(dfx) < 1e-12:
-                    x_init = x_init + 0.1
-                    continue
-                x_init -= fx / dfx
-                n = t + 1
-        elif self.ui.comboBox.currentIndex() == 1:
-            for t in range(max_iterations):
-                exp_term = self.aCoeff[1] * np.exp(self.aCoeff[2] * x_init)
-                y_init = self.aCoeff[0] + exp_term
-                f_prime = self.aCoeff[2] * exp_term
-                if abs(y_init - target_y) < tolerance:
-                    break
-                if abs(f_prime) < 1e-12:
-                    x_init += 0.1
-                    continue
-                x_init -= (y_init - target_y) / f_prime
-                n = t + 1
-        elif self.ui.comboBox.currentIndex() == 2:
-            for t in range(max_iterations):
-                if x_init <= 0:
-                    x_init = 1e-6
-                    continue
-                y_init = self.aCoeff[0] + self.aCoeff[1] * np.log(x_init)
-                f_prime = self.aCoeff[1] / x_init
-                if abs(y_init - target_y) < tolerance:
-                    break
-                if abs(f_prime) < 1e-12:
-                    x_init += 0.1
-                    continue
-                x_init -= (y_init - target_y) / f_prime
-                n = t + 1
-        elif self.ui.comboBox.currentIndex() == 3:
-            for t in range(max_iterations):
-                if x_init <= 0:
-                    x_init = 1e-6
-                    continue
-                y_init = self.aCoeff[0] * x_init ** self.aCoeff[1]
-                f_prime = self.aCoeff[1] * x_init ** (self.aCoeff[1] - 1)
-                if abs(y_init - target_y) < tolerance:
-                    break
-                if abs(f_prime) < 1e-12:
-                    x_init += 0.1
-                    continue
-                x_init -= (y_init - target_y) / f_prime
-                n = t + 1
-        if n >= max_iterations:
-            if abs(y_init - target_y) > tolerance:
-                QMessageBox.warning(
-                    self,
-                    self.tr("迭代失败"),
-                    self.tr("未在最大迭代次数内找到解"),
-                )
-                return
-        qDebug("X: %s, Y: %s, LoopNum: %s" % (x_init, target_y, n))
-        decimals = self.ui.decimalOutBox.value()
-        if self.ui.scientificOutCheck.isChecked():
-            x_value = f"{x_init:.{decimals}e}"
-        else:
-            x_value = f"{x_init:.{decimals}f}"
-        self.ui.xOut.setText(x_value)
+        try:
+            if self.ui.comboBox.currentIndex() == 0:
+                x_value, n = self.fit_class.predict([target_y])
+                qDebug("X: %s, Y: %s, LoopNum: %s" % (x_value[0], target_y, n))
+            else:
+                x_value = self.fit_class.solve([target_y])
+                qDebug("X: %s, Y: %s" % (x_value[0], target_y))
+            decimals = self.ui.decimalOutBox.value()
+            if self.ui.scientificOutCheck.isChecked():
+                x_value = f"{x_value[0]:.{decimals}e}"
+            else:
+                x_value = f"{x_value[0]:.{decimals}f}"
+            self.ui.xOut.setText(x_value)
+        except ValueError:
+            QMessageBox.warning(self, self.tr("输入错误"), self.tr("解不存在"))
 
 
 if __name__ == "__main__":
     """
+    test widget
+    """
+    import sys
+    from PySide6.QtWidgets import QApplication
+
     app = QApplication(sys.argv)
     widget = Widget()
     widget.show()
-    widget.onAdjustPlotBtnClicked()
     sys.exit(app.exec())
-    """

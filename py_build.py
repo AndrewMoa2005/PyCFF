@@ -21,6 +21,10 @@ hd_list = [
     "form_ui",
     "resource_rc",
     "clevertw",
+    "cff",
+    "typing",
+    "inspect",
+    "random"
 ]
 locale = ["zh_CN", "en"]
 trans_files = ["widget.py", "form.ui", "clevertw.py"]
@@ -32,6 +36,7 @@ files = [
     "form.ui",
     "resource.qrc",
     "clevertw.py",
+    "cff.py",
 ]
 folders = ["image", "translations"]
 build_dir = "py_build"

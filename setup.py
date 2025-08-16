@@ -5,6 +5,6 @@ from Cython.Build import cythonize
 
 setup(
     name="PyCFF",
-    ext_modules=cythonize(["widget.py", "form_ui.py", "resource_rc.py", "clevertw.py"]),
-    py_modules=["widget", "form_ui", "resource_rc", "clevertw"],
+    ext_modules=cythonize(["widget.py", "form_ui.py", "resource_rc.py", "clevertw.py", "cff.py"]),
+    py_modules=["widget", "form_ui", "resource_rc", "clevertw", "cff"],
 )

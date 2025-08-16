@@ -1110,8 +1110,10 @@ class DeleteInsertDialog(QDialog):
 
 
 if __name__ == "__main__":
+    """
+    test CleverTW
+    """
     import sys
-
     class TestUsingCleverTW(QDialog):
         def __init__(self, parent=None):
             super().__init__(parent)
