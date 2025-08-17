@@ -106,6 +106,9 @@ class CleverTableWidget(QTableWidget):
         # 设置浮点数的显示格式
         self.digital_format_action = QAction(self.tr("设置数字格式"), self)
         self.digital_format_action.triggered.connect(self.digital_format)
+        # 列表转置
+        self.transpose_action = QAction(self.tr("列表转置"), self)
+        self.transpose_action.triggered.connect(self.transpose_table)
         # 设置快捷键
         self.copy_action.setShortcut("Ctrl+C")
         if self.editable:
@@ -143,6 +146,10 @@ class CleverTableWidget(QTableWidget):
     def disable_editing(self):
         self.editable = False
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+
+    def enable_editing(self):
+        self.editable = True
+        self.setEditTriggers(QTableWidget.EditTrigger.DoubleClicked)
 
     def change_horizontal_header(self, index):
         if self.editable is False:
@@ -243,9 +250,10 @@ class CleverTableWidget(QTableWidget):
         menu.addAction(self.bold_action)
         menu.addAction(self.cancle_highlight_action)
         menu.addAction(self.cancle_bold_action)
+        menu.addSeparator()
         if self.editable:
-            menu.addSeparator()
             menu.addAction(self.digital_format_action)
+        menu.addAction(self.transpose_action)
         menu.exec(self.viewport().mapToGlobal(pos))
 
     def move_up(self):
@@ -631,7 +639,12 @@ class CleverTableWidget(QTableWidget):
         else:
             self.setRowCount(self.columnCount())
             trans()
-        self.clear_empty_space()
+        if not self.editable:
+            self.enable_editing()
+            self.clear_empty_space()
+            self.disable_editing()
+        else:
+            self.clear_empty_space()
 
     def renumber_header_clo(self):
         """
@@ -1114,6 +1127,7 @@ if __name__ == "__main__":
     test CleverTW
     """
     import sys
+
     class TestUsingCleverTW(QDialog):
         def __init__(self, parent=None):
             super().__init__(parent)

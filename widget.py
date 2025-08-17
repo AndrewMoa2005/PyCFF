@@ -119,7 +119,7 @@ class Widget(QWidget):
     def onAboutBtnClicked(self):
         QMessageBox.about(
             self,
-            self.tr("版本: 1.1.1"),
+            self.tr("版本: 1.1.2"),
             self.tr("...声明...\n"),
         )
 
@@ -587,13 +587,18 @@ class Widget(QWidget):
             self.ui.interceptIn.setEnabled(False)
             if self.ui.comboBox.currentIndex() == 1:
                 qDebug("Function: exponential")
-                text = "y = a + b * e ^ (c * x)"
+                text = "y = a + b * e^(c * x)"
             elif self.ui.comboBox.currentIndex() == 2:
-                qDebug("Function: logarithmic")
-                text = "y = a + b * ln(x) | (x > 0)"
+                qDebug("Function: exponential")
+                text = "y = a * e^(b * x) (y > 0)"
+                self.ui.interceptCheck.setEnabled(True)
+                self.ui.interceptIn.setEnabled(True)
             elif self.ui.comboBox.currentIndex() == 3:
+                qDebug("Function: logarithmic")
+                text = "y = a + b * ln(x) (x > 0)"
+            elif self.ui.comboBox.currentIndex() == 4:
                 qDebug("Function: power")
-                text = "y = a * x ^ b | (x > 0)"
+                text = "y = a * x^b (x > 0)"
         if text:
             self.ui.funcLabel.setText(text)
 
@@ -679,14 +684,17 @@ class Widget(QWidget):
         elif self.ui.comboBox.currentIndex() == 1:
             self.fitOnExponential()
         elif self.ui.comboBox.currentIndex() == 2:
-            self.fitOnLogarithmic()
+            self.fitOnExponential2()
         elif self.ui.comboBox.currentIndex() == 3:
+            self.fitOnLogarithmic()
+        elif self.ui.comboBox.currentIndex() == 4:
             self.fitOnPower()
 
     def updateOutputTable(
         self, r_squared: float, args: list[str] = None, coef: list[float] = None
     ):
         # update output table
+        self.ui.outputTable.enable_editing()
         scientific = self.ui.scientificOutCheck.isChecked()
         decimals = self.ui.decimalOutBox.value()
         self.ui.outputTable.clearContents()
@@ -697,13 +705,9 @@ class Widget(QWidget):
                 args.append(f"a{i}")
         else:
             if args is None:
-                qDebug("Error in updateOutputTable : No args provided!")
-                return
+                raise RuntimeError("args must be provided if coef is provided")
             elif len(args) != len(coef):
-                qDebug(
-                    "Error in updateOutputTable : length of args should match with coef!"
-                )
-                return
+                raise RuntimeError("length of args should match with coef")
 
         self.ui.outputTable.setRowCount(len(coef) + 1)
         for i in range(len(coef) + 1):
@@ -722,13 +726,16 @@ class Widget(QWidget):
                 0,
                 self.createFormattedItem(coef[i], scientific, decimals),
             )
+        self.ui.outputTable.renumber_header_clo()
+        self.ui.outputTable.clear_empty_space()
+        self.ui.outputTable.disable_editing()
 
     def fitOnPower(self):
         if min(self.xList) <= 0:
             QMessageBox.warning(
                 self,
                 self.tr("输入错误"),
-                self.tr("乘幂函数的自变量必须大于0"),
+                self.tr("自变量必须大于0"),
             )
             return
         xlist = self.xList
@@ -772,7 +779,7 @@ class Widget(QWidget):
         of1_ps = of1_c.replace("pow", "[math]::pow")
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
-        of2 = f"r2={r2}"
+        of2 = f"r2 = {r2}"
         qDebug("Output formula: %s" % of1_f)
         qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
@@ -795,7 +802,7 @@ class Widget(QWidget):
             QMessageBox.warning(
                 self,
                 self.tr("输入错误"),
-                self.tr("乘幂函数的自变量必须大于0"),
+                self.tr("自变量必须大于0"),
             )
             return
         xlist = self.xList
@@ -833,14 +840,105 @@ class Widget(QWidget):
             a = f"{a:.{self.ui.decimalOutBox.value()}f}"
             b = f"{b:.{self.ui.decimalOutBox.value()}f}"
             r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}f}"
-        of1_c = of1_c.replace("a", a).replace("b", b)
+        if abs(float(a)) < 1e-12:
+            of1_c = of1_c.replace("a + b", "b").replace("b", b)
+        else:
+            of1_c = of1_c.replace("a", a).replace("b", b)
         of1_c = of1_c.replace("+-", "-").replace("+ -", "-")
         of1_py = of1_c.replace("log", "math.log")
         of1_f = of1_c.replace("log", "ln")
         of1_ps = of1_py.replace("math.log", "[math]::log")
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
-        of2 = f"r2={r2}"
+        of2 = f"r2 = {r2}"
+        qDebug("Output formula: %s" % of1_f)
+        qDebug("Output r2: %s" % of2)
+        self.ui.outputEdit.clear()
+        self.ui.outputEdit.setText(
+            "[R²]\n"
+            + of2
+            + "\n[Formula]\n"
+            + of1_f
+            + "\n[Python]\n"
+            + of1_py
+            + "\n[C/C++/Fortran]\n"
+            + of1_c
+            + "\n[PowerShell]\n"
+            + of1_ps
+            + "\n"
+        )
+
+    def fitOnExponential2(self):
+        if min(self.yList) <= 0:
+            QMessageBox.warning(
+                self,
+                self.tr("输入错误"),
+                self.tr("因变量必须大于0"),
+            )
+            return
+        xlist = self.xList
+        ylist = self.yList
+        qDebug("xList: %s" % xlist)
+        qDebug("yList: %s" % ylist)
+        if self.ui.interceptCheck.isChecked():
+            try:
+                y = float(self.ui.interceptIn.text())
+            except ValueError:
+                QMessageBox.warning(
+                    self, self.tr("输入错误"), self.tr("截距必须输入数字")
+                )
+                return
+            if y <= 0:
+                QMessageBox.warning(self, self.tr("输入错误"), self.tr("截距必须大于0"))
+                return
+            self.fit_nonl_func = "a * np.exp(b * x)".replace("a", str(y))
+            self.fit_class = NonLinearFit(
+                xlist,
+                ylist,
+                lambda x, b: eval(self.fit_nonl_func),
+            )
+        else:
+            self.fit_nonl_func = "a * np.exp(b * x)"
+            self.fit_class = NonLinearFit(
+                xlist,
+                ylist,
+                lambda x, a, b: eval(self.fit_nonl_func),
+            )
+        try:
+            coef = self.fit_class.fit().copy()
+        except Exception as e:
+            QMessageBox.warning(
+                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
+            )
+            qDebug("Error in fitOnExponential: %s" % e)
+            return
+        r_squared = self.fit_class.r_squared()
+        args = self.fit_class.args().copy()
+        qDebug("Fitted coefficients: %s" % coef)
+        qDebug("R-squared: %s" % r_squared)
+        if self.ui.interceptCheck.isChecked():
+            args.insert(1, "a")
+            coef.insert(0, float(self.ui.interceptIn.text()))
+        self.updateOutputTable(r_squared, args=args[1:], coef=coef)
+        # update text output
+        of1_c = "y = a * exp(b * x)"
+        a, b = coef
+        if self.ui.scientificOutCheck.isChecked():
+            a = f"{a:.{self.ui.decimalOutBox.value()}e}"
+            b = f"{b:.{self.ui.decimalOutBox.value()}e}"
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}e}"
+        else:
+            a = f"{a:.{self.ui.decimalOutBox.value()}f}"
+            b = f"{b:.{self.ui.decimalOutBox.value()}f}"
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}f}"
+        of1_c = of1_c.replace("a", a).replace("b", b)
+        of1_c = of1_c.replace("+-", "-").replace("+ -", "-")
+        of1_py = of1_c.replace("exp", "math.exp")
+        of1_f = of1_c.replace("exp", "e^")
+        of1_ps = of1_py.replace("math.exp", "[math]::exp")
+        of1_ps = of1_ps.replace("x", "$x")
+        of1_ps = of1_ps.replace("y", "$y")
+        of2 = f"r2 = {r2}"
         qDebug("Output formula: %s" % of1_f)
         qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
@@ -896,14 +994,17 @@ class Widget(QWidget):
             b = f"{b:.{self.ui.decimalOutBox.value()}f}"
             c = f"{c:.{self.ui.decimalOutBox.value()}f}"
             r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}f}"
-        of1_c = of1_c.replace("a", a).replace("b", b).replace("c", c)
+        if abs(float(a)) < 1e-12:
+            of1_c = of1_c.replace("a + b", "b").replace("b", b).replace("c", c)
+        else:
+            of1_c = of1_c.replace("a", a).replace("b", b).replace("c", c)
         of1_c = of1_c.replace("+-", "-").replace("+ -", "-")
         of1_py = of1_c.replace("exp", "math.exp")
         of1_f = of1_c.replace("exp", "e^")
         of1_ps = of1_py.replace("math.exp", "[math]::exp")
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
-        of2 = f"r2={r2}"
+        of2 = f"r2 = {r2}"
         qDebug("Output formula: %s" % of1_f)
         qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
@@ -969,19 +1070,33 @@ class Widget(QWidget):
             r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}f}"
             for c in coef[::-1]:
                 coef_str.append(f"{c:.{self.ui.decimalOutBox.value()}f}")
-
-        of1_c = f"y={coef_str[0]} + {coef_str[1]} * x"
+        of1_c = "y = "
         of1_py = of1_c
-        for i in range(2, len(coef_str), 1):
-            of1_c += f" + {coef_str[i]} * pow(x, {i})"
-            of1_py += f" + {coef_str[i]} * x ** {i}"
+        for i, s in enumerate(coef_str):
+            if i == 0:
+                if abs(float(s)) < 1e-12:
+                    continue
+                of1_c += s + " + "
+                of1_py += s + " + "
+            elif i == 1:
+                if abs(float(s)) < 1e-12:
+                    continue
+                of1_c += s + " * x + "
+                of1_py += s + " * x + "
+            else:
+                if abs(float(s)) < 1e-12:
+                    continue
+                of1_c += s + " * pow(x, %s) + " % i
+                of1_py += s + " * x**%s + " % i
+        of1_c = of1_c[:-3]
+        of1_py = of1_py[:-3]
         of1_c = of1_c.replace("+-", "-").replace("+ -", "-")
         of1_py = of1_py.replace("+-", "-").replace("+ -", "-")
         of1_f = of1_py.replace("**", "^")
         of1_ps = of1_c.replace("pow", "[math]::pow")
         of1_ps = of1_ps.replace("x", "$x")
         of1_ps = of1_ps.replace("y", "$y")
-        of2 = f"r2={r2}"
+        of2 = f"r2 = {r2}"
         qDebug("Output formula: %s" % of1_f)
         qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
