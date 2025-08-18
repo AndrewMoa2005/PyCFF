@@ -351,8 +351,10 @@ class NonLinearFit:
             p : list of parameters, len(p) = len(p0)
             define 1: def func(x, p0, p1, p2): return p0 * x**2 + p1 * x + p2
             define 2: def func(x, p0, p1): return eval('p0 * np.sin(x * p1)')
-            define 3: lambda x, a, b, c: "a * np.exp(b * x) + c"
+            define 3: lambda x, a, b, c: a * np.exp(b * x) + c
             define 4: lambda x, a, b, c: eval("a * np.log(b * x) + c")
+            define 5: eval("lambda x, a, b, c: a * np.exp(b * x) + c")
+            Warning: Do not allow users to execute the eval() function.
         """
         if func.__code__.co_argcount < 2:
             raise ValueError("Function must have at least two arguments (x, *params)")
@@ -567,9 +569,17 @@ class NonLinearFit:
         Raises:
             ValueError: Model has not been fitted yet.
         """
+        warnings.warn(
+            "Unable to capture the source code of lambda expression wrapped in eval().",
+            DeprecationWarning,
+        )
         if self.params is None:
             raise ValueError("Model has not been fitted yet.")
-        source_code = inspect.getsource(self.func)
+        try:
+            source_code = inspect.getsource(self.func)
+        except Exception as e:
+            print("An error occurred while capturing the source code : %s" % str(e))
+            return None
         return source_code
 
     def args(self) -> list[str]:
@@ -621,13 +631,10 @@ if __name__ == "__main__":
         plt.show()
 
     def test_non_linear_fit():
-        def func(x, p0, p1, p2):
-            return eval("p0 * x**2 + p1 * x + p2")
-
         nonl_fit = NonLinearFit(
             x_data,
             y_data,
-            func,
+            eval("lambda x, a, b, c : a * x**2 + b * x + c"),
         )
         params = nonl_fit.fit()
         print("initial p0 : ", nonl_fit.p0)
