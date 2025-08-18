@@ -6,6 +6,7 @@ import numpy as np
 import scipy.optimize as sopt
 import inspect
 import random
+import warnings
 
 
 class LinearFit:
@@ -200,6 +201,10 @@ class LinearFit:
         Raises:
             ValueError: Model has not been fitted yet.
         """
+        warnings.warn(
+            "function predict is deprecated, use function solve instead",
+            DeprecationWarning,
+        )
         if self.params is None:
             raise ValueError("Model has not been fitted yet.")
         p = np.poly1d(self.params)
@@ -230,6 +235,59 @@ class LinearFit:
             x.append(float(x0) if converged else float("nan"))
             n.append(n_iter)
         return x, n
+
+    def solveval(self, y: float, limit: bool = True) -> float | dict:
+        """
+        solve the new x value base on input y value.
+        Args:
+            y (float): y value.
+            limit (bool, optional): limit the x value. Defaults to True.
+        Returns:
+            float | dict: x value.
+        Raises:
+            ValueError: Model has not been fitted yet.
+        """
+        if self.params is None:
+            raise ValueError("Model has not been fitted yet.")
+        if y < min(self.y_data) or y > max(self.y_data):
+            warnings.warn(f"y value {y} is out of range.", UserWarning)
+        coef = self.params.copy()
+        coef[-1] = coef[-1] - y
+        p = np.poly1d(coef)
+        xval = np.roots(p)
+        if len(xval) > 1:
+            warnings.warn(
+                f"Multiple solutions found {xval} for y value {y}", UserWarning
+            )
+            if limit is False:
+                val: list[float] = []
+                for i in xval:
+                    val.append(float(i))
+                return {"x": val, "y": y}
+            else:
+                for i in xval:
+                    if i > min(self.x_data) and i < max(self.x_data):
+                        return float(i)
+        else:
+            return float(xval)
+
+    def solve(self, ylist: list[float], limit: bool = True) -> list[float | dict]:
+        """
+        solve the new x value base on input y value.
+        Args:
+            ylist (list[float]): y data.
+            limit (bool, optional): limit the x value. Defaults to True.
+        Returns:
+            list[float | dict]: x data.
+        Raises:
+            ValueError: Model has not been fitted yet.
+        """
+        if self.params is None:
+            raise ValueError("Model has not been fitted yet.")
+        xlist: list[float | dict] = []
+        for y in ylist:
+            xlist.append(self.solveval(y, limit))
+        return xlist
 
     def formula(self, x: str = "x", decimal: int = 3, scientific: bool = False) -> str:
         """
@@ -442,30 +500,62 @@ class NonLinearFit:
 
         return r_squared
 
-    def solve(self, y: list[float]) -> list[float]:
+    def solve(self, y: list[float], limit: bool = True) -> list[float | dict]:
         """
         solve the new x value base on input y value.
         Args:
             y (list[float]): y values.
+            limit (bool, optional): limit the x value. Defaults to True.
         Returns:
-            list[float]: x values.
+            list[float | dict]: x values.
         Raises:
             ValueError: Model has not been fitted yet.
-            ValueError: Solution failed.
         """
         if self.params is None:
             raise ValueError("Model has not been fitted yet.")
+        xlist: list[float | dict] = []
+        for y in y:
+            xlist.append(self.solveval(y, limit))
+        return xlist
+
+    def solveval(self, y: float, limit: bool = True) -> float | dict:
+        """
+        solve the new x value base on input y value.
+        Args:
+            y (float): y value.
+            limit (bool, optional): limit the x value. Defaults to True.
+        Returns:
+            float | dict: x value.
+        Raises:
+            ValueError: Model has not been fitted yet.
+        """
+        if self.params is None:
+            raise ValueError("Model has not been fitted yet.")
+        if y < min(self.y_data) or y > max(self.y_data):
+            warnings.warn(f"y value {y} is out of range.", UserWarning)
 
         def func_solve(X):
             return self.func(X, *self.params) - y
 
-        x0 = np.zeros(len(y))
         max_iter = 10 ** (self.func.__code__.co_argcount + 1)
+        x0 = 0
         try:
-            x = sopt.newton(func_solve, x0, tol=1e-12, maxiter=max_iter)
+            x = [sopt.newton(func_solve, x0, tol=1e-12, maxiter=max_iter)]
         except RuntimeError as e:
             raise ValueError(f"Solution failed: {str(e)}") from e
-        return x.tolist() if isinstance(x, np.ndarray) else [x]
+        if len(x) == 1:
+            return float(x[0])
+        else:
+            warnings.warn(f"Multiple solutions found {x} for y value {y}", UserWarning)
+            if limit:
+                for i in x:
+                    if i > min(self.x_data) and i < max(self.x_data):
+                        return float(i)
+            else:
+                val: list[float] = []
+                for i in x:
+                    val.append(float(i))
+                return {"x": val, "y": y}
 
     def source(
         self,
@@ -512,16 +602,16 @@ if __name__ == "__main__":
         print("Predicted y values : ", y_pred)
         r_squared = poly_fit.r_squared()
         print("R-squared : ", r_squared)
-        y_old = [0.2, 1.3, 2.4]
-        x_new, iterations = poly_fit.predict(y_old)
+        y_old = [0.2, 1.3, 2.4, 3.6]
+        x_new = poly_fit.solve(y_old, limit=False)
         print(
-            "Predicted x %s values for given y data %s : Iterations : %s"
+            "Predicted x %s values for given y data %s ."
             % (
                 x_new,
                 y_old,
-                iterations,
             )
         )
+        print("Solve x %s value for y = 0.35." % poly_fit.solveval(0.35))
         x_val = 3
         y_val = poly_fit.yval(x_val)
         print("Y = %s at given X = %s " % (y_val, x_val))
@@ -548,9 +638,10 @@ if __name__ == "__main__":
         print("Predicted y values : ", y_pred)
         r_squared = nonl_fit.r_squared()
         print("R-squared : ", r_squared)
-        y_old = [0.2, 1.3, 2.4]
-        x_new = nonl_fit.solve(y_old)
-        print("Predicted x %s values for given y data %s : " % (x_new, y_old))
+        y_old = [0.2, 1.3, 2.4, 3.6]
+        x_new = nonl_fit.solve(y_old, limit=False)
+        print("Predicted x %s values for given y data %s . " % (x_new, y_old))
+        print("Solve x %s value for y = 0.35." % nonl_fit.solveval(0.35))
         x_val = 3
         y_val = nonl_fit.yval(x_val)
         print("Y = %s at given X = %s " % (y_val, x_val))

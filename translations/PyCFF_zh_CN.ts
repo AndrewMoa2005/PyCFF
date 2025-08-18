@@ -298,18 +298,13 @@
         <translation>拟合曲线</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="122"/>
-        <source>版本: 1.1.2</source>
-        <translation>版本 : 1.1.2</translation>
-    </message>
-    <message>
         <location filename="../widget.py" line="123"/>
         <source>...声明...
 </source>
         <translation>      本程序是基于Python实现的函数曲线拟合程序，用于将离散数据拟合成函数曲线，旨在替代Excel、Origin中的函数曲线拟合功能，简化用户操作的同时提供简单的绘图和数据交互。
       本程序遵循LGPL开源许可，任何团体及个人不得将本程序用于商业目的，也不得将本程序的源代码用于商业目的。
       本程序的使用是完全免费的，但是本程序的作者不承担任何因使用本程序而产生的任何损失或损害。
-	Date:	2025-8-17
+	Date:	2025-8-18
 	Author:	Andrew Moa
 	Email:	Andrew.Moa2005@163.com
 	Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
@@ -480,7 +475,7 @@
         <location filename="../widget.py" line="1142"/>
         <location filename="../widget.py" line="1155"/>
         <location filename="../widget.py" line="1160"/>
-        <location filename="../widget.py" line="1176"/>
+        <location filename="../widget.py" line="1185"/>
         <source>输入错误</source>
         <translation>输入错误</translation>
     </message>
@@ -516,7 +511,7 @@
         <translation>截距必须大于0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1176"/>
+        <location filename="../widget.py" line="1185"/>
         <source>解不存在</source>
         <translation>解不存在</translation>
     </message>
@@ -525,6 +520,11 @@
         <location filename="../widget.py" line="675"/>
         <source>请先输入X轴和Y轴数据</source>
         <translation>请先输入X轴和Y轴数据</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="122"/>
+        <source>版本: 1.1.3</source>
+        <translation>版本: 1.1.3</translation>
     </message>
     <message>
         <location filename="../widget.py" line="359"/>

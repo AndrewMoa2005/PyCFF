@@ -119,7 +119,7 @@ class Widget(QWidget):
     def onAboutBtnClicked(self):
         QMessageBox.about(
             self,
-            self.tr("版本: 1.1.2"),
+            self.tr("版本: 1.1.3"),
             self.tr("...声明...\n"),
         )
 
@@ -1160,18 +1160,27 @@ class Widget(QWidget):
             QMessageBox.warning(self, self.tr("输入错误"), self.tr("请输入有效的数字"))
             return
         try:
-            if self.ui.comboBox.currentIndex() == 0:
-                x_value, n = self.fit_class.predict([target_y])
-                qDebug("X: %s, Y: %s, LoopNum: %s" % (x_value[0], target_y, n))
-            else:
-                x_value = self.fit_class.solve([target_y])
-                qDebug("X: %s, Y: %s" % (x_value[0], target_y))
+            x_value = self.fit_class.solveval(target_y, limit=False)
+            if isinstance(x_value, dict):
+                x_value = x_value["x"]  # dict -> list[float]
+            qDebug("X: %s, Y: %s" % (x_value, target_y))
             decimals = self.ui.decimalOutBox.value()
             if self.ui.scientificOutCheck.isChecked():
-                x_value = f"{x_value[0]:.{decimals}e}"
+                if isinstance(x_value, float):
+                    x_value = f"{x_value:.{decimals}e}"
+                else:
+                    for i in range(len(x_value)):
+                        x_value[i] = f"{x_value[i]:.{decimals}e}"
             else:
-                x_value = f"{x_value[0]:.{decimals}f}"
-            self.ui.xOut.setText(x_value)
+                if isinstance(x_value, float):
+                    x_value = f"{x_value:.{decimals}f}"
+                else:
+                    for i in range(len(x_value)):
+                        x_value[i] = f"{x_value[i]:.{decimals}f}"
+            if isinstance(x_value, str):
+                self.ui.xOut.setText(x_value)
+            else:
+                self.ui.xOut.setText(", ".join(x_value))
         except ValueError:
             QMessageBox.warning(self, self.tr("输入错误"), self.tr("解不存在"))
 

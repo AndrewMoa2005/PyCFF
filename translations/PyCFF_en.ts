@@ -298,18 +298,13 @@
         <translation>Fitted Curve</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="122"/>
-        <source>版本: 1.1.2</source>
-        <translation>Version : 1.1.2</translation>
-    </message>
-    <message>
         <location filename="../widget.py" line="123"/>
         <source>...声明...
 </source>
         <translation>      This program is a function curve fitting software implemented in Python, designed to fit discrete data into function curves, aiming to replace the function curve fitting capabilities in Excel and Origin, simplifying user operations while providing simple plotting and data interaction.
       This program follows the LGPL open source license, and no organization or individual may use this program for commercial purposes, nor use the source code of this program for commercial purposes.
       The use of this program is completely free; however, the author of this program bears no responsibility for any losses or damages caused by the use of this program.
-	Date:	August 17, 2025
+	Date:	August 18, 2025
 	Author:	Andrew Moa
 	Email:	Andrew.Moa2005@163.com
 	Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
@@ -480,7 +475,7 @@
         <location filename="../widget.py" line="1142"/>
         <location filename="../widget.py" line="1155"/>
         <location filename="../widget.py" line="1160"/>
-        <location filename="../widget.py" line="1176"/>
+        <location filename="../widget.py" line="1185"/>
         <source>输入错误</source>
         <translation>Input error</translation>
     </message>
@@ -516,7 +511,7 @@
         <translation>The intercept value must be greater than 0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1176"/>
+        <location filename="../widget.py" line="1185"/>
         <source>解不存在</source>
         <translation>The solution does not exist</translation>
     </message>
@@ -525,6 +520,11 @@
         <location filename="../widget.py" line="675"/>
         <source>请先输入X轴和Y轴数据</source>
         <translation>Please enter the X and Y axis data first</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="122"/>
+        <source>版本: 1.1.3</source>
+        <translation>Version : 1.1.3</translation>
     </message>
     <message>
         <location filename="../widget.py" line="359"/>
