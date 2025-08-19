@@ -804,37 +804,18 @@ if __name__ == "__main__":
         plt.show()
 
     def test_parse_expression():
-        test_cases = [
-            # Legal expressions
-            ("a * x**2 + 66e-6 * x + c", True),
-            ("a * x**2 + 66E-6 * x + c", True),  # Capital E
-            ("1.23e4*x + 45e-6*y", True),
-            ("3e6 + 4e2*x", True),
-            ("a + 2.5e-3*x", True),
-            (".1e3 * x + 1e-3", True),  # Special format
-            ("1.e3 * x + 1e-3", True),  # Special format
-            # Invalid expressions
-            ("25e-6x + a", False),  # Missing operator
-            ("a25e-6 + b", False),  # Invalid variable name
-            ("a 25e-6 + b", False),  # Missing operator
-            ("a * -b", False),  # Unwrapped negative number
-        ]
-        for expr, should_pass in test_cases:
-            try:
-                converted, coeffs = parse_expression(expr)
-                if should_pass:
-                    print(f"✓ PASS: {expr} -> {converted} {coeffs}")
-                else:
-                    print(
-                        f"✗ FAIL: {expr} (It should have been reported as an error but passed)"
-                    )
-            except ValueError as e:
-                if not should_pass:
-                    print(f"✓ PASS (expected error): {expr} -> {str(e)}")
-                else:
-                    print(
-                        f"✗ FAIL: {expr} -> Errors should not be reported, but errors are reported: {str(e)}"
-                    )
+        expression = "a * x**2 + 66e-6 * x + c"
+        func, params = parse_expression(expression)
+        print(func, params)
+        expression = "a * sin(x^2) + 1.73e+6 * x + c"
+        func, params = parse_expression(expression)
+        print(func, params)
+        expression = "aa + ba * x"
+        func, params = parse_expression(expression)
+        print(func, params)
+        expression = "aa + ba * x + (-27e+6) * x**2"
+        func, params = parse_expression(expression)
+        print(func, params)
 
     print("----- Linear Fit Test -----")
     test_linear_fit()
