@@ -10,7 +10,6 @@ import warnings
 import re
 import keyword
 
-
 def parse_expression(expression: str) -> tuple[str, list[str]]:
     """
     Parse the expression and return the function string and variable list.
@@ -113,20 +112,27 @@ def parse_expression(expression: str) -> tuple[str, list[str]]:
     # 10. Convert function names and operators
     function_map = {
         "exp": "np.exp",
-        "pow": "np.power",
-        "abs": "np.abs",
+        "pow": "np.pow",
+        "abs": "np.absolute",
         "sqrt": "np.sqrt",
+        "cbrt": "np.cbrt",
         "log": "np.log",
-        "ln": "np.log",
+        "log10": "np.log10",
+        "log2": "np.log2",
+        "min": "np.min",
+        "max": "np.max",
         "sin": "np.sin",
         "cos": "np.cos",
         "tan": "np.tan",
-        "arcsin": "np.arcsin",
-        "arccos": "np.arccos",
-        "arctan": "np.arctan",
+        "asin": "np.asin",
+        "acos": "np.acos",
+        "atan": "np.atan",
         "sinh": "np.sinh",
         "cosh": "np.cosh",
         "tanh": "np.tanh",
+        "asinh": "np.asinh",
+        "acosh": "np.acosh",
+        "atanh": "np.atanh",
     }
     # Replace the power operator
     converted = expr.replace("^", "**")
@@ -736,6 +742,22 @@ class NonLinearFit:
         """
         return list(self.func.__code__.co_varnames)
 
+    @classmethod
+    def from_expr(cls, x_data: list[float], y_data: list[float], expr: str, p0: list[float] = None) -> "NonLinearFit":
+        """
+        create a NonLinearFit instance from a string expression.
+        Args:
+            x_data (list[float]): x data.
+            y_data (list[float]): y data.
+            expr (str): string expression.
+            p0 (list[float], optional): initial guess. Defaults to None.
+        Returns:
+            NonLinearFit: NonLinearFit instance.
+        """
+        func, args = parse_expression(expr)
+        lambda_func = eval(f"lambda {', '.join(args)}: {func}")
+        return cls(x_data, y_data, lambda_func, p0)
+
 
 if __name__ == "__main__":
     """
@@ -777,11 +799,14 @@ if __name__ == "__main__":
         plt.show()
 
     def test_non_linear_fit():
+        """
         nonl_fit = NonLinearFit(
             x_data,
             y_data,
             eval("lambda x, a, b, c : a * x**2 + b * x + c"),
         )
+        """
+        nonl_fit = NonLinearFit.from_expr(x_data, y_data, 'a * x**2 + b * x + c')
         params = nonl_fit.fit()
         print("initial p0 : ", nonl_fit.p0)
         print("Fitted parameters : ", params)
@@ -804,7 +829,7 @@ if __name__ == "__main__":
         plt.show()
 
     def test_parse_expression():
-        expression = "a * x**2 + 66e-6 * x + c"
+        expression = "a * x^2 + 66e-6 * x + c"
         func, params = parse_expression(expression)
         print(func, params)
         expression = "a * sin(x^2) + 1.73e+6 * x + c"
