@@ -72,6 +72,8 @@ class Widget(QWidget):
         self.ui.calcYOut.clicked.connect(self.onCalcYOutClicked)
         self.ui.calcXOut.clicked.connect(self.onCalcXOutClicked)
         self.ui.comboBox.currentIndexChanged.connect(self.onComboBoxChanged)
+        self.ui.funcLabel.setVisible(self.ui.comboBox.currentIndex() != 5)
+        self.ui.funcInput.setVisible(self.ui.comboBox.currentIndex() == 5)
         self.ui.outputTable.disable_editing()
         self.ui.rowSpin.valueChanged.connect(self.onRowSpinChanged)
         self.ui.colSpin.valueChanged.connect(self.onColSpinChanged)
@@ -120,7 +122,7 @@ class Widget(QWidget):
     def onAboutBtnClicked(self):
         QMessageBox.about(
             self,
-            self.tr("版本: 1.1.3"),
+            self.tr("版本: 1.1.4"),
             self.tr("...声明...\n"),
         )
 
@@ -575,6 +577,8 @@ class Widget(QWidget):
         self.ui.colSpin.setValue(self.ui.inputTable.columnCount())
 
     def onComboBoxChanged(self):
+        self.ui.funcLabel.setVisible(self.ui.comboBox.currentIndex() != 5)
+        self.ui.funcInput.setVisible(self.ui.comboBox.currentIndex() == 5)
         text: str = None
         if self.ui.comboBox.currentIndex() == 0:
             self.ui.numberSpin.setEnabled(True)
@@ -600,6 +604,8 @@ class Widget(QWidget):
             elif self.ui.comboBox.currentIndex() == 4:
                 qDebug("Function: power")
                 text = "y = a * x^b (x > 0)"
+            elif self.ui.comboBox.currentIndex() == 5:
+                qDebug("Function: custom")
         if text:
             self.ui.funcLabel.setText(text)
 
@@ -690,6 +696,8 @@ class Widget(QWidget):
             self.fitOnLogarithmic()
         elif self.ui.comboBox.currentIndex() == 4:
             self.fitOnPower()
+        elif self.ui.comboBox.currentIndex() == 5:
+            self.fitOnCustom()
 
     def updateOutputTable(
         self, r_squared: float, args: list[str] = None, coef: list[float] = None
@@ -730,6 +738,67 @@ class Widget(QWidget):
         self.ui.outputTable.renumber_header_clo()
         self.ui.outputTable.clear_empty_space()
         self.ui.outputTable.disable_editing()
+
+    def fitOnCustom(self):
+        expr = self.ui.funcInput.text().strip()
+        if expr in ("", " ", None):
+            QMessageBox.warning(
+                self, self.tr("输入错误"), self.tr("请先输入自定义函数")
+            )
+            return
+        try:
+            self.fit_nonl_func = expr
+            try:
+                self.fit_class = NonLinearFit.from_expr(
+                    self.xList,
+                    self.yList,
+                    self.fit_nonl_func,
+                )
+            except Exception as e:
+                QMessageBox.warning(
+                    self, self.tr("输入错误"), self.tr("自定义函数错误 : \n%s" % str(e))
+                )
+                qDebug("Error in custom function: %s" % e)
+                return
+            coef = self.fit_class.fit()
+        except Exception as e:
+            QMessageBox.warning(
+                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
+            )
+            qDebug("Error in fitOnCustom: %s" % e)
+            return
+        r_squared = self.fit_class.r_squared()
+        args = self.fit_class.args()
+        qDebug("Fitted coefficients: %s" % coef)
+        qDebug("R-squared: %s" % r_squared)
+        self.updateOutputTable(r_squared, args=args[1:], coef=coef)
+        # update text output
+        of1_f = "y = %s" % self.fit_nonl_func
+        ccoef : list[str] = []
+        for i in coef:
+            if self.ui.scientificOutCheck.isChecked():
+                ss = f"{i:.{self.ui.decimalOutBox.value()}e}"
+            else:
+                ss = f"{i:.{self.ui.decimalOutBox.value()}f}"
+            ccoef.append(ss)
+        if self.ui.scientificOutCheck.isChecked():
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}e}"
+        else:
+            r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}f}"
+        for i in range(len(ccoef)):
+            of1_f = of1_f.replace(args[i+1], ccoef[i])
+        of1_f = of1_f.replace("+-", "-").replace("+ -", "-")
+        of2 = f"r2 = {r2}"
+        qDebug("Output formula: %s" % of1_f)
+        qDebug("Output r2: %s" % of2)
+        self.ui.outputEdit.clear()
+        self.ui.outputEdit.setText(
+            "[R²]\n"
+            + of2
+            + "\n[Formula]\n"
+            + of1_f
+            + "\n"
+        )
 
     def fitOnPower(self):
         if min(self.xList) <= 0:

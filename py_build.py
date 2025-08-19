@@ -16,15 +16,10 @@ hd_list = [
     "PySide6.QtSvg",
     "numpy",
     "scipy.optimize",
-    "csv",
-    "re",
     "form_ui",
     "resource_rc",
     "clevertw",
     "cff",
-    "typing",
-    "inspect",
-    "random"
 ]
 locale = ["zh_CN", "en"]
 trans_files = ["widget.py", "form.ui", "clevertw.py"]

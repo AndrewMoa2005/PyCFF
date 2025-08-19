@@ -598,8 +598,8 @@ color: rgb(0, 0, 255);</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>756</width>
-            <height>412</height>
+            <width>98</width>
+            <height>28</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -660,6 +660,11 @@ color: rgb(0, 0, 255);</string>
                  <string>乘幂</string>
                 </property>
                </item>
+               <item>
+                <property name="text">
+                 <string>自定义</string>
+                </property>
+               </item>
               </widget>
              </item>
              <item>
@@ -682,6 +687,28 @@ color: rgb(0, 0, 255);</string>
               <widget class="QLabel" name="label_13">
                <property name="text">
                 <string notr="true"/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="funcInput">
+               <property name="toolTip">
+                <string>自定义表达式，支持简单函数</string>
+               </property>
+               <property name="inputMask">
+                <string/>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="maxLength">
+                <number>32767</number>
+               </property>
+               <property name="frame">
+                <bool>true</bool>
+               </property>
+               <property name="placeholderText">
+                <string notr="true">example : a1*x+exp(b*x)-c^x</string>
                </property>
               </widget>
              </item>
