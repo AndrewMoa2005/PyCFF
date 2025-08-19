@@ -7,6 +7,152 @@ import scipy.optimize as sopt
 import inspect
 import random
 import warnings
+import re
+import keyword
+
+
+def parse_expression(expression: str) -> tuple[str, list[str]]:
+    """
+    Parse the expression and return the function string and variable list.
+    Args:
+        expression (str): The expression string.
+    Raises:
+        ValueError: _description_
+    Returns:
+        str: The function string.
+        list[str]: The variable list.
+    """
+    # 1. Check for illegal characters
+    forbidden_keywords = [
+        "import",
+        "os",
+        "exec",
+        "eval",
+        "system",
+        "subprocess",
+        "open",
+        "write",
+        "pickle",
+        ";",
+        ":",
+        '"',
+        "'",
+        "`",
+        "\\",
+    ]
+    forbidden_keywords.extend(keyword.kwlist)
+    for k in forbidden_keywords:
+        if re.search(rf"\b{re.escape(k)}\b", expression, re.IGNORECASE):
+            raise ValueError(f"Illegal character or keyword: '{k}'")
+    # 2. Replace uppercase X with lowercase x and check for consecutive x
+    expr = expression.replace("X", "x")
+    if re.search(r"x{2,}", expr, re.IGNORECASE):
+        raise ValueError(
+            "The expression contains consecutive 'x', please use operators to separate"
+        )
+    # 3. Check for the presence of the independent variable x
+    if "x" not in expr:
+        raise ValueError("The expression must contain the independent variable x")
+    # 4. Improved scientific notation protection mechanism
+    # Use temporary markers to replace scientific notation numbers
+    scinot_pattern = r"(\d+\.?\d*e[+-]?\d+|\d*\.?\d+e[+-]?\d+)"
+    protected_expr = re.sub(scinot_pattern, "SCINOT", expr, flags=re.IGNORECASE)
+    if re.search(r"SCINOT[a-zA-Z_]", protected_expr):
+        raise ValueError(
+            "Scientific notation must be followed by an operator, not directly by a variable"
+        )
+    # 5. Check for invalid variable names on protected expressions
+    invalid_var = re.findall(r"\b\d+[a-zA-Z_]+\b", protected_expr)
+    if invalid_var:
+        raise ValueError(
+            f"Invalid variable name: {invalid_var} - Variable names must start with a letter"
+        )
+    # 6. Check for missing operators between numbers and variables on protected expressions
+    if re.search(r"\d+[a-zA-Z_]", protected_expr) or re.search(
+        r"[a-zA-Z_]\d+", protected_expr
+    ):
+        raise ValueError("Numbers and variables must be separated by operators")
+    # 7. Improved operator overlap detection
+    temp_expr = re.sub(r"\s+", "", expr)
+    # Check all operator combinations
+    operators = re.finditer(r"([+\-*/%^]+)", temp_expr)
+    for match in operators:
+        ops = match.group(1)
+        # Allow single operators
+        if len(ops) == 1:
+            continue
+        # Special handling ** (power operator)
+        if ops == "**":
+            continue
+        # Check illegal combinations
+        if ops.startswith("*") and len(ops) > 1:
+            raise ValueError(
+                f"Illegal operator combination: '{ops}' (Multiplication operator cannot be followed by other operators)"
+            )
+        if ops.startswith("+") and len(ops) > 1:
+            raise ValueError(
+                f"Illegal operator combination: '{ops}' (Plus operator cannot be followed by other operators)"
+            )
+        if ops.startswith("/") and len(ops) > 1:
+            raise ValueError(
+                f"Illegal operator combination: '{ops}' (Division operator cannot be followed by other operators)"
+            )
+        # Check consecutive minus signs
+        if ops.startswith("-") and len(ops) > 1:
+            raise ValueError(
+                f"Illegal operator combination: '{ops}' (Minus operator must be wrapped in parentheses for negative numbers)"
+            )
+    # 8. Check for unenclosed negative numbers
+    if re.search(r"(?<=[+\-*/^])-(?=[a-zA-Z0-9_(])", temp_expr):
+        raise ValueError(
+            "Negative numbers must be enclosed in parentheses, e.g., (-a) instead of *-a"
+        )
+    # 9. Check for missing operators between variables
+    if re.search(r"\b[a-zA-Z_][a-zA-Z0-9_]*\s+[a-zA-Z_][a-zA-Z0-9_]*\b", expr):
+        raise ValueError("Missing operator between variables")
+    # 10. Convert function names and operators
+    function_map = {
+        "exp": "np.exp",
+        "pow": "np.power",
+        "abs": "np.abs",
+        "sqrt": "np.sqrt",
+        "log": "np.log",
+        "ln": "np.log",
+        "sin": "np.sin",
+        "cos": "np.cos",
+        "tan": "np.tan",
+        "arcsin": "np.arcsin",
+        "arccos": "np.arccos",
+        "arctan": "np.arctan",
+        "sinh": "np.sinh",
+        "cosh": "np.cosh",
+        "tanh": "np.tanh",
+    }
+    # Replace the power operator
+    converted = expr.replace("^", "**")
+    # Replace function name (allow space between function name and parentheses)
+    for func, np_func in function_map.items():
+        pattern = r"\b" + re.escape(func) + r"\s*\("
+        converted = re.sub(pattern, np_func + "(", converted)
+    # 11. Extract coefficients
+    # Extract variable names on protected expressions
+    all_vars = re.findall(r"\b[a-zA-Z_][a-zA-Z0-9_]*\b", protected_expr)
+    # Filter out function names and scientific notation markers
+    valid_vars = []
+    for var in set(all_vars):
+        # Skip the scientific notation marker
+        if var == "SCINOT":
+            continue
+        # Check if it's a function name (followed by parentheses, possibly spaces)
+        if not re.search(r"\b" + re.escape(var) + r"\s*\(", expr):
+            valid_vars.append(var)
+    # Make sure x is in the list and comes first
+    if "x" in valid_vars:
+        valid_vars.remove("x")
+        coefficients = ["x"] + sorted(valid_vars)
+    else:
+        coefficients = ["x"] + sorted(valid_vars)
+    return converted, coefficients
 
 
 class LinearFit:
@@ -657,6 +803,39 @@ if __name__ == "__main__":
         plt.legend()
         plt.show()
 
+    def test_parse_expression():
+        test_cases = [
+            # Legal expressions
+            ("a * x**2 + 66e-6 * x + c", True),
+            ("a * x**2 + 66E-6 * x + c", True),  # Capital E
+            ("1.23e4*x + 45e-6*y", True),
+            ("3e6 + 4e2*x", True),
+            ("a + 2.5e-3*x", True),
+            (".1e3 * x + 1e-3", True),  # Special format
+            ("1.e3 * x + 1e-3", True),  # Special format
+            # Invalid expressions
+            ("25e-6x + a", False),  # Missing operator
+            ("a25e-6 + b", False),  # Invalid variable name
+            ("a 25e-6 + b", False),  # Missing operator
+            ("a * -b", False),  # Unwrapped negative number
+        ]
+        for expr, should_pass in test_cases:
+            try:
+                converted, coeffs = parse_expression(expr)
+                if should_pass:
+                    print(f"✓ PASS: {expr} -> {converted} {coeffs}")
+                else:
+                    print(
+                        f"✗ FAIL: {expr} (It should have been reported as an error but passed)"
+                    )
+            except ValueError as e:
+                if not should_pass:
+                    print(f"✓ PASS (expected error): {expr} -> {str(e)}")
+                else:
+                    print(
+                        f"✗ FAIL: {expr} -> Errors should not be reported, but errors are reported: {str(e)}"
+                    )
+
     print("----- Linear Fit Test -----")
     test_linear_fit()
     print("----- End of Linear Fit Test -----")
@@ -664,3 +843,7 @@ if __name__ == "__main__":
     print("----- Non-Linear Fit Test -----")
     test_non_linear_fit()
     print("----- End of Non-Linear Fit Test -----")
+
+    print("----- Parse Expression Test -----")
+    test_parse_expression()
+    print("----- End of Parse Expression Test -----")
