@@ -599,7 +599,7 @@ color: rgb(0, 0, 255);</string>
             <x>0</x>
             <y>0</y>
             <width>756</width>
-            <height>411</height>
+            <height>412</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -874,6 +874,43 @@ color: rgb(0, 0, 255);</string>
                </property>
                <property name="icon">
                 <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart"/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="refineCB">
+               <property name="toolTip">
+                <string>是否对拟合曲线进行细化</string>
+               </property>
+               <property name="text">
+                <string>曲线细化</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="refineSP">
+               <property name="toolTip">
+                <string>细化等级n，原X轴范围按10^n分割</string>
+               </property>
+               <property name="maximum">
+                <number>12</number>
                </property>
               </widget>
              </item>
@@ -1169,6 +1206,22 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <hint type="destinationlabel">
      <x>933</x>
      <y>115</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>refineCB</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>refineSP</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>632</x>
+     <y>117</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>710</x>
+     <y>117</y>
     </hint>
    </hints>
   </connection>

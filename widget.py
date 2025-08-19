@@ -77,6 +77,7 @@ class Widget(QWidget):
         self.ui.colSpin.valueChanged.connect(self.onColSpinChanged)
         self.ui.xDataBox.activated.connect(self.onXDataBoxChanged)
         self.ui.yDataBox.activated.connect(self.onYDataBoxChanged)
+        self.ui.refineSP.setEnabled(self.ui.refineCB.isChecked())
         # Add QCharts
         self.chart = QChart()
         self.chartView = QChartView(self.chart)
@@ -1118,14 +1119,35 @@ class Widget(QWidget):
         if len(self.fit_class.params) <= 0:
             QMessageBox.warning(self, self.tr("输入错误"), self.tr("请先进行拟合"))
             return
-        yFitList = self.fit_class.ylist()
+        x_list = self.xList.copy()
+        qDebug("length of x_list: %s" % len(x_list))
+        if self.ui.refineCB.isChecked() and 10 ** self.ui.refineSP.value() > len(
+            x_list
+        ):
+            if self.ui.refineSP.value() > 5:
+                btn = QMessageBox.warning(
+                    self,
+                    self.tr("警告"),
+                    self.tr("细化等级太小可能导致进程假死！"),
+                    QMessageBox.Ok | QMessageBox.Cancel,
+                )
+                if btn != QMessageBox.Ok:
+                    return
+            refine_level = self.ui.refineSP.value()
+            x_list = np.linspace(
+                x_list[0], x_list[-1], num=10**refine_level, endpoint=True, dtype=float
+            ).tolist()
+            qDebug("extended length of x_list: %s" % len(x_list))
+        yFitList = self.fit_class.ylist(x_list)
+        # qDebug("x_list: %s" % x_list)
+        # qDebug("yFitList: %s" % yFitList)
         self.ui.tabWidget.setCurrentIndex(1)
         self.onPlotBtnClicked()
         series = QSplineSeries()
         series.setName(self.curveName)
         series.setPen(QPen(self.curveColor, self.curveSize, self.curvePenSytle))
-        for i in range(len(self.xList)):
-            series.append(self.xList[i], yFitList[i])
+        for i in range(len(x_list)):
+            series.append(x_list[i], yFitList[i])
         self.chart.addSeries(series)
         series.attachAxis(self.xAxis)
         series.attachAxis(self.yAxis)
