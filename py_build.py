@@ -15,20 +15,21 @@ hd_list = [
     "PySide6.QtSvg",
     "numpy",
     "scipy.optimize",
-    "form_ui",
-    "resource_rc",
-    "clevertw",
-    "cff",
+    "pycff.form_ui",
+    "pycff.resource_rc",
+    "pycff.clevertw",
+    "pycff.cff",
+    "pycff.widget",
 ]
 locale = ["zh_CN", "en"]
 trans_files = ["widget.py", "form.ui", "clevertw.py"]
 script_dir = os.path.dirname(os.path.abspath(__file__))
 files = [
-    "setup.py",
+    "setup_whl.py",
+    "setup_pyd.py",
     "pyproject.toml",
     "requirements.txt",
     "file-version-info.txt",
-    "MANIFEST.in",
 ]
 src_folders = ["pycff", "translations"]
 build_dir = "py_build"
@@ -77,7 +78,7 @@ def gen_ui(dir=script_dir):
     run:  pyside6-uic form.ui -o form_ui.py
     :param target_dir: pwd
     """
-    cmd = ["pyside6-uic", "form.ui", "-o", "form_ui.py"]
+    cmd = ["pyside6-uic", "--from-imports", "form.ui", "-o", "form_ui.py"]
     p = subprocess.Popen(cmd, cwd=dir)
     p.wait()
     if p.returncode == 0:
@@ -125,7 +126,7 @@ def pybuild_dir(dir=os.path.join(script_dir, build_dir), hd=False):
         "PyQt6",
         "--version-file",
         "../file-version-info.txt",
-        "application.py",
+        "__main__.py",
     ]
     if hd:
         pyfile = cmd[-1]
@@ -164,7 +165,7 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False):
         "PyQt6",
         "--version-file",
         "../file-version-info.txt",
-        "application.py",
+        "__main__.py",
     ]
     if hd:
         pyfile = cmd[-1]
@@ -256,14 +257,14 @@ def gen_pyd(
     dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable, del_src=True
 ):
     """
-    run:  python setup.py build_ext --inplace
+    run:  python setup_pyd.py build_ext --inplace
     :param target_dir: pwd
     :param pyexecutable: python executable
     :param del_src: delete source files
     """
     cmd = [
         pyexecutable,
-        "setup.py",
+        "setup_pyd.py",
         "build_ext",
         "--inplace",
     ]
@@ -277,23 +278,19 @@ def gen_pyd(
         else:
             pyd_ext = ".so"
         if del_src:
-            for pyd_file in glob(os.path.join(dir, f"*{pyd_ext}")):
+            for pyd_file in glob(os.path.join(dir, src_folders[0], f"*{pyd_ext}")):
                 match = re.match(
                     r"^(.*?)(?:\..*)?%s$" % re.escape(pyd_ext),
                     os.path.basename(pyd_file),
                 )
                 if match:
                     base = match.group(1)
-                    py_file = os.path.join(dir, base + ".py")
-                    c_file = os.path.join(dir, base + ".c")
+                    py_file = os.path.join(dir, src_folders[0], base + ".py")
+                    c_file = os.path.join(dir, src_folders[0], base + ".c")
                     for f in [py_file, c_file]:
                         if os.path.exists(f):
                             os.remove(f)
                             print(f"delete {f} success")
-        gen_pyd_script = glob(os.path.join(dir, "setup.py"))
-        if gen_pyd_script:
-            os.remove(gen_pyd_script[0])
-            print(f"delete {gen_pyd_script[0]} success")
         return True
     else:
         print("generate pyd file failed")
@@ -302,13 +299,56 @@ def gen_pyd(
 
 def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable):
     """
-    run:  python setup.py bdist_wheel
+    run:  python setup_whl.py bdist_wheel
     :param target_dir: pwd
     :param pyexecutable: python executable
     """
+    # create MANIFEST.in
+    m = os.path.join(dir, "MANIFEST.in")
+    if not os.path.exists(m):
+        file = open(m, "w")
+        if sys.platform.startswith("win"):
+            file.write("recursive-include pycff *.pyd\n")
+        else:
+            file.write("recursive-include pycff *.so\n")
+        file.write("recursive-include pycff *.qm\n")
+        file.close()
+        if os.path.exists(m):
+            print(f"create {m} success")
+        else:
+            print(f"create {m} failed")
+    else:
+        print(f"found {m}, skip create")
+    # create __init__.py
+    f = os.path.join(dir, src_folders[0], "__init__.py")
+    if not os.path.exists(f):
+        file = open(f, "w")
+        file.write("# -*- coding: utf-8 -*-\n")
+        # file.write("\n")
+        # file.write("import cff\n")
+        # file.write("import widget\n")
+        # file.write("import clevertw\n")
+        # file.write("import form_ui\n")
+        # file.write("import resource_rc\n")
+        file.close()
+        if os.path.exists(f):
+            print(f"create {f} success")
+        else:
+            print(f"create {f} failed")
+    else:
+        print(f"found {f}, skip create")
+    # clean build directory
+    d = os.path.join(dir, src_folders[0], "build")
+    if os.path.exists(d) and os.path.isdir(d):
+        shutil.rmtree(d)
+        if os.path.exists(d):
+            print(f"remove {d} failed")
+        else:
+            print(f"remove {d} success")
+    # create wheel
     cmd = [
         pyexecutable,
-        "setup.py",
+        "setup_whl.py",
         "bdist_wheel",
     ]
     p = subprocess.Popen(cmd, cwd=dir)
@@ -390,7 +430,7 @@ if __name__ == "__main__":
         else:
             remove_spec_files(os.path.join(dir, src_folders[0], "translations"), "ts")
         if pyd:
-            if gen_pyd(os.path.join(dir, src_folders[0])) is False:
+            if gen_pyd(dir) is False:
                 print("error: gen pyd failed! ")
                 exit(1)
         if one:
@@ -418,31 +458,12 @@ if __name__ == "__main__":
             exit(1)
         else:
             remove_spec_files(os.path.join(dir, src_folders[0], "translations"), "ts")
-        if gen_pyd(os.path.join(dir, src_folders[0])) is False:
+        if gen_pyd(dir) is False:
             print("error: gen pyd failed! ")
             exit(1)
-        f = os.path.join(dir, src_folders[0], "__init__.py")
-        if not os.path.exists(f):
-            file = open(f, "w")
-            file.write("# -*- coding: utf-8 -*-\n")
-            # file.write("\n")
-            # file.write("import cff\n")
-            # file.write("import widget\n")
-            # file.write("import clevertw\n")
-            # file.write("import form_ui\n")
-            # file.write("import resource_rc\n")
-            file.close()
-        d = os.path.join(dir, src_folders[0], "build")
-        if os.path.exists(d) and os.path.isdir(d):
-            shutil.rmtree(d)
-            if os.path.exists(d):
-                print(f"remove {d} failed")
-            else:
-                print(f"remove {d} success")
         gen_whl(dir)
 
     if args.copy:
-        # print("current dir:", script_dir)
         copy_files(dir=args.copy)
     elif args.build:
         if args.build == "one":

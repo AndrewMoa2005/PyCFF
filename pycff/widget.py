@@ -40,13 +40,13 @@ from PySide6.QtCore import (
 )
 from PySide6.QtSvg import QSvgGenerator
 
-from cff import LinearFit, NonLinearFit
+from .cff import LinearFit, NonLinearFit
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o form_ui.py, or
 #     pyside2-uic form.ui -o form_ui.py
-from form_ui import Ui_Widget
+from pycff.form_ui import Ui_Widget
 
 
 class Widget(QWidget):

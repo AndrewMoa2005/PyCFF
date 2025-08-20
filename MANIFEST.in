@@ -1,2 +1,0 @@
-recursive-include pycff *.pyd
-recursive-include pycff *.so

@@ -1101,7 +1101,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <customwidget>
    <class>CleverTableWidget</class>
    <extends>QTableWidget</extends>
-   <header>clevertw</header>
+   <header>pycff.clevertw</header>
   </customwidget>
  </customwidgets>
  <resources>
