@@ -10,6 +10,9 @@ if __package__ == "":
     path = os.path.dirname(os.path.dirname(__file__))
     sys.path.insert(0, path)
 
-if __name__ == "__main__":
+def main():
     from pycff.application import run_app as _main
     sys.exit(_main())
+
+if __name__ == "__main__":
+    main()

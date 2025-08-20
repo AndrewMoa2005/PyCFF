@@ -1,17 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, find_packages
+from setuptools import setup
+
+# read the contents of your README file
+from pathlib import Path
+
+pwd = Path(__file__).parent
+ld = (pwd / "README.md").read_text()
 
 setup(
     name="PyCFF",
     version="1.1.5",
-    packages=find_packages(),
+    packages=["pycff"],
     install_requires=[
         "numpy",
         "scipy",
         "pyside6",
     ],
     description="A function fitting tool",
+    # long_description=ld,
+    # long_description_content_type="text/markdown",
     url="https://github.com/AndrewMoa2005/PyCFF",
     author="Andrew Moa",
     author_email="Andrew.Moa2005@163.com",
@@ -26,4 +34,9 @@ setup(
     license="LGPL-3.0-or-later",
     keywords=["PySide6", "application", "widget"],
     include_package_data=True,
+    entry_points={
+        "gui_scripts": [
+            "pycff = pycff.__main__:main",
+        ]
+    },
 )

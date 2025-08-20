@@ -6,6 +6,7 @@ import subprocess
 import argparse
 import sys
 import re
+import platform
 from glob import glob
 
 pyexecutable = os.path.basename(sys.executable)
@@ -30,6 +31,9 @@ files = [
     "pyproject.toml",
     "requirements.txt",
     "file-version-info.txt",
+    "README.md",
+    "LICENSE",
+    "MANIFEST.in",
 ]
 src_folders = ["pycff", "translations"]
 build_dir = "py_build"
@@ -303,54 +307,18 @@ def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable
     :param target_dir: pwd
     :param pyexecutable: python executable
     """
-    # create MANIFEST.in
-    m = os.path.join(dir, "MANIFEST.in")
-    if not os.path.exists(m):
-        file = open(m, "w")
-        if sys.platform.startswith("win"):
-            file.write("recursive-include pycff *.pyd\n")
-        else:
-            file.write("recursive-include pycff *.so\n")
-        file.write("recursive-include pycff *.qm\n")
-        file.close()
-        if os.path.exists(m):
-            print(f"create {m} success")
-        else:
-            print(f"create {m} failed")
+    # check platform
+    system = platform.system().lower()
+    if system == "windows":
+        plat_name = "win_amd64"
+    elif system == "darwin":
+        plat_name = "macosx_10_14_x86_64"
+    elif system == "linux":
+        plat_name = "manylinux2014_x86_64"
     else:
-        print(f"found {m}, skip create")
-    # create __init__.py
-    f = os.path.join(dir, src_folders[0], "__init__.py")
-    if not os.path.exists(f):
-        file = open(f, "w")
-        file.write("# -*- coding: utf-8 -*-\n")
-        # file.write("\n")
-        # file.write("import cff\n")
-        # file.write("import widget\n")
-        # file.write("import clevertw\n")
-        # file.write("import form_ui\n")
-        # file.write("import resource_rc\n")
-        file.close()
-        if os.path.exists(f):
-            print(f"create {f} success")
-        else:
-            print(f"create {f} failed")
-    else:
-        print(f"found {f}, skip create")
-    # clean build directory
-    d = os.path.join(dir, src_folders[0], "build")
-    if os.path.exists(d) and os.path.isdir(d):
-        shutil.rmtree(d)
-        if os.path.exists(d):
-            print(f"remove {d} failed")
-        else:
-            print(f"remove {d} success")
+        plat_name = "any"
     # create wheel
-    cmd = [
-        pyexecutable,
-        "setup_whl.py",
-        "bdist_wheel",
-    ]
+    cmd = [pyexecutable, "setup_whl.py", "bdist_wheel", f"--plat-name={plat_name}"]
     p = subprocess.Popen(cmd, cwd=dir)
     p.wait()
     if p.returncode == 0:
