@@ -9,6 +9,7 @@ import re
 from glob import glob
 
 vcpkg_qt6_tools_path = r"D:/vcpkg/installed/x64-windows/tools/Qt6/bin"
+ubuntu_qt6_tools_patch = r"/usr/lib/qt6/bin"
 pyexecutable = os.path.basename(sys.executable)
 hd_list = [
     "PySide6.QtCharts",
@@ -165,6 +166,13 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False):
         return False
 
 
+def add_qt6_tools_to_path():
+    if os.name == "nt":
+        os.environ["PATH"] = vcpkg_qt6_tools_path + ";" + os.environ["PATH"]
+    else:
+        os.environ["PATH"] = ubuntu_qt6_tools_patch + ":" + os.environ["PATH"]
+
+
 def translations_update(dir=script_dir):
     """
     update translations(.ts) files
@@ -172,7 +180,7 @@ def translations_update(dir=script_dir):
     :param target_dir: pwd
     """
     if shutil.which("lupdate") is None:
-        os.environ["PATH"] = vcpkg_qt6_tools_path + ";" + os.environ["PATH"]
+        add_qt6_tools_to_path()
         if shutil.which("lupdate") is None:
             print("lupdate not found in PATH")
             return False
@@ -196,6 +204,7 @@ def translations_update(dir=script_dir):
         else:
             print(f"update translations for {loc} failed")
             r = False
+            return r
     return r
 
 
@@ -206,7 +215,7 @@ def translations_linguist(dir=script_dir):
     :param target_dir: pwd
     """
     if shutil.which("linguist") is None:
-        os.environ["PATH"] = vcpkg_qt6_tools_path + ";" + os.environ["PATH"]
+        add_qt6_tools_to_path()
         if shutil.which("linguist") is None:
             print("linguist not found in PATH")
             return False
@@ -230,7 +239,7 @@ def translations_gen(dir=script_dir):
     :param target_dir: pwd
     """
     if shutil.which("lrelease") is None:
-        os.environ["PATH"] = vcpkg_qt6_tools_path + ";" + os.environ["PATH"]
+        add_qt6_tools_to_path()
         if shutil.which("lrelease") is None:
             print("lrelease not found in PATH")
             return False
@@ -254,6 +263,7 @@ def translations_gen(dir=script_dir):
         else:
             print(f"generate translations for {ts_file} failed")
             r = False
+            return r
     return r
 
 
@@ -353,11 +363,19 @@ if __name__ == "__main__":
         if dir is None:
             print("error: copy files failed! ")
             exit(1)
-        gen_ui(os.path.join(dir, src_folders[0]))
-        gen_rc(os.path.join(dir, src_folders[0]))
-        translations_gen(os.path.join(dir, src_folders[0]))
+        if gen_ui(os.path.join(dir, src_folders[0])) is False:
+            print("error: gen ui failed! ")
+            exit(1)
+        if gen_rc(os.path.join(dir, src_folders[0])) is False:
+            print("error: gen rc failed! ")
+            exit(1)
+        if translations_gen(os.path.join(dir, src_folders[0])) is False:
+            print("error: gen translations failed! ")
+            exit(1)
         if pyd:
-            gen_pyd(dir)
+            if gen_pyd(dir) is False:
+                print("error: gen pyd failed! ")
+                exit(1)
         if one:
             pybuild_one(os.path.join(dir, src_folders[0]), hd=hd)
         else:
@@ -391,9 +409,17 @@ if __name__ == "__main__":
         if dir is None:
             print("error: copy files failed! ")
             exit(1)
-        gen_ui(os.path.join(dir, src_folders[0]))
-        gen_rc(os.path.join(dir, src_folders[0]))
-        translations_gen(os.path.join(dir, src_folders[0]))
-        gen_pyd(dir)
+        if gen_ui(os.path.join(dir, src_folders[0])) is False:
+            print("error: gen ui failed! ")
+            exit(1)
+        if gen_rc(os.path.join(dir, src_folders[0])) is False:
+            print("error: gen rc failed! ")
+            exit(1)
+        if translations_gen(os.path.join(dir, src_folders[0])) is False:
+            print("error: gen translations failed! ")
+            exit(1)
+        if gen_pyd(dir) is False:
+            print("error: gen pyd failed! ")
+            exit(1)
     else:
         parser.print_help()
