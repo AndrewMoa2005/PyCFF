@@ -8,8 +8,6 @@ import sys
 import re
 from glob import glob
 
-vcpkg_qt6_tools_path = r"D:/vcpkg/installed/x64-windows/tools/Qt6/bin"
-ubuntu_qt6_tools_patch = r"/usr/lib/qt6/bin"
 pyexecutable = os.path.basename(sys.executable)
 hd_list = [
     "PySide6.QtCharts",
@@ -166,31 +164,16 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False):
         return False
 
 
-def add_qt6_tools_to_path():
-    if os.name == "nt":
-        os.environ["PATH"] = vcpkg_qt6_tools_path + ";" + os.environ["PATH"]
-    else:
-        os.environ["PATH"] = ubuntu_qt6_tools_patch + ":" + os.environ["PATH"]
-
-
 def translations_update(dir=script_dir):
     """
     update translations(.ts) files
     run:  lupdate widget.py form.ui -ts translations/PyCFF_${locale}.ts -no-obsolete
     :param target_dir: pwd
     """
-    if shutil.which("lupdate") is None:
-        add_qt6_tools_to_path()
-        if shutil.which("lupdate") is None:
-            print("lupdate not found in PATH")
-            return False
-        print("add Qt6 bin path to PATH")
-    else:
-        print("lupdate already exists in PATH")
-        r = False
+    r = False
     for loc in locale:
         cmd = []
-        cmd.append("lupdate")
+        cmd.append("pyside6-lupdate")
         for f in trans_files:
             cmd.append(f)
         cmd.append("-ts")
@@ -214,15 +197,7 @@ def translations_linguist(dir=script_dir):
     run:  linguist translations/PyCFF_${locale}.ts
     :param target_dir: pwd
     """
-    if shutil.which("linguist") is None:
-        add_qt6_tools_to_path()
-        if shutil.which("linguist") is None:
-            print("linguist not found in PATH")
-            return False
-        print("add Qt6 bin path to PATH")
-    else:
-        print("linguist already exists in PATH")
-    cmd = ["linguist"]
+    cmd = ["pyside6-linguist"]
     ts_files = glob(os.path.join(dir, "translations", "*.ts"))
     for ts_file in ts_files:
         cmd.append(ts_file)
@@ -238,19 +213,10 @@ def translations_gen(dir=script_dir):
     run:  lrelease translations/PyCFF_${locale}.ts -qm translations/PyCFF_${locale}.qm
     :param target_dir: pwd
     """
-    if shutil.which("lrelease") is None:
-        add_qt6_tools_to_path()
-        if shutil.which("lrelease") is None:
-            print("lrelease not found in PATH")
-            return False
-        print("add Qt6 bin path to PATH")
-    else:
-        print("lrelease already exists in PATH")
     ts_files = glob(os.path.join(dir, "translations", "*.ts"))
-
     r = False
     for ts_file in ts_files:
-        cmd = ["lrelease"]
+        cmd = ["pyside6-lrelease"]
         cmd.append(ts_file)
         cmd.append("-qm")
         cmd.append(ts_file.replace(".ts", ".qm"))
