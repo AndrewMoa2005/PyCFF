@@ -25,16 +25,12 @@ locale = ["zh_CN", "en"]
 trans_files = ["widget.py", "form.ui", "clevertw.py"]
 script_dir = os.path.dirname(os.path.abspath(__file__))
 files = [
-    "application.py",
-    "widget.py",
     "setup.py",
-    "form.ui",
-    "resource.qrc",
-    "clevertw.py",
-    "cff.py",
+    "pyproject.toml",
+    "requirements.txt",
     "file-version-info.txt",
 ]
-folders = ["image", "translations"]
+src_folders = ["pycff", "translations"]
 build_dir = "py_build"
 
 
@@ -45,15 +41,15 @@ def copy_files(src_dir=script_dir, dir="py_build"):
     print("source dir:", os.getcwd())
     print("target dir:", target_dir)
     if os.path.exists(target_dir):
-        print("found build dir, remove it")
+        print(f"found {dir} dir, remove it")
         shutil.rmtree(target_dir)
-        print("remove old build dir success")
+        print(f"remove old {dir} dir success")
     os.makedirs(target_dir)
-    print("create new build dir success")
+    print(f"create new {dir} dir success")
     for file in files:
         shutil.copy(file, target_dir)
         print(f"copy {file} to {target_dir} success")
-    for folder in folders:
+    for folder in src_folders:
         if os.path.isdir(folder):
             shutil.copytree(folder, os.path.join(target_dir, folder))
             print(f"copy {folder} to {target_dir} dir success")
@@ -111,7 +107,7 @@ def pybuild_dir(dir=os.path.join(script_dir, build_dir), hd=False):
         "--exclude",
         "PyQt6",
         "--version-file",
-        "file-version-info.txt",
+        "../file-version-info.txt",
         "application.py",
     ]
     if hd:
@@ -149,7 +145,7 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False):
         "--exclude",
         "PyQt6",
         "--version-file",
-        "file-version-info.txt",
+        "../file-version-info.txt",
         "application.py",
     ]
     if hd:
@@ -169,13 +165,17 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False):
         return False
 
 
-def update_translations(dir=script_dir):
+def translations_update(dir=script_dir):
     """
+    update translations(.ts) files
     run:  lupdate widget.py form.ui -ts translations/PyCFF_${locale}.ts -no-obsolete
     :param target_dir: pwd
     """
     if shutil.which("lupdate") is None:
         os.environ["PATH"] = vcpkg_qt6_tools_path + ";" + os.environ["PATH"]
+        if shutil.which("lupdate") is None:
+            print("lupdate not found in PATH")
+            return False
         print("add Qt6 bin path to PATH")
     else:
         print("lupdate already exists in PATH")
@@ -195,6 +195,64 @@ def update_translations(dir=script_dir):
             r = True
         else:
             print(f"update translations for {loc} failed")
+            r = False
+    return r
+
+
+def translations_linguist(dir=script_dir):
+    """
+    open linguist to deal with translations(.ts) files
+    run:  linguist translations/PyCFF_${locale}.ts
+    :param target_dir: pwd
+    """
+    if shutil.which("linguist") is None:
+        os.environ["PATH"] = vcpkg_qt6_tools_path + ";" + os.environ["PATH"]
+        if shutil.which("linguist") is None:
+            print("linguist not found in PATH")
+            return False
+        print("add Qt6 bin path to PATH")
+    else:
+        print("linguist already exists in PATH")
+    cmd = ["linguist"]
+    ts_files = glob(os.path.join(dir, "translations", "*.ts"))
+    for ts_file in ts_files:
+        cmd.append(ts_file)
+        print(f"Found translation file: {ts_file}")
+    p = subprocess.Popen(cmd, cwd=dir)
+    p.wait()
+    return p == 0
+
+
+def translations_gen(dir=script_dir):
+    """
+    use lrelease to convert .ts files to *.qm files
+    run:  lrelease translations/PyCFF_${locale}.ts -qm translations/PyCFF_${locale}.qm
+    :param target_dir: pwd
+    """
+    if shutil.which("lrelease") is None:
+        os.environ["PATH"] = vcpkg_qt6_tools_path + ";" + os.environ["PATH"]
+        if shutil.which("lrelease") is None:
+            print("lrelease not found in PATH")
+            return False
+        print("add Qt6 bin path to PATH")
+    else:
+        print("lrelease already exists in PATH")
+    ts_files = glob(os.path.join(dir, "translations", "*.ts"))
+
+    r = False
+    for ts_file in ts_files:
+        cmd = ["lrelease"]
+        cmd.append(ts_file)
+        cmd.append("-qm")
+        cmd.append(ts_file.replace(".ts", ".qm"))
+        print(f"Found translation file: {ts_file}")
+        p = subprocess.Popen(cmd, cwd=dir)
+        p.wait()
+        if p.returncode == 0:
+            print(f"generate translations for {ts_file} success")
+            r = True
+        else:
+            print(f"generate translations for {ts_file} failed")
             r = False
     return r
 
@@ -223,14 +281,15 @@ def gen_pyd(
             pyd_ext = ".so"
         if del_src:
             for pyd_file in glob(os.path.join(dir, f"*{pyd_ext}")):
+                shutil.move(pyd_file, os.path.join(dir, src_folders[0]))
                 match = re.match(
                     r"^(.*?)(?:\..*)?%s$" % re.escape(pyd_ext),
                     os.path.basename(pyd_file),
                 )
                 if match:
                     base = match.group(1)
-                    py_file = os.path.join(dir, base + ".py")
-                    c_file = os.path.join(dir, base + ".c")
+                    py_file = os.path.join(dir, src_folders[0], base + ".py")
+                    c_file = os.path.join(dir, src_folders[0], base + ".c")
                     for f in [py_file, c_file]:
                         if os.path.exists(f):
                             os.remove(f)
@@ -245,7 +304,11 @@ if __name__ == "__main__":
     print("current dir:", script_dir)
     parser = argparse.ArgumentParser(description="PyCFF build tool")
     parser.add_argument(
-        "-c", "--copy", metavar="DIR", default=None, help="copy files to dir"
+        "-c",
+        "--copy",
+        metavar="DIR",
+        default=None,
+        help="copy files to target build dir",
     )
     parser.add_argument(
         "-b",
@@ -259,13 +322,15 @@ if __name__ == "__main__":
         "-u",
         "--update",
         action="store_true",
-        help="generate/refresh qt ui and resource file",
+        help="generate/refresh qt interface and resource file",
     )
     parser.add_argument(
         "-t",
         "--translate",
-        action="store_true",
-        help="generate/refresh translations file",
+        nargs="?",
+        const="up",
+        choices=["up", "gui", "gen"],
+        help="generate/refresh translations file, up is update .ts files(default), ui is launch linguist ui, gen is generate *.qm files",
     )
     parser.add_argument(
         "-p",
@@ -275,6 +340,12 @@ if __name__ == "__main__":
         choices=["dir", "one"],
         help="generate pyd file and build program, default dir, one is single file",
     )
+    parser.add_argument(
+        "-g",
+        "--genpyd",
+        action="store_true",
+        help="generate/refresh pyd file in build dir (only test)",
+    )
     args = parser.parse_args()
 
     def build_program(one=False, pyd=False, hd=False):
@@ -282,14 +353,15 @@ if __name__ == "__main__":
         if dir is None:
             print("error: copy files failed! ")
             exit(1)
-        gen_ui(dir)
-        gen_rc(dir)
+        gen_ui(os.path.join(dir, src_folders[0]))
+        gen_rc(os.path.join(dir, src_folders[0]))
+        translations_gen(os.path.join(dir, src_folders[0]))
         if pyd:
             gen_pyd(dir)
         if one:
-            pybuild_one(dir, hd=hd)
+            pybuild_one(os.path.join(dir, src_folders[0]), hd=hd)
         else:
-            pybuild_dir(dir, hd=hd)
+            pybuild_dir(os.path.join(dir, src_folders[0]), hd=hd)
 
     if args.copy:
         # print("current dir:", script_dir)
@@ -300,14 +372,28 @@ if __name__ == "__main__":
         else:
             build_program()
     elif args.update:
-        gen_ui()
-        gen_rc()
+        gen_rc(os.path.join(script_dir, src_folders[0]))
+        gen_ui(os.path.join(script_dir, src_folders[0]))
     elif args.translate:
-        update_translations()
+        if args.translate == "up":
+            translations_update(os.path.join(script_dir, src_folders[0]))
+        elif args.translate == "gui":
+            translations_linguist(os.path.join(script_dir, src_folders[0]))
+        elif args.translate == "gen":
+            translations_gen(os.path.join(script_dir, src_folders[0]))
     elif args.pyd:
         if args.pyd == "one":
             build_program(one=True, pyd=True, hd=True)
         else:
             build_program(pyd=True, hd=True)
+    elif args.genpyd:
+        dir = copy_files()
+        if dir is None:
+            print("error: copy files failed! ")
+            exit(1)
+        gen_ui(os.path.join(dir, src_folders[0]))
+        gen_rc(os.path.join(dir, src_folders[0]))
+        translations_gen(os.path.join(dir, src_folders[0]))
+        gen_pyd(dir)
     else:
         parser.print_help()

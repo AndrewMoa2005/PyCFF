@@ -2,9 +2,7 @@
 name = "PyCFF"
 version = "1.1.4"
 description = "A function fitting tool"
-authors = [
-    {name = "Andrew Moa", email = "Andrew.Moa2005@163.com"},
-]
+authors = [{ name = "Andrew Moa", email = "Andrew.Moa2005@163.com" }]
 license = "LGPL-3.0-or-later"
 keywords = ["PySide6", "application", "widget"]
 classifiers = [
@@ -13,13 +11,16 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Applications :: Python",
 ]
+dependencies = ["numpy>=1.26.0", "scipy>=1.12.0", "pyside6>=6.6.0"]
 
 [tool.pyside6-project]
-files = ["resource.qrc", "application.py", "form.ui", "widget.py", "clevertw.py", "cff.py"]
-
-[dependencies]
-PySide6 = "6.6.0"
-numpy = "1.26.0"
-scipy = "1.12.0"
+files = [
+    "resource.qrc",
+    "application.py",
+    "form.ui",
+    "widget.py",
+    "clevertw.py",
+    "cff.py",
+]

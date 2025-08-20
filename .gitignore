@@ -1,6 +1,7 @@
 # pyside6 qt files
 form_ui.py
 resource_rc.py
+*.qm
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
