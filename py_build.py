@@ -33,6 +33,22 @@ src_folders = ["pycff", "translations"]
 build_dir = "py_build"
 
 
+def remove_spec_files(dir, suffix, recursive=False):
+    """
+    remove spec files in dir
+    Args:
+        dir (str): dir to remove spec files
+        suffix (str): suffix of spec files, like "ui", "qrc"
+        recursive (bool, optional): whether to remove spec files in sub dirs. Defaults to False.
+    """
+    for file in glob(os.path.join(dir, f"*.{suffix}"), recursive=recursive):
+        os.remove(file)
+        if os.path.exists(file):
+            print(f"remove {file} failed")
+        else:
+            print(f"remove {file} success")
+
+
 def copy_files(src_dir=script_dir, dir="py_build"):
     if os.getcwd() != src_dir:
         os.chdir(src_dir)
@@ -91,6 +107,7 @@ def pybuild_dir(dir=os.path.join(script_dir, build_dir), hd=False):
     """
     run:  pyinstaller --contents-directory . --windowed --add-data "translations/*.qm:translations" --icon "image/curve.ico" --name PyCFF --exclude PyQt6 application.py
     :param target_dir: pwd
+    :param hd: hidden import
     """
     cmd = [
         "pyinstaller",
@@ -130,6 +147,7 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False):
     """
     run:  pyinstaller --onefile --windowed --add-data "translations/*.qm:translations" --icon "image/curve.ico" --name PyCFF --exclude PyQt6 application.py
     :param target_dir: pwd
+    :param hd: hidden import
     """
     cmd = [
         "pyinstaller",
@@ -239,6 +257,8 @@ def gen_pyd(
     """
     run:  python setup.py build_ext --inplace
     :param target_dir: pwd
+    :param pyexecutable: python executable
+    :param del_src: delete source files
     """
     cmd = [
         pyexecutable,
@@ -257,22 +277,46 @@ def gen_pyd(
             pyd_ext = ".so"
         if del_src:
             for pyd_file in glob(os.path.join(dir, f"*{pyd_ext}")):
-                shutil.move(pyd_file, os.path.join(dir, src_folders[0]))
                 match = re.match(
                     r"^(.*?)(?:\..*)?%s$" % re.escape(pyd_ext),
                     os.path.basename(pyd_file),
                 )
                 if match:
                     base = match.group(1)
-                    py_file = os.path.join(dir, src_folders[0], base + ".py")
-                    c_file = os.path.join(dir, src_folders[0], base + ".c")
+                    py_file = os.path.join(dir, base + ".py")
+                    c_file = os.path.join(dir, base + ".c")
                     for f in [py_file, c_file]:
                         if os.path.exists(f):
                             os.remove(f)
                             print(f"delete {f} success")
+        gen_pyd_script = glob(os.path.join(dir, "setup.py"))
+        if gen_pyd_script:
+            os.remove(gen_pyd_script[0])
+            print(f"delete {gen_pyd_script[0]} success")
         return True
     else:
         print("generate pyd file failed")
+        return False
+
+
+def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable):
+    """
+    run:  python setup.py bdist_wheel
+    :param target_dir: pwd
+    :param pyexecutable: python executable
+    """
+    cmd = [
+        pyexecutable,
+        "setup.py",
+        "bdist_wheel",
+    ]
+    p = subprocess.Popen(cmd, cwd=dir)
+    p.wait()
+    if p.returncode == 0:
+        print("generate whl file success")
+        return True
+    else:
+        print("generate whl file failed")
         return False
 
 
@@ -318,9 +362,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-g",
-        "--genpyd",
+        "--genwhl",
         action="store_true",
-        help="generate/refresh pyd file in build dir (only test)",
+        help="generate/refresh whl file",
     )
     args = parser.parse_args()
 
@@ -332,20 +376,51 @@ if __name__ == "__main__":
         if gen_ui(os.path.join(dir, src_folders[0])) is False:
             print("error: gen ui failed! ")
             exit(1)
+        else:
+            remove_spec_files(os.path.join(dir, src_folders[0]), "ui")
         if gen_rc(os.path.join(dir, src_folders[0])) is False:
             print("error: gen rc failed! ")
             exit(1)
+        else:
+            remove_spec_files(os.path.join(dir, src_folders[0]), "qrc")
         if translations_gen(os.path.join(dir, src_folders[0])) is False:
             print("error: gen translations failed! ")
             exit(1)
+        else:
+            remove_spec_files(os.path.join(dir, src_folders[0], "translations"), "ts")
         if pyd:
-            if gen_pyd(dir) is False:
+            if gen_pyd(os.path.join(dir, src_folders[0])) is False:
                 print("error: gen pyd failed! ")
                 exit(1)
         if one:
             pybuild_one(os.path.join(dir, src_folders[0]), hd=hd)
         else:
             pybuild_dir(os.path.join(dir, src_folders[0]), hd=hd)
+
+    def build_whl():
+        dir = copy_files()
+        if dir is None:
+            print("error: copy files failed! ")
+            exit(1)
+        if gen_ui(os.path.join(dir, src_folders[0])) is False:
+            print("error: gen ui failed! ")
+            exit(1)
+        else:
+            remove_spec_files(os.path.join(dir, src_folders[0]), "ui")
+        if gen_rc(os.path.join(dir, src_folders[0])) is False:
+            print("error: gen rc failed! ")
+            exit(1)
+        else:
+            remove_spec_files(os.path.join(dir, src_folders[0]), "qrc")
+        if translations_gen(os.path.join(dir, src_folders[0])) is False:
+            print("error: gen translations failed! ")
+            exit(1)
+        else:
+            remove_spec_files(os.path.join(dir, src_folders[0], "translations"), "ts")
+        if gen_pyd(os.path.join(dir, src_folders[0])) is False:
+            print("error: gen pyd failed! ")
+            exit(1)
+        gen_whl(dir)
 
     if args.copy:
         # print("current dir:", script_dir)
@@ -370,22 +445,7 @@ if __name__ == "__main__":
             build_program(one=True, pyd=True, hd=True)
         else:
             build_program(pyd=True, hd=True)
-    elif args.genpyd:
-        dir = copy_files()
-        if dir is None:
-            print("error: copy files failed! ")
-            exit(1)
-        if gen_ui(os.path.join(dir, src_folders[0])) is False:
-            print("error: gen ui failed! ")
-            exit(1)
-        if gen_rc(os.path.join(dir, src_folders[0])) is False:
-            print("error: gen rc failed! ")
-            exit(1)
-        if translations_gen(os.path.join(dir, src_folders[0])) is False:
-            print("error: gen translations failed! ")
-            exit(1)
-        if gen_pyd(dir) is False:
-            print("error: gen pyd failed! ")
-            exit(1)
+    elif args.genwhl:
+        build_whl()
     else:
         parser.print_help()

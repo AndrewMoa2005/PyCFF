@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
-from Cython.Build import cythonize
+from setuptools import setup, find_packages
 
 setup(
     name="PyCFF",
     version="1.1.4",
-    # packages=find_packages(),
+    packages=find_packages(),
     install_requires=[
         "numpy",
         "scipy",
@@ -26,22 +25,5 @@ setup(
     ],
     license="LGPL-3.0-or-later",
     keywords=["PySide6", "application", "widget"],
-    ext_modules=cythonize(
-        [
-            "pycff/widget.py",
-            "pycff/form_ui.py",
-            "pycff/resource_rc.py",
-            "pycff/clevertw.py",
-            "pycff/cff.py",
-        ]
-    ),
-    py_modules=[
-        "widget",
-        "form_ui",
-        "resource_rc",
-        "clevertw",
-        "cff",
-    ],
-    packages=["pycff"],
     include_package_data=True,
 )
