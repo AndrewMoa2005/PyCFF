@@ -122,7 +122,7 @@ class Widget(QWidget):
     def onAboutBtnClicked(self):
         QMessageBox.about(
             self,
-            self.tr("版本: 1.1.4"),
+            self.tr("关于本程序"),
             self.tr("...声明...\n"),
         )
 

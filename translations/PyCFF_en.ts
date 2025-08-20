@@ -298,11 +298,6 @@
         <translation>Fitted Curve</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="125"/>
-        <source>版本: 1.1.4</source>
-        <translation>Version : 1.1.4</translation>
-    </message>
-    <message>
         <location filename="../widget.py" line="126"/>
         <source>...声明...
 </source>
@@ -542,6 +537,11 @@
         <location filename="../widget.py" line="682"/>
         <source>请先输入X轴和Y轴数据</source>
         <translation>Please enter the X and Y axis data first</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="125"/>
+        <source>关于本程序</source>
+        <translation>About Me</translation>
     </message>
     <message>
         <location filename="../widget.py" line="362"/>
