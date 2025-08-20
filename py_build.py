@@ -32,6 +32,7 @@ files = [
     "resource.qrc",
     "clevertw.py",
     "cff.py",
+    "file-version-info.txt",
 ]
 folders = ["image", "translations"]
 build_dir = "py_build"
@@ -109,6 +110,8 @@ def pybuild_dir(dir=os.path.join(script_dir, build_dir), hd=False):
         "PyCFF",
         "--exclude",
         "PyQt6",
+        "--version-file",
+        "file-version-info.txt",
         "application.py",
     ]
     if hd:
@@ -145,6 +148,8 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False):
         "PyCFF",
         "--exclude",
         "PyQt6",
+        "--version-file",
+        "file-version-info.txt",
         "application.py",
     ]
     if hd:
