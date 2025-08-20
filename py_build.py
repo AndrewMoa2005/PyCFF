@@ -28,6 +28,7 @@ files = [
     "pyproject.toml",
     "requirements.txt",
     "file-version-info.txt",
+    "MANIFEST.in",
 ]
 src_folders = ["pycff", "translations"]
 build_dir = "py_build"
@@ -420,6 +421,24 @@ if __name__ == "__main__":
         if gen_pyd(os.path.join(dir, src_folders[0])) is False:
             print("error: gen pyd failed! ")
             exit(1)
+        f = os.path.join(dir, src_folders[0], "__init__.py")
+        if not os.path.exists(f):
+            file = open(f, "w")
+            file.write("# -*- coding: utf-8 -*-\n")
+            # file.write("\n")
+            # file.write("import cff\n")
+            # file.write("import widget\n")
+            # file.write("import clevertw\n")
+            # file.write("import form_ui\n")
+            # file.write("import resource_rc\n")
+            file.close()
+        d = os.path.join(dir, src_folders[0], "build")
+        if os.path.exists(d) and os.path.isdir(d):
+            shutil.rmtree(d)
+            if os.path.exists(d):
+                print(f"remove {d} failed")
+            else:
+                print(f"remove {d} success")
         gen_whl(dir)
 
     if args.copy:
