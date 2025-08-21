@@ -13,9 +13,9 @@ setup(
     version="1.1.5",
     packages=["pycff"],
     install_requires=[
-        "numpy",
-        "scipy",
-        "pyside6",
+        "numpy>=1.26.0",
+        "scipy>=1.12.0",
+        "pyside6>=6.6.0",
     ],
     description="A function fitting tool",
     # long_description=ld,

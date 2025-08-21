@@ -24,3 +24,9 @@ files = [
     "clevertw.py",
     "cff.py",
 ]
+
+[tool.setuptools]
+include-package-data = true
+
+[project.gui-scripts]
+pycff = "pycff.__main__:main"
