@@ -26,8 +26,8 @@ locale = ["zh_CN", "en"]
 trans_files = ["widget.py", "form.ui", "clevertw.py"]
 script_dir = os.path.dirname(os.path.abspath(__file__))
 files = [
-    "setup_whl.py",
-    "setup_pyd.py",
+    "setup.py",
+    "compile.py",
     "pyproject.toml",
     "requirements.txt",
     "file-version-info.txt",
@@ -36,7 +36,7 @@ files = [
     "MANIFEST.in",
 ]
 src_folders = ["pycff", "translations"]
-build_dir = "py_build"
+build_dir = "build"
 
 
 def remove_spec_files(dir, suffix, recursive=False):
@@ -55,7 +55,7 @@ def remove_spec_files(dir, suffix, recursive=False):
             print(f"remove {file} success")
 
 
-def copy_files(src_dir=script_dir, dir="py_build"):
+def copy_files(src_dir=script_dir, dir=build_dir):
     if os.getcwd() != src_dir:
         os.chdir(src_dir)
     target_dir = os.path.join(script_dir, dir)
@@ -261,14 +261,14 @@ def gen_pyd(
     dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable, del_src=True
 ):
     """
-    run:  python setup_pyd.py build_ext --inplace
+    run:  python compile.py build_ext --inplace
     :param target_dir: pwd
     :param pyexecutable: python executable
     :param del_src: delete source files
     """
     cmd = [
         pyexecutable,
-        "setup_pyd.py",
+        "compile.py",
         "build_ext",
         "--inplace",
     ]
@@ -303,7 +303,7 @@ def gen_pyd(
 
 def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable):
     """
-    run:  python setup_whl.py bdist_wheel
+    run:  python setup.py bdist_wheel
     :param target_dir: pwd
     :param pyexecutable: python executable
     """
@@ -318,7 +318,7 @@ def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable
     else:
         plat_name = "any"
     # create wheel
-    cmd = [pyexecutable, "setup_whl.py", "bdist_wheel", f"--plat-name={plat_name}"]
+    cmd = [pyexecutable, "setup.py", "bdist_wheel", f"--plat-name={plat_name}"]
     p = subprocess.Popen(cmd, cwd=dir)
     p.wait()
     if p.returncode == 0:

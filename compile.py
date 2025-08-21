@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# compile specified python source (.py files) to binary module(.pyd files in windows or.so files in others)
+# usage: python compile.py build_ext --inplace
 
 from setuptools import setup
 from Cython.Build import cythonize
