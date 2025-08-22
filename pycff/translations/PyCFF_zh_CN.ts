@@ -465,19 +465,18 @@
         <location filename="../widget.py" line="681"/>
         <location filename="../widget.py" line="686"/>
         <location filename="../widget.py" line="746"/>
-        <location filename="../widget.py" line="759"/>
-        <location filename="../widget.py" line="807"/>
-        <location filename="../widget.py" line="874"/>
-        <location filename="../widget.py" line="945"/>
-        <location filename="../widget.py" line="958"/>
-        <location filename="../widget.py" line="962"/>
-        <location filename="../widget.py" line="1106"/>
-        <location filename="../widget.py" line="1189"/>
-        <location filename="../widget.py" line="1228"/>
-        <location filename="../widget.py" line="1233"/>
-        <location filename="../widget.py" line="1246"/>
-        <location filename="../widget.py" line="1251"/>
-        <location filename="../widget.py" line="1276"/>
+        <location filename="../widget.py" line="802"/>
+        <location filename="../widget.py" line="877"/>
+        <location filename="../widget.py" line="956"/>
+        <location filename="../widget.py" line="969"/>
+        <location filename="../widget.py" line="973"/>
+        <location filename="../widget.py" line="1141"/>
+        <location filename="../widget.py" line="1240"/>
+        <location filename="../widget.py" line="1279"/>
+        <location filename="../widget.py" line="1284"/>
+        <location filename="../widget.py" line="1297"/>
+        <location filename="../widget.py" line="1302"/>
+        <location filename="../widget.py" line="1327"/>
         <source>输入错误</source>
         <translation>输入错误</translation>
     </message>
@@ -492,6 +491,24 @@
         <translation>第%s行数据不完整</translation>
     </message>
     <message>
+        <location filename="../widget.py" line="486"/>
+        <source>加载文件失败
+
+%s</source>
+        <translation>加载文件失败
+
+%s</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="530"/>
+        <source>保存文件时出现错误
+
+%s</source>
+        <translation>保存文件时出现错误
+
+%s</translation>
+    </message>
+    <message>
         <location filename="../widget.py" line="625"/>
         <source>第{}列 : {}</source>
         <translation>第{}列 : {}</translation>
@@ -502,33 +519,75 @@
         <translation>请先输入自定义函数</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="808"/>
-        <location filename="../widget.py" line="875"/>
+        <location filename="../widget.py" line="760"/>
+        <location filename="../widget.py" line="820"/>
+        <location filename="../widget.py" line="895"/>
+        <location filename="../widget.py" line="985"/>
+        <location filename="../widget.py" line="1000"/>
+        <location filename="../widget.py" line="1071"/>
+        <location filename="../widget.py" line="1154"/>
+        <location filename="../widget.py" line="1168"/>
+        <source>初始化错误</source>
+        <translation>初始化错误</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="761"/>
+        <location filename="../widget.py" line="821"/>
+        <location filename="../widget.py" line="896"/>
+        <location filename="../widget.py" line="986"/>
+        <location filename="../widget.py" line="1001"/>
+        <location filename="../widget.py" line="1072"/>
+        <location filename="../widget.py" line="1155"/>
+        <location filename="../widget.py" line="1169"/>
+        <source>初始化失败，请检查输入数据
+
+%s</source>
+        <translation>初始化失败，请检查输入数据
+
+%s</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="767"/>
+        <location filename="../widget.py" line="828"/>
+        <location filename="../widget.py" line="903"/>
+        <location filename="../widget.py" line="1008"/>
+        <location filename="../widget.py" line="1079"/>
+        <location filename="../widget.py" line="1176"/>
+        <source>拟合失败，请检查输入数据
+
+%s</source>
+        <translation>拟合失败，请检查输入数据
+
+%s</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="803"/>
+        <location filename="../widget.py" line="878"/>
         <source>自变量必须大于0</source>
         <translation>自变量必须大于0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="946"/>
+        <location filename="../widget.py" line="957"/>
         <source>因变量必须大于0</source>
         <translation>因变量必须大于0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="962"/>
+        <location filename="../widget.py" line="973"/>
         <source>截距必须大于0</source>
         <translation>截距必须大于0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1199"/>
+        <location filename="../widget.py" line="1250"/>
         <source>警告</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1200"/>
+        <location filename="../widget.py" line="1251"/>
         <source>细化等级太小可能导致进程假死！</source>
         <translation>细化等级太小可能导致进程假死！</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1276"/>
+        <location filename="../widget.py" line="1327"/>
         <source>解不存在</source>
         <translation>解不存在</translation>
     </message>
@@ -583,11 +642,6 @@
         <translation>加载错误</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="487"/>
-        <source>加载文件失败：{str(e)}</source>
-        <translation>加载文件失败：{str(e)}</translation>
-    </message>
-    <message>
         <location filename="../widget.py" line="495"/>
         <source>保存文件</source>
         <translation>保存文件</translation>
@@ -601,11 +655,6 @@
         <location filename="../widget.py" line="529"/>
         <source>保存错误</source>
         <translation>保存错误</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="530"/>
-        <source>保存文件时出现错误：{str(e)}</source>
-        <translation>保存文件时出现错误：{str(e)}</translation>
     </message>
     <message>
         <location filename="../widget.py" line="539"/>
@@ -624,48 +673,31 @@
         <translation>选择的列无效</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="759"/>
-        <source>自定义函数错误 : 
-%s</source>
-        <translation>自定义函数错误 : 
-%s</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="766"/>
-        <location filename="../widget.py" line="825"/>
-        <location filename="../widget.py" line="892"/>
-        <location filename="../widget.py" line="981"/>
-        <location filename="../widget.py" line="1044"/>
-        <location filename="../widget.py" line="1125"/>
+        <location filename="../widget.py" line="767"/>
+        <location filename="../widget.py" line="828"/>
+        <location filename="../widget.py" line="903"/>
+        <location filename="../widget.py" line="1008"/>
+        <location filename="../widget.py" line="1079"/>
+        <location filename="../widget.py" line="1176"/>
         <source>拟合错误</source>
         <translation>拟合错误</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="767"/>
-        <location filename="../widget.py" line="826"/>
-        <location filename="../widget.py" line="893"/>
-        <location filename="../widget.py" line="982"/>
-        <location filename="../widget.py" line="1045"/>
-        <location filename="../widget.py" line="1126"/>
-        <source>拟合失败，请检查输入数据</source>
-        <translation>拟合失败，请检查输入数据</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="959"/>
-        <location filename="../widget.py" line="1107"/>
+        <location filename="../widget.py" line="970"/>
+        <location filename="../widget.py" line="1142"/>
         <source>截距必须输入数字</source>
         <translation>截距必须输入数字</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1189"/>
-        <location filename="../widget.py" line="1228"/>
-        <location filename="../widget.py" line="1246"/>
+        <location filename="../widget.py" line="1240"/>
+        <location filename="../widget.py" line="1279"/>
+        <location filename="../widget.py" line="1297"/>
         <source>请先进行拟合</source>
         <translation>请先进行拟合</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1233"/>
-        <location filename="../widget.py" line="1251"/>
+        <location filename="../widget.py" line="1284"/>
+        <location filename="../widget.py" line="1302"/>
         <source>请输入有效的数字</source>
         <translation>请输入有效的数字</translation>
     </message>
