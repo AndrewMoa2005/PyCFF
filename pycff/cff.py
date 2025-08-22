@@ -5,10 +5,10 @@ from typing import Callable
 import numpy as np
 import scipy.optimize as sopt
 import inspect
-import random
 import warnings
 import re
 import keyword
+
 
 def parse_expression(expression: str) -> tuple[str, list[str]]:
     """
@@ -161,6 +161,19 @@ def parse_expression(expression: str) -> tuple[str, list[str]]:
     return converted, coefficients
 
 
+def fequal(a: float, b: float, epsilon: float = 1e-10) -> bool:
+    """
+    Check if two floating-point numbers are equal within a given epsilon.
+    Args:
+        a (float): first number
+        b (float): second number
+        epsilon (float, optional): epsilon. Defaults to 1e-10.
+    Returns:
+        bool: True if a and b are equal within epsilon, False otherwise.
+    """
+    return abs(a - b) < epsilon
+
+
 class LinearFit:
     def __init__(
         self,
@@ -194,10 +207,11 @@ class LinearFit:
         self.x_data = np.array(x_data)
         self.y_data = np.array(y_data)
         if y_intercept is not None:
-            if 0 in x_data:
-                raise ValueError(
-                    "x_data cannot contain zero if y_intercept is provided."
-                )
+            for x in x_data:
+                if fequal(x, y_intercept):
+                    raise ValueError(
+                        f"x_data cannot contain {x} if {y_intercept} is provided."
+                    )
             self.y_intercept = y_intercept
         self.degree: int = degree
         self.params: list[float] = None
@@ -521,10 +535,10 @@ class NonLinearFit:
         self.x_data = x_data
         self.y_data = y_data
         self.func = func
-        if p0 is None:
-            self.refresh_p0()
-        else:
+        if p0 is not None:
             self.p0 = p0
+        else:
+            self.p0 = None
         self.params: list[float] = None
 
     def x_data_order(self) -> bool:
@@ -535,11 +549,11 @@ class NonLinearFit:
         """
         return self.x_data == sorted(self.x_data)
 
-    def refresh_p0(self, p: list[float] = None):
+    def set_p0(self, p: list[float]):
         """
-        refresh or reset p0.
+        set p0.
         Args:
-            p (list[float], optional): initial guess for the parameters. Defaults to None.
+            p (list[float], optional): initial guess for the parameters.
         Raises:
             ValueError: Function must have at least two arguments (x, *params)
             ValueError: p0 length must match function parameters count
@@ -552,13 +566,7 @@ class NonLinearFit:
                 raise ValueError("p0 length must match function parameters count")
             self.p0 = p
         else:
-            x = np.array(self.x_data)
-            y = np.array(self.y_data)
-            min_range = np.min(y / x)
-            max_range = np.max(y / x)
-            self.p0 = [
-                float(random.uniform(min_range, max_range)) for _ in range(param_count)
-            ]
+            return
 
     def fit(self, p0: list[float] = None) -> list[float]:
         """
@@ -571,10 +579,7 @@ class NonLinearFit:
             ValueError: Model fit failed.
             ValueError: Parameter fit failed.
         """
-        if p0 is None:
-            if self.p0 is None:
-                self.refresh_p0()
-        else:
+        if p0 is not None:
             self.p0 = p0
         max_fev = 10 ** (self.func.__code__.co_argcount + 1)
         try:
@@ -588,7 +593,7 @@ class NonLinearFit:
             )
         except RuntimeError as e:
             raise ValueError(f"Model fit failed: {str(e)}") from e
-        if len(params) != len(self.p0):
+        if len(params) != len(self.args()[1:]):
             raise ValueError("Parameter fit failed.")
         self.params = params.tolist() if isinstance(params, np.ndarray) else [params]
         return self.params
@@ -743,7 +748,9 @@ class NonLinearFit:
         return list(self.func.__code__.co_varnames)
 
     @classmethod
-    def from_expr(cls, x_data: list[float], y_data: list[float], expr: str, p0: list[float] = None) -> "NonLinearFit":
+    def from_expr(
+        cls, x_data: list[float], y_data: list[float], expr: str, p0: list[float] = None
+    ) -> "NonLinearFit":
         """
         create a NonLinearFit instance from a string expression.
         Args:
@@ -806,7 +813,7 @@ if __name__ == "__main__":
             eval("lambda x, a, b, c : a * x**2 + b * x + c"),
         )
         """
-        nonl_fit = NonLinearFit.from_expr(x_data, y_data, 'a * x**2 + b * x + c')
+        nonl_fit = NonLinearFit.from_expr(x_data, y_data, "a * x**2 + b * x + c")
         params = nonl_fit.fit()
         print("initial p0 : ", nonl_fit.p0)
         print("Fitted parameters : ", params)

@@ -483,7 +483,7 @@ class Widget(QWidget):
             qDebug("Loaded file: %s" % path)
         except Exception as e:
             QMessageBox.critical(
-                self, self.tr("加载错误"), self.tr(f"加载文件失败：{str(e)}")
+                self, self.tr("加载错误"), self.tr("加载文件失败\n\n%s" % e)
             )
             qDebug("Error loading file: %s" % e)
 
@@ -527,7 +527,7 @@ class Widget(QWidget):
             QMessageBox.critical(
                 self,
                 self.tr("保存错误"),
-                self.tr(f"保存文件时出现错误：{str(e)}"),
+                self.tr("保存文件时出现错误\n\n%s" % e),
             )
             qDebug("Error saving file: %s" % e)
 
@@ -756,14 +756,15 @@ class Widget(QWidget):
                 )
             except Exception as e:
                 QMessageBox.warning(
-                    self, self.tr("输入错误"), self.tr("自定义函数错误 : \n%s" % str(e))
+                    self,
+                    self.tr("初始化错误"),
+                    self.tr("初始化失败，请检查输入数据\n\n%s" % e),
                 )
-                qDebug("Error in custom function: %s" % e)
                 return
             coef = self.fit_class.fit()
         except Exception as e:
             QMessageBox.warning(
-                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
+                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据\n\n%s" % e)
             )
             qDebug("Error in fitOnCustom: %s" % e)
             return
@@ -774,7 +775,7 @@ class Widget(QWidget):
         self.updateOutputTable(r_squared, args=args[1:], coef=coef)
         # update text output
         of1_f = "y = %s" % self.fit_nonl_func
-        ccoef : list[str] = []
+        ccoef: list[str] = []
         for i in coef:
             if self.ui.scientificOutCheck.isChecked():
                 ss = f"{i:.{self.ui.decimalOutBox.value()}e}"
@@ -786,19 +787,13 @@ class Widget(QWidget):
         else:
             r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}f}"
         for i in range(len(ccoef)):
-            of1_f = of1_f.replace(args[i+1], ccoef[i])
+            of1_f = of1_f.replace(args[i + 1], ccoef[i])
         of1_f = of1_f.replace("+-", "-").replace("+ -", "-")
         of2 = f"r2 = {r2}"
         qDebug("Output formula: %s" % of1_f)
         qDebug("Output r2: %s" % of2)
         self.ui.outputEdit.clear()
-        self.ui.outputEdit.setText(
-            "[R²]\n"
-            + of2
-            + "\n[Formula]\n"
-            + of1_f
-            + "\n"
-        )
+        self.ui.outputEdit.setText("[R²]\n" + of2 + "\n[Formula]\n" + of1_f + "\n")
 
     def fitOnPower(self):
         if min(self.xList) <= 0:
@@ -813,16 +808,24 @@ class Widget(QWidget):
         qDebug("xList: %s" % xlist)
         qDebug("yList: %s" % ylist)
         self.fit_nonl_func = "a * x**b"
-        self.fit_class = NonLinearFit(
-            xlist,
-            ylist,
-            lambda x, a, b: eval(self.fit_nonl_func),
-        )
+        try:
+            self.fit_class = NonLinearFit(
+                xlist,
+                ylist,
+                lambda x, a, b: eval(self.fit_nonl_func),
+            )
+        except Exception as e:
+            QMessageBox.warning(
+                self,
+                self.tr("初始化错误"),
+                self.tr("初始化失败，请检查输入数据\n\n%s" % e),
+            )
+            return
         try:
             coef = self.fit_class.fit()
         except Exception as e:
             QMessageBox.warning(
-                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
+                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据\n\n%s" % e)
             )
             qDebug("Error in fitOnPower: %s" % e)
             return
@@ -880,16 +883,24 @@ class Widget(QWidget):
         qDebug("xList: %s" % xlist)
         qDebug("yList: %s" % ylist)
         self.fit_nonl_func = "a + b * np.log(x)"
-        self.fit_class = NonLinearFit(
-            xlist,
-            ylist,
-            lambda x, a, b: eval(self.fit_nonl_func),
-        )
+        try:
+            self.fit_class = NonLinearFit(
+                xlist,
+                ylist,
+                lambda x, a, b: eval(self.fit_nonl_func),
+            )
+        except Exception as e:
+            QMessageBox.warning(
+                self,
+                self.tr("初始化错误"),
+                self.tr("初始化失败，请检查输入数据\n\n%s" % e),
+            )
+            return
         try:
             coef = self.fit_class.fit()
         except Exception as e:
             QMessageBox.warning(
-                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
+                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据\n\n%s" % e)
             )
             qDebug("Error in fitOnLogarithmic: %s" % e)
             return
@@ -962,23 +973,39 @@ class Widget(QWidget):
                 QMessageBox.warning(self, self.tr("输入错误"), self.tr("截距必须大于0"))
                 return
             self.fit_nonl_func = "a * np.exp(b * x)".replace("a", str(y))
-            self.fit_class = NonLinearFit(
-                xlist,
-                ylist,
-                lambda x, b: eval(self.fit_nonl_func),
-            )
+            try:
+                self.fit_class = NonLinearFit(
+                    xlist,
+                    ylist,
+                    lambda x, b: eval(self.fit_nonl_func),
+                )
+            except Exception as e:
+                QMessageBox.warning(
+                    self,
+                    self.tr("初始化错误"),
+                    self.tr("初始化失败，请检查输入数据\n\n%s" % e),
+                )
+                return
         else:
             self.fit_nonl_func = "a * np.exp(b * x)"
-            self.fit_class = NonLinearFit(
-                xlist,
-                ylist,
-                lambda x, a, b: eval(self.fit_nonl_func),
-            )
+            try:
+                self.fit_class = NonLinearFit(
+                    xlist,
+                    ylist,
+                    lambda x, a, b: eval(self.fit_nonl_func),
+                )
+            except Exception as e:
+                QMessageBox.warning(
+                    self,
+                    self.tr("初始化错误"),
+                    self.tr("初始化失败，请检查输入数据\n\n%s" % e),
+                )
+                return
         try:
             coef = self.fit_class.fit().copy()
         except Exception as e:
             QMessageBox.warning(
-                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
+                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据\n\n%s" % e)
             )
             qDebug("Error in fitOnExponential: %s" % e)
             return
@@ -1032,16 +1059,24 @@ class Widget(QWidget):
         qDebug("xList: %s" % xlist)
         qDebug("yList: %s" % ylist)
         self.fit_nonl_func = "a + b * np.exp(c * x)"
-        self.fit_class = NonLinearFit(
-            xlist,
-            ylist,
-            lambda x, a, b, c: eval(self.fit_nonl_func),
-        )
+        try:
+            self.fit_class = NonLinearFit(
+                xlist,
+                ylist,
+                lambda x, a, b, c: eval(self.fit_nonl_func),
+            )
+        except Exception as e:
+            QMessageBox.warning(
+                self,
+                self.tr("初始化错误"),
+                self.tr("初始化失败，请检查输入数据\n\n%s" % e),
+            )
+            return
         try:
             coef = self.fit_class.fit()
         except Exception as e:
             QMessageBox.warning(
-                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
+                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据\n\n%s" % e)
             )
             qDebug("Error in fitOnExponential: %s" % e)
             return
@@ -1106,23 +1141,39 @@ class Widget(QWidget):
                     self, self.tr("输入错误"), self.tr("截距必须输入数字")
                 )
                 return
-            self.fit_class = LinearFit(
-                xlist,
-                ylist,
-                degree=deg,
-                y_intercept=y,
-            )
+            try:
+                self.fit_class = LinearFit(
+                    xlist,
+                    ylist,
+                    degree=deg,
+                    y_intercept=y,
+                )
+            except Exception as e:
+                QMessageBox.warning(
+                    self,
+                    self.tr("初始化错误"),
+                    self.tr("初始化失败，请检查输入数据\n\n%s" % e),
+                )
+                return
         else:
-            self.fit_class = LinearFit(
-                xlist,
-                ylist,
-                degree=deg,
-            )
+            try:
+                self.fit_class = LinearFit(
+                    xlist,
+                    ylist,
+                    degree=deg,
+                )
+            except Exception as e:
+                QMessageBox.warning(
+                    self,
+                    self.tr("初始化错误"),
+                    self.tr("初始化失败，请检查输入数据\n\n%s" % e),
+                )
+                return
         try:
             coef = self.fit_class.fit()
         except Exception as e:
             QMessageBox.warning(
-                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据")
+                self, self.tr("拟合错误"), self.tr("拟合失败，请检查输入数据\n\n%s" % e)
             )
             qDebug("Error in fitOnPolynomial: %s" % e)
             return
