@@ -788,7 +788,14 @@ class Widget(QWidget):
             r2 = f"{r_squared:.{self.ui.decimalOutBox.value()}f}"
         for i in range(len(ccoef)):
             of1_f = of1_f.replace(args[i + 1], ccoef[i])
-        of1_f = of1_f.replace("+-", "-").replace("+ -", "-")
+        of1_f = (
+            of1_f.replace("--", "+")
+            .replace("- -", "+")
+            .replace("+-", "-")
+            .replace("+ -", "-")
+            .replace("= +", "=")
+            .replace("=+", "=")
+        )
         of2 = f"r2 = {r2}"
         qDebug("Output formula: %s" % of1_f)
         qDebug("Output r2: %s" % of2)

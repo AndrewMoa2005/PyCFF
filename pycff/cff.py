@@ -10,6 +10,14 @@ import re
 import keyword
 
 
+def pi() -> float:
+    return np.pi
+
+
+def e() -> float:
+    return np.e
+
+
 def parse_expression(expression: str) -> tuple[str, list[str]]:
     """
     Parse the expression and return the function string and variable list.
@@ -133,6 +141,8 @@ def parse_expression(expression: str) -> tuple[str, list[str]]:
         "asinh": "np.asinh",
         "acosh": "np.acosh",
         "atanh": "np.atanh",
+        "pi": "pi",
+        "e": "e",
     }
     # Replace the power operator
     converted = expr.replace("^", "**")

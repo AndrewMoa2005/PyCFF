@@ -304,10 +304,10 @@
         <translation>      本程序是基于Python实现的函数曲线拟合程序，用于将离散数据拟合成函数曲线，旨在替代Excel、Origin中的函数曲线拟合功能，简化用户操作的同时提供简单的绘图和数据交互。
       本程序遵循LGPL开源许可，任何团体及个人不得将本程序用于商业目的，也不得将本程序的源代码用于商业目的。
       本程序的使用是完全免费的，但是本程序的作者不承担任何因使用本程序而产生的任何损失或损害。
-	Date:	2025-8-20
-	Author:	Andrew Moa
-	Email:	Andrew.Moa2005@163.com
-	Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
+Date:	2025-8-25
+Author:	Andrew Moa
+Email:	Andrew.Moa2005@163.com
+Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
     </message>
     <message>
         <location filename="../widget.py" line="130"/>
@@ -465,18 +465,18 @@
         <location filename="../widget.py" line="681"/>
         <location filename="../widget.py" line="686"/>
         <location filename="../widget.py" line="746"/>
-        <location filename="../widget.py" line="802"/>
-        <location filename="../widget.py" line="877"/>
-        <location filename="../widget.py" line="956"/>
-        <location filename="../widget.py" line="969"/>
-        <location filename="../widget.py" line="973"/>
-        <location filename="../widget.py" line="1141"/>
-        <location filename="../widget.py" line="1240"/>
-        <location filename="../widget.py" line="1279"/>
-        <location filename="../widget.py" line="1284"/>
-        <location filename="../widget.py" line="1297"/>
-        <location filename="../widget.py" line="1302"/>
-        <location filename="../widget.py" line="1327"/>
+        <location filename="../widget.py" line="809"/>
+        <location filename="../widget.py" line="884"/>
+        <location filename="../widget.py" line="963"/>
+        <location filename="../widget.py" line="976"/>
+        <location filename="../widget.py" line="980"/>
+        <location filename="../widget.py" line="1148"/>
+        <location filename="../widget.py" line="1247"/>
+        <location filename="../widget.py" line="1286"/>
+        <location filename="../widget.py" line="1291"/>
+        <location filename="../widget.py" line="1304"/>
+        <location filename="../widget.py" line="1309"/>
+        <location filename="../widget.py" line="1334"/>
         <source>输入错误</source>
         <translation>输入错误</translation>
     </message>
@@ -520,25 +520,25 @@
     </message>
     <message>
         <location filename="../widget.py" line="760"/>
-        <location filename="../widget.py" line="820"/>
-        <location filename="../widget.py" line="895"/>
-        <location filename="../widget.py" line="985"/>
-        <location filename="../widget.py" line="1000"/>
-        <location filename="../widget.py" line="1071"/>
-        <location filename="../widget.py" line="1154"/>
-        <location filename="../widget.py" line="1168"/>
+        <location filename="../widget.py" line="827"/>
+        <location filename="../widget.py" line="902"/>
+        <location filename="../widget.py" line="992"/>
+        <location filename="../widget.py" line="1007"/>
+        <location filename="../widget.py" line="1078"/>
+        <location filename="../widget.py" line="1161"/>
+        <location filename="../widget.py" line="1175"/>
         <source>初始化错误</source>
         <translation>初始化错误</translation>
     </message>
     <message>
         <location filename="../widget.py" line="761"/>
-        <location filename="../widget.py" line="821"/>
-        <location filename="../widget.py" line="896"/>
-        <location filename="../widget.py" line="986"/>
-        <location filename="../widget.py" line="1001"/>
-        <location filename="../widget.py" line="1072"/>
-        <location filename="../widget.py" line="1155"/>
-        <location filename="../widget.py" line="1169"/>
+        <location filename="../widget.py" line="828"/>
+        <location filename="../widget.py" line="903"/>
+        <location filename="../widget.py" line="993"/>
+        <location filename="../widget.py" line="1008"/>
+        <location filename="../widget.py" line="1079"/>
+        <location filename="../widget.py" line="1162"/>
+        <location filename="../widget.py" line="1176"/>
         <source>初始化失败，请检查输入数据
 
 %s</source>
@@ -548,11 +548,11 @@
     </message>
     <message>
         <location filename="../widget.py" line="767"/>
-        <location filename="../widget.py" line="828"/>
-        <location filename="../widget.py" line="903"/>
-        <location filename="../widget.py" line="1008"/>
-        <location filename="../widget.py" line="1079"/>
-        <location filename="../widget.py" line="1176"/>
+        <location filename="../widget.py" line="835"/>
+        <location filename="../widget.py" line="910"/>
+        <location filename="../widget.py" line="1015"/>
+        <location filename="../widget.py" line="1086"/>
+        <location filename="../widget.py" line="1183"/>
         <source>拟合失败，请检查输入数据
 
 %s</source>
@@ -561,33 +561,33 @@
 %s</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="803"/>
-        <location filename="../widget.py" line="878"/>
+        <location filename="../widget.py" line="810"/>
+        <location filename="../widget.py" line="885"/>
         <source>自变量必须大于0</source>
         <translation>自变量必须大于0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="957"/>
+        <location filename="../widget.py" line="964"/>
         <source>因变量必须大于0</source>
         <translation>因变量必须大于0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="973"/>
+        <location filename="../widget.py" line="980"/>
         <source>截距必须大于0</source>
         <translation>截距必须大于0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1250"/>
+        <location filename="../widget.py" line="1257"/>
         <source>警告</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1251"/>
+        <location filename="../widget.py" line="1258"/>
         <source>细化等级太小可能导致进程假死！</source>
         <translation>细化等级太小可能导致进程假死！</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1327"/>
+        <location filename="../widget.py" line="1334"/>
         <source>解不存在</source>
         <translation>解不存在</translation>
     </message>
@@ -674,30 +674,30 @@
     </message>
     <message>
         <location filename="../widget.py" line="767"/>
-        <location filename="../widget.py" line="828"/>
-        <location filename="../widget.py" line="903"/>
-        <location filename="../widget.py" line="1008"/>
-        <location filename="../widget.py" line="1079"/>
-        <location filename="../widget.py" line="1176"/>
+        <location filename="../widget.py" line="835"/>
+        <location filename="../widget.py" line="910"/>
+        <location filename="../widget.py" line="1015"/>
+        <location filename="../widget.py" line="1086"/>
+        <location filename="../widget.py" line="1183"/>
         <source>拟合错误</source>
         <translation>拟合错误</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="970"/>
-        <location filename="../widget.py" line="1142"/>
+        <location filename="../widget.py" line="977"/>
+        <location filename="../widget.py" line="1149"/>
         <source>截距必须输入数字</source>
         <translation>截距必须输入数字</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1240"/>
-        <location filename="../widget.py" line="1279"/>
-        <location filename="../widget.py" line="1297"/>
+        <location filename="../widget.py" line="1247"/>
+        <location filename="../widget.py" line="1286"/>
+        <location filename="../widget.py" line="1304"/>
         <source>请先进行拟合</source>
         <translation>请先进行拟合</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1284"/>
-        <location filename="../widget.py" line="1302"/>
+        <location filename="../widget.py" line="1291"/>
+        <location filename="../widget.py" line="1309"/>
         <source>请输入有效的数字</source>
         <translation>请输入有效的数字</translation>
     </message>
