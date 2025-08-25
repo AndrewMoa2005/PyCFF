@@ -697,9 +697,14 @@ class NonLinearFit:
             return self.func(X, *self.params) - y
 
         max_iter = 10 ** (self.func.__code__.co_argcount + 1)
-        x0 = 0
+        x_0 = self.x_data[0]
+        x_1 = self.x_data[-1]
         try:
-            x = [sopt.root_scalar(func_solve, x0=x0, xtol=1e-12, maxiter=max_iter).root]
+            x = [
+                sopt.root_scalar(
+                    func_solve, x0=x_0, x1=x_1, xtol=1e-12, maxiter=max_iter
+                ).root
+            ]
         except RuntimeError as e:
             raise ValueError(f"Solution failed: {str(e)}") from e
         if len(x) == 1:
