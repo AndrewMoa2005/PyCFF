@@ -32,10 +32,11 @@ files = [
     "requirements.txt",
     "file-version-info.txt",
     "README.md",
+    "README.zh_CN.md",
     "LICENSE",
     "MANIFEST.in",
 ]
-src_folders = ["pycff", "translations"]
+src_folders = ["pycff", "translations", "images"]
 build_dir = "build"
 
 

@@ -1,5 +1,6 @@
 include LICENSE
 include README.md
+include README.zh_CN.md
 
 recursive-include pycff *.pyd
 recursive-include pycff *.so
