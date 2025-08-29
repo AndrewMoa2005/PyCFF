@@ -7,6 +7,9 @@ import argparse
 import sys
 import re
 import platform
+import zipfile
+import tarfile
+import tomllib
 from glob import glob
 
 pyexecutable = os.path.basename(sys.executable)
@@ -38,6 +41,43 @@ files = [
 ]
 src_folders = ["pycff", "translations", "images"]
 build_dir = "build"
+app_name = "PyCFF"
+if platform.system().lower() == "windows":
+    exe_name = app_name + ".exe"
+else:
+    exe_name = app_name
+
+
+def zip_dir(dirpath, outFullName):
+    """
+    compress special dir
+    :param dirpath: dir to zip
+    :param outFullName: zip file path
+    """
+    zip = zipfile.ZipFile(outFullName, "w", zipfile.ZIP_DEFLATED)
+    for path, dirnames, filenames in os.walk(dirpath):
+        # Remove the target root path and only compress the files and subfolders under the target folder
+        fpath = path.replace(dirpath, "")
+        for filename in filenames:
+            zip.write(os.path.join(path, filename), os.path.join(fpath, filename))
+    zip.close()
+    print(f"compress {dirpath} to {outFullName} success")
+
+
+def tar_xz_dir(dirpath, outFullName):
+    """
+    compress special dir
+    :param dirpath: dir to tar.xz
+    :param outFullName: tar.xz file path
+    """
+    tar = tarfile.open(outFullName, "w:xz")
+    for path, dirnames, filenames in os.walk(dirpath):
+        # Remove the target root path and only compress the files and subfolders under the target folder
+        fpath = path.replace(dirpath, "")
+        for filename in filenames:
+            tar.add(os.path.join(path, filename), os.path.join(fpath, filename))
+    tar.close()
+    print(f"compress {dirpath} to {outFullName} success")
 
 
 def remove_spec_files(dir, suffix, recursive=False):
@@ -75,6 +115,7 @@ def copy_files(src_dir=script_dir, dir=build_dir):
         if os.path.isdir(folder):
             shutil.copytree(folder, os.path.join(target_dir, folder))
             print(f"copy {folder} to {target_dir} dir success")
+    reflush_txt_version(target_dir)
     return target_dir
 
 
@@ -126,7 +167,7 @@ def pybuild_dir(dir=os.path.join(script_dir, build_dir), hd=False):
         "--icon",
         "image/curve.ico",
         "--name",
-        "PyCFF",
+        app_name,
         "--exclude",
         "PyQt6",
         "--version-file",
@@ -165,7 +206,7 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False):
         "--icon",
         "image/curve.ico",
         "--name",
-        "PyCFF",
+        exe_name,
         "--exclude",
         "PyQt6",
         "--version-file",
@@ -310,12 +351,19 @@ def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable
     """
     # check platform
     system = platform.system().lower()
+    machine = platform.machine().lower()
     if system == "windows":
-        plat_name = "win_amd64"
+        if "arm" in machine:
+            plat_name = "win_arm64"
+        else:
+            plat_name = "win_amd64"
     elif system == "darwin":
         plat_name = "macosx_12_0_universal2"
     elif system == "linux":
-        plat_name = "manylinux_2_28_x86_64"
+        if "arm" in machine:
+            plat_name = "manylinux_2_39_aarch64"
+        else:
+            plat_name = "manylinux_2_28_x86_64"
     else:
         plat_name = "any"
     # create wheel
@@ -330,14 +378,48 @@ def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable
         return False
 
 
+def get_version(dir=script_dir) -> str:
+    """
+    load version string from pyproject.toml
+    """
+    with open(os.path.join(dir, "pyproject.toml"), "rb") as f:
+        data = tomllib.load(f)
+    version = data["project"]["version"]
+    return version
+
+
+def reflush_txt_version(dir=script_dir, txtfile="file-version-info.txt"):
+    """
+    replace version string in file-version-info.txt
+    """
+    version = get_version(dir)
+    with open(os.path.join(dir, txtfile), "r") as f:
+        data = f.read()
+    data = data.replace("AA.BB.CC.DD", version)
+    v = version.split(".")
+    if len(v) < 4:
+        v.append("0")
+    v_new = ",".join(v)
+    data = data.replace("AA,BB,CC,DD", v_new)
+    with open(os.path.join(dir, txtfile), "w") as f:
+        f.write(data)
+    print(f"replace version string in {txtfile} success")
+
+
 if __name__ == "__main__":
     print("current dir:", script_dir)
     parser = argparse.ArgumentParser(description="PyCFF build tool")
     parser.add_argument(
+        "-v",
+        "--version",
+        action="store_true",
+        help="print app version.",
+    )
+    parser.add_argument(
         "-d",
         "--dir",
         metavar="DIR",
-        default=build_dir,
+        # default=build_dir,
         help="specifying the working directory, default is [%s]." % build_dir,
     )
     parser.add_argument(
@@ -370,8 +452,12 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    if args.version:
+        print(f"PyCFF version: {get_version()}")
+        exit(0)
+
     def build_program(one=False, pyd=False, hd=False):
-        dir = copy_files()
+        dir = copy_files(dir=build_dir)
         if dir is None:
             print("error: copy files failed! ")
             exit(1)
@@ -394,24 +480,74 @@ if __name__ == "__main__":
             if gen_pyd(dir) is False:
                 print("error: gen pyd failed! ")
                 exit(1)
+        gen_whl(dir)
+        os.mkdir(os.path.join(dir, "pkg"))
         if one:
             pybuild_one(os.path.join(dir, src_folders[0]), hd=hd)
+            shutil.copy(
+                os.path.join(dir, src_folders[0], "dist", exe_name),
+                os.path.join(dir, "pkg", exe_name),
+            )
         else:
             pybuild_dir(os.path.join(dir, src_folders[0]), hd=hd)
-        gen_whl(dir)
-
-    if args.dir is not None:
-        if os.path.exists(args.dir):
-            print(f"Error: folder '{args.dir}' already exists!")
-            sys.exit(1)
-        else:
-            build_dir = args.dir
+            version = get_version(dir)
+            if platform.system().lower() == "windows":
+                if "arm" in platform.machine().lower():
+                    zip_dir(
+                        os.path.join(dir, src_folders[0], "dist"),
+                        os.path.join(
+                            dir, "pkg", app_name + f"-v{version}-win_arm64.zip"
+                        ),
+                    )
+                elif "64" in platform.machine().lower():
+                    zip_dir(
+                        os.path.join(dir, src_folders[0], "dist"),
+                        os.path.join(
+                            dir, "pkg", app_name + f"-v{version}-win_amd64.zip"
+                        ),
+                    )
+                else:
+                    zip_dir(
+                        os.path.join(dir, src_folders[0], "dist"),
+                        os.path.join(dir, "pkg", app_name + f"-v{version}-win_x86.zip"),
+                    )
+            elif platform.system().lower() == "darwin":
+                tar_xz_dir(
+                    os.path.join(dir, src_folders[0], "dist"),
+                    os.path.join(dir, "pkg", app_name + f"-v{version}-macos.tar.xz"),
+                )
+            elif platform.system().lower() == "linux":
+                if "arm" in platform.machine().lower():
+                    tar_xz_dir(
+                        os.path.join(dir, src_folders[0], "dist"),
+                        os.path.join(
+                            dir, "pkg", app_name + f"-v{version}-linux_arm64.tar.xz"
+                        ),
+                    )
+                elif "64" in platform.machine().lower():
+                    tar_xz_dir(
+                        os.path.join(dir, src_folders[0], "dist"),
+                        os.path.join(
+                            dir, "pkg", app_name + f"-v{version}-linux_aarch64.tar.xz"
+                        ),
+                    )
+                else:
+                    tar_xz_dir(
+                        os.path.join(dir, src_folders[0], "dist"),
+                        os.path.join(
+                            dir, "pkg", app_name + f"-v{version}-linux_x86.tar.xz"
+                        ),
+                    )
 
     b_dir = args.dir is not None
     b_build = args.build is not None
     b_update = args.update
     b_translate = args.translate is not None
     b_pyd = args.pyd
+
+    if b_update and b_translate:
+        print("Error: -u/--update and -t/--translate can not be used at the same time!")
+        sys.exit(1)
 
     if b_build and (b_update or b_translate):
         print(
@@ -428,6 +564,21 @@ if __name__ == "__main__":
             "Error: -d/--dir and -u/--update or -t/--translate can not be used at the same time!"
         )
         sys.exit(1)
+
+    if b_dir and (not b_build):
+        print("Error: -d/--dir must be used with -b/--build!")
+        sys.exit(1)
+
+    if b_dir:
+        if args.dir == build_dir:
+            if os.path.exists(os.path.join(script_dir, args.dir)):
+                shutil.rmtree(os.path.join(script_dir, args.dir))
+                print(f"delete folder '{args.dir}' success")
+        elif os.path.exists(args.dir):
+            print(f"Error: folder '{args.dir}' already exists!")
+            sys.exit(1)
+        else:
+            build_dir = args.dir
 
     if b_translate:
         if args.translate == "up":
@@ -451,5 +602,6 @@ if __name__ == "__main__":
             build_program(one=True, pyd=True, hd=True)
         else:
             build_program(pyd=True, hd=True)
-    else:
+
+    if not b_build and not b_translate and not b_update:
         parser.print_help()

@@ -11,7 +11,7 @@ if __package__ == "":
     sys.path.insert(0, path)
 
 def main():
-    from .application import run_app as _main
+    from pycff.application import run_app as _main
     sys.exit(_main())
 
 if __name__ == "__main__":
