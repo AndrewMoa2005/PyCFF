@@ -313,9 +313,9 @@ def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable
     if system == "windows":
         plat_name = "win_amd64"
     elif system == "darwin":
-        plat_name = "macosx_10_14_x86_64"
+        plat_name = "macosx_12_0_universal2"
     elif system == "linux":
-        plat_name = "manylinux2014_x86_64"
+        plat_name = "manylinux_2_28_x86_64"
     else:
         plat_name = "any"
     # create wheel
@@ -334,11 +334,11 @@ if __name__ == "__main__":
     print("current dir:", script_dir)
     parser = argparse.ArgumentParser(description="PyCFF build tool")
     parser.add_argument(
-        "-c",
-        "--copy",
+        "-d",
+        "--dir",
         metavar="DIR",
-        default=None,
-        help="copy files to target build dir",
+        default=build_dir,
+        help="specifying the working directory, default is [%s]." % build_dir,
     )
     parser.add_argument(
         "-b",
@@ -346,13 +346,13 @@ if __name__ == "__main__":
         nargs="?",
         const="dir",
         choices=["dir", "one"],
-        help="build program, default dir, one is single file",
+        help="build program, default [dir] means build in folder, [one] means build single executable file.",
     )
     parser.add_argument(
         "-u",
         "--update",
         action="store_true",
-        help="generate/refresh qt interface and resource file",
+        help="generate/refresh qt interface(*.ui) and resource file(*.qrc) to python source.",
     )
     parser.add_argument(
         "-t",
@@ -360,21 +360,13 @@ if __name__ == "__main__":
         nargs="?",
         const="up",
         choices=["up", "gui", "gen"],
-        help="generate/refresh translations file, up is update .ts files(default), ui is launch linguist ui, gen is generate *.qm files",
+        help="generate/refresh translations file, [up] means update .ts files(default), [ui] means launch linguist ui, [gen] means generate *.qm files.",
     )
     parser.add_argument(
         "-p",
         "--pyd",
-        nargs="?",
-        const="dir",
-        choices=["dir", "one"],
-        help="generate pyd file and build program, default dir, one is single file",
-    )
-    parser.add_argument(
-        "-g",
-        "--genwhl",
         action="store_true",
-        help="generate/refresh whl file",
+        help="convert python source code to pyd file.",
     )
     args = parser.parse_args()
 
@@ -406,55 +398,58 @@ if __name__ == "__main__":
             pybuild_one(os.path.join(dir, src_folders[0]), hd=hd)
         else:
             pybuild_dir(os.path.join(dir, src_folders[0]), hd=hd)
-
-    def build_whl():
-        dir = copy_files()
-        if dir is None:
-            print("error: copy files failed! ")
-            exit(1)
-        if gen_ui(os.path.join(dir, src_folders[0])) is False:
-            print("error: gen ui failed! ")
-            exit(1)
-        else:
-            remove_spec_files(os.path.join(dir, src_folders[0]), "ui")
-        if gen_rc(os.path.join(dir, src_folders[0])) is False:
-            print("error: gen rc failed! ")
-            exit(1)
-        else:
-            remove_spec_files(os.path.join(dir, src_folders[0]), "qrc")
-        if translations_gen(os.path.join(dir, src_folders[0])) is False:
-            print("error: gen translations failed! ")
-            exit(1)
-        else:
-            remove_spec_files(os.path.join(dir, src_folders[0], "translations"), "ts")
-        if gen_pyd(dir) is False:
-            print("error: gen pyd failed! ")
-            exit(1)
         gen_whl(dir)
 
-    if args.copy:
-        copy_files(dir=args.copy)
-    elif args.build:
-        if args.build == "one":
-            build_program(one=True)
+    if args.dir is not None:
+        if os.path.exists(args.dir):
+            print(f"Error: folder '{args.dir}' already exists!")
+            sys.exit(1)
         else:
-            build_program()
-    elif args.update:
-        gen_rc(os.path.join(script_dir, src_folders[0]))
-        gen_ui(os.path.join(script_dir, src_folders[0]))
-    elif args.translate:
+            build_dir = args.dir
+
+    b_dir = args.dir is not None
+    b_build = args.build is not None
+    b_update = args.update
+    b_translate = args.translate is not None
+    b_pyd = args.pyd
+
+    if b_build and (b_update or b_translate):
+        print(
+            "Error: -b/--build and -u/--update or -t/--translate can not be used at the same time!"
+        )
+        sys.exit(1)
+
+    if b_pyd and (not b_build):
+        print("Error: -p/--pyd can only be used with -b/--build!")
+        sys.exit(1)
+
+    if b_dir and (b_update or b_translate):
+        print(
+            "Error: -d/--dir and -u/--update or -t/--translate can not be used at the same time!"
+        )
+        sys.exit(1)
+
+    if b_translate:
         if args.translate == "up":
             translations_update(os.path.join(script_dir, src_folders[0]))
         elif args.translate == "gui":
             translations_linguist(os.path.join(script_dir, src_folders[0]))
         elif args.translate == "gen":
             translations_gen(os.path.join(script_dir, src_folders[0]))
-    elif args.pyd:
+
+    if b_update:
+        gen_rc(os.path.join(script_dir, src_folders[0]))
+        gen_ui(os.path.join(script_dir, src_folders[0]))
+
+    if b_build and (not b_pyd):
+        if args.build == "one":
+            build_program(one=True)
+        else:
+            build_program()
+    elif b_build and b_pyd:
         if args.pyd == "one":
             build_program(one=True, pyd=True, hd=True)
         else:
             build_program(pyd=True, hd=True)
-    elif args.genwhl:
-        build_whl()
     else:
         parser.print_help()
