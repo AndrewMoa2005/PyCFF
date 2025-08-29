@@ -4,7 +4,7 @@ import sys
 import pathlib
 import argparse
 
-from pycff.widget import Widget
+from .widget import Widget
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import (
     QTranslator,

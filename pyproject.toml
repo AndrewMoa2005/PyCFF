@@ -6,14 +6,16 @@ readme = "README.md"
 license = "LGPL-3.0-or-later"
 license-files = ["LICENSE"]
 authors = [{ name = "Andrew Moa", email = "Andrew.Moa2005@163.com" }]
-requires-python = ">=3.8"
-keywords = ["PySide6", "application", "widget"]
+requires-python = ">=3.9"
+keywords = [
+    "PySide6", 
+    "application", 
+    "widget",
+    ]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -21,7 +23,11 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Mathematics",
 ]
-dependencies = ["numpy", "scipy", "PySide6"]
+dependencies = [
+    "numpy", 
+    "scipy", 
+    "PySide6>=6.7.0",
+    ]
 
 [tool.pyside6-project]
 files = [
