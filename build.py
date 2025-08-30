@@ -482,10 +482,6 @@ if __name__ == "__main__":
         exit(0)
 
     def build_program(one=False, pyd=False, hd=False):
-        if pyd and (platform.system().lower() == "darwin"):
-            print("warnning: macos build must be without -p/--pyd")
-            hd = False
-            pyd = False
         dir = copy_files(dir=build_dir)
         if dir is None:
             print("error: copy files failed! ")
@@ -520,7 +516,9 @@ if __name__ == "__main__":
         system = platform.system().lower()
         machine = platform.machine().lower()
         if one:
-            pybuild_one(os.path.join(dir, src_folders[0]), hd=hd)
+            if pybuild_one(os.path.join(dir, src_folders[0]), hd=hd) is False:
+                print("error: pyinstaller build failed! ")
+                exit(1)
             shutil.copy(
                 os.path.join(dir, src_folders[0], "dist", exe_name),
                 os.path.join(dir, "pkg", exe_name),
@@ -540,7 +538,9 @@ if __name__ == "__main__":
                     ),
                 )
         else:
-            pybuild_dir(os.path.join(dir, src_folders[0]), hd=hd)
+            if pybuild_dir(os.path.join(dir, src_folders[0]), hd=hd) is False:
+                print("error: pyinstaller build failed! ")
+                exit(1)
             if system == "windows":
                 zip_dir(
                     os.path.join(dir, src_folders[0], "dist"),
