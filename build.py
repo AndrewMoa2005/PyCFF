@@ -25,6 +25,16 @@ hd_list = [
     "pycff.cff",
     "pycff.widget",
 ]
+src_list = [
+    "form_ui",
+    "resource_rc",
+    "clevertw",
+    "cff",
+    "widget",
+    "application",
+    "__init__",
+    "__main__",
+]
 locale = ["zh_CN", "en"]
 trans_files = ["widget.py", "form.ui", "clevertw.py"]
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -46,6 +56,15 @@ if platform.system().lower() == "windows":
     exe_name = app_name + ".exe"
 else:
     exe_name = app_name
+
+
+def check_src_exists(dir=script_dir):
+    dir_files = [f.split(".")[0] for f in os.listdir(dir)]
+    for src in src_list:
+        if src not in dir_files:
+            print(f"error: source file {src} not exists in {dir}!")
+            return False
+    return True
 
 
 def zip_dir(dirpath, outFullName):
@@ -480,64 +499,59 @@ if __name__ == "__main__":
             if gen_pyd(dir) is False:
                 print("error: gen pyd failed! ")
                 exit(1)
+        if check_src_exists(os.path.join(dir, src_folders[0])) is False:
+            print("error: check src files failed! ")
+            exit(1)
         gen_whl(dir)
         os.mkdir(os.path.join(dir, "pkg"))
+        version = get_version(dir)
+        system = platform.system()
+        machine = platform.machine()
         if one:
             pybuild_one(os.path.join(dir, src_folders[0]), hd=hd)
             shutil.copy(
                 os.path.join(dir, src_folders[0], "dist", exe_name),
                 os.path.join(dir, "pkg", exe_name),
             )
+            if system.lower() == "windows":
+                shutil.move(
+                    os.path.join(dir, "pkg", exe_name),
+                    os.path.join(
+                        dir, "pkg", app_name + f"-v{version}-{system}_{machine}.exe"
+                    ),
+                )
+            else:
+                shutil.move(
+                    os.path.join(dir, "pkg", exe_name),
+                    os.path.join(
+                        dir, "pkg", app_name + f"-v{version}-{system}_{machine}.run"
+                    ),
+                )
         else:
             pybuild_dir(os.path.join(dir, src_folders[0]), hd=hd)
-            version = get_version(dir)
-            if platform.system().lower() == "windows":
-                if "arm" in platform.machine().lower():
-                    zip_dir(
-                        os.path.join(dir, src_folders[0], "dist"),
-                        os.path.join(
-                            dir, "pkg", app_name + f"-v{version}-win_arm64.zip"
-                        ),
-                    )
-                elif "64" in platform.machine().lower():
-                    zip_dir(
-                        os.path.join(dir, src_folders[0], "dist"),
-                        os.path.join(
-                            dir, "pkg", app_name + f"-v{version}-win_amd64.zip"
-                        ),
-                    )
-                else:
-                    zip_dir(
-                        os.path.join(dir, src_folders[0], "dist"),
-                        os.path.join(dir, "pkg", app_name + f"-v{version}-win_x86.zip"),
-                    )
-            elif platform.system().lower() == "darwin":
+            if system.lower() == "windows":
+                zip_dir(
+                    os.path.join(dir, src_folders[0], "dist"),
+                    os.path.join(
+                        dir, "pkg", app_name + f"-v{version}-{system}_{machine}.zip"
+                    ),
+                )
+            elif system.lower() == "linux":
                 tar_xz_dir(
                     os.path.join(dir, src_folders[0], "dist"),
-                    os.path.join(dir, "pkg", app_name + f"-v{version}-macos.tar.xz"),
+                    os.path.join(
+                        dir, "pkg", app_name + f"-v{version}-{system}_{machine}.tar.xz"
+                    ),
                 )
-            elif platform.system().lower() == "linux":
-                if "arm" in platform.machine().lower():
-                    tar_xz_dir(
-                        os.path.join(dir, src_folders[0], "dist"),
-                        os.path.join(
-                            dir, "pkg", app_name + f"-v{version}-linux_arm64.tar.xz"
-                        ),
-                    )
-                elif "64" in platform.machine().lower():
-                    tar_xz_dir(
-                        os.path.join(dir, src_folders[0], "dist"),
-                        os.path.join(
-                            dir, "pkg", app_name + f"-v{version}-linux_aarch64.tar.xz"
-                        ),
-                    )
-                else:
-                    tar_xz_dir(
-                        os.path.join(dir, src_folders[0], "dist"),
-                        os.path.join(
-                            dir, "pkg", app_name + f"-v{version}-linux_x86.tar.xz"
-                        ),
-                    )
+            else:
+                zip_dir(
+                    os.path.join(dir, src_folders[0], "dist"),
+                    os.path.join(
+                        dir,
+                        "pkg",
+                        app_name + f"-v{version}-{system}_{machine}.zip",
+                    ),
+                )
 
     b_dir = args.dir is not None
     b_build = args.build is not None
@@ -546,27 +560,27 @@ if __name__ == "__main__":
     b_pyd = args.pyd
 
     if b_update and b_translate:
-        print("Error: -u/--update and -t/--translate can not be used at the same time!")
+        print("error: -u/--update and -t/--translate can not be used at the same time!")
         sys.exit(1)
 
     if b_build and (b_update or b_translate):
         print(
-            "Error: -b/--build and -u/--update or -t/--translate can not be used at the same time!"
+            "error: -b/--build and -u/--update or -t/--translate can not be used at the same time!"
         )
         sys.exit(1)
 
     if b_pyd and (not b_build):
-        print("Error: -p/--pyd can only be used with -b/--build!")
+        print("error: -p/--pyd can only be used with -b/--build!")
         sys.exit(1)
 
     if b_dir and (b_update or b_translate):
         print(
-            "Error: -d/--dir and -u/--update or -t/--translate can not be used at the same time!"
+            "error: -d/--dir and -u/--update or -t/--translate can not be used at the same time!"
         )
         sys.exit(1)
 
     if b_dir and (not b_build):
-        print("Error: -d/--dir must be used with -b/--build!")
+        print("error: -d/--dir must be used with -b/--build!")
         sys.exit(1)
 
     if b_dir:
@@ -575,7 +589,7 @@ if __name__ == "__main__":
                 shutil.rmtree(os.path.join(script_dir, args.dir))
                 print(f"delete folder '{args.dir}' success")
         elif os.path.exists(args.dir):
-            print(f"Error: folder '{args.dir}' already exists!")
+            print(f"error: folder '{args.dir}' already exists!")
             sys.exit(1)
         else:
             build_dir = args.dir
@@ -592,16 +606,11 @@ if __name__ == "__main__":
         gen_rc(os.path.join(script_dir, src_folders[0]))
         gen_ui(os.path.join(script_dir, src_folders[0]))
 
-    if b_build and (not b_pyd):
+    if b_build:
         if args.build == "one":
-            build_program(one=True)
+            build_program(one=True, pyd=b_pyd, hd=b_pyd)
         else:
-            build_program()
-    elif b_build and b_pyd:
-        if args.pyd == "one":
-            build_program(one=True, pyd=True, hd=True)
-        else:
-            build_program(pyd=True, hd=True)
+            build_program(one=False, pyd=b_pyd, hd=b_pyd)
 
     if not b_build and not b_translate and not b_update:
         parser.print_help()
