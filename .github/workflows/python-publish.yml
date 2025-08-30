@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, ubuntu-latest-arm, macos-latest, windows-latest, windows-latest-arm]
 
     steps:
       - uses: actions/checkout@v4
@@ -40,5 +40,13 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
-          python build.py -g
-          python -m twine upload build/dist/* --verbose
+          python build.py -b -p
+          # python -m twine upload build/dist/* --verbose
+
+      - name: Upload release image
+        uses: actions/upload-artifact@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: Release image
+          path: build/pkg/PyCFF-*
