@@ -58,6 +58,18 @@ else:
     exe_name = app_name
 
 
+def rename_whl(dir):
+    """
+    rename whl file in dir, add py version info
+    Args:
+        dir (str): dir to rename whl file
+    """
+    py_version = sys.version.split(".")[:2]
+    py_version = "".join(py_version)
+    for file in glob(os.path.join(dir, "*.whl")):
+        os.rename(file, file.replace("none", f"cp{py_version}"))
+
+
 def check_src_exists(dir=script_dir):
     dir_files = [f.split(".")[0] for f in os.listdir(dir)]
     for src in src_list:
@@ -497,6 +509,8 @@ if __name__ == "__main__":
             print("error: check src files failed! ")
             exit(1)
         gen_whl(dir)
+        if pyd:
+            rename_whl(os.path.join(dir, "dist"))
         os.mkdir(os.path.join(dir, "pkg"))
         version = get_version(dir)
         system = platform.system()
