@@ -372,17 +372,11 @@ def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable
     system = platform.system().lower()
     machine = platform.machine().lower()
     if system == "windows":
-        if "arm" in machine:
-            plat_name = "win_arm64"
-        else:
-            plat_name = "win_amd64"
+        plat_name = f"win_{machine}"
     elif system == "darwin":
-        plat_name = "macosx_12_0_universal2"
+        plat_name = f"macosx_{machine}"
     elif system == "linux":
-        if "arm" in machine:
-            plat_name = "manylinux_2_39_aarch64"
-        else:
-            plat_name = "manylinux_2_28_x86_64"
+        plat_name = f"manylinux_{machine}"
     else:
         plat_name = "any"
     # create wheel
