@@ -13,7 +13,15 @@ on:
     types: [published]
 
 permissions:
-  contents: read
+  contents: write
+  checks: write
+
+  actions: read
+  issues: read
+  packages: write
+  pull-requests: read
+  repository-projects: read
+  statuses: read
 
 jobs:
   deploy-pypi:
@@ -43,10 +51,9 @@ jobs:
           python build.py -b -p
           # python -m twine upload build/dist/* --verbose
 
-      - name: Upload release image
-        uses: actions/upload-artifact@v2
+      - name: Upload release binaries
+        uses: alexellis/upload-assets@0.4.0
         env:
           GITHUB_TOKEN: ${{ secrets._GITHUB_TOKEN }}
         with:
-          name: Release image
-          path: build/pkg/PyCFF-*
+          asset_paths: '["./build/pkg/PyCFF-*"]'
