@@ -95,25 +95,25 @@ python build.py -h
 ```
 ![c526195ad4f9c0928665d83df792851b.png](./images/c526195ad4f9c0928665d83df792851b.png)
 
- - The `-h`/`--help` switch displays command-line help.
- - The `-c`/`--copy` switch copies the source code to a specified directory for debugging purposes.
- - The `-b`/`--build` switch runs `pyinstaller` to package the source code into an executable file. `dir` packages the source code into a directory (the default), and `one` packages the source code into a single executable file.
- - The `-u`/`--update` switch compiles `.ui` and `.qrc` files in the source code into `.py` files for debugging purposes.
- - The `-t`/`--translate` switch allows for multi-language translation. `up` updates `.ts` files in the source code, `gui` launches the `linguistgui` interface and opens `.ts` files, and `gen` compiles `.ts` files into `.qm` files. This switch is typically used for debugging purposes only.
- - The `-p`/`--pyd` switch compiles the `.py` file into `.pyd`/`.so`, then runs `pyinstaller` to package it into an executable file. `dir` packages the file into a directory (the default), and `one` packages the file into a single executable file.
- - The `-g`/`--genwhl` switch generates a whl distribution package.
+ - Option `-h`/`--help` displays command-line help.
+ - Option `-v`/`--version` displays the software version information.
+ - Option `-d`/`--dir` specifies the build directory name, usually under the source code directory, defaults to `build`.
+ - Option `-b`/`--build` generates `whl` file while running `pyinstaller` to package the source code into executable files, where `dir` means packaging into a directory (default), and `one` means packaging into a single executable file.
+ - Option `-u`/`--update` compiles `.ui` and `.qrc` files in the source code into `.py` files for debugging purposes.
+ - Option `-t`/`--translate` allows for multi-language translation. `up` updates `.ts` files in the source code, `gui` launches the `linguistgui` interface and opens `.ts` files, and `gen` compiles `.ts` files into `.qm` files. This switch is typically used for debugging purposes only.
+ - Option `-p`/`--pyd`, whether to compile `.py` files into `.pyd`/`.so`.
 
 In general, you can quickly build an executable program using the following command:
 ```bash
-python build.py -p
+python build.py -b
 ```
-The generated executable file/folder is located in the `[source_dir]/build/pycff/dist` directory.
+The generated executable file/compressed package is located in the `[source_dir]/build/pkg` directory, and the whl file generated at the same time is located in the `[source_dir]/build/dist` path.
 
-You can quickly build the whl distribution package using the following command:
+After generating the whl file, install it using the following command:
 ```bash
-python build.py -g
+pip install pycff-{version}-py3-none-{platform}_{machine}.whl
 ```
-The generated whl file is in the `[source_dir]/build/dist` path. You can install the release package through `pip install pycff-{version}-py3-none-{platform}.whl`. After the release package is installed, you can start the main program through `pycff` or `python -m pycff`.
+After the release package is installed, you can start the main program through `pycff` or `python -m pycff`.
 
 ## 3. Quick Start
 

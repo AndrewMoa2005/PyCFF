@@ -95,25 +95,25 @@ python build.py -h
 ```
 ![c526195ad4f9c0928665d83df792851b.png](./images/c526195ad4f9c0928665d83df792851b.png)
 
- - 开关`-h`/`--help`显示命令行帮助信息
- - 开关`-c`/`--copy`将源文件复制到指定目录，用于调试
- - 开关`-b`/`--build`运行`pyinstaller`将源码打包成可执行文件，`dir`表示打包成目录(默认情况)，`one`表示打包成单独的可执行文件
- - 开关`-u`/`--update`将源文件中的`.ui`和`.qrc`编译成`.py`文件，用于调试
- - 开关`-t`/`--translate`用于多语言翻译，`up`表示更新源码中的`.ts`文件，`gui`表示启动`linguistgui`界面并打开`.ts`文件，`gen`表示将`.ts`文件编译成`.qm`文件，此开关一般单独用于调试
- - 开关`-p`/`--pyd`，先将`.py`文件编译成`.pyd`/`.so`，再运行`pyinstaller`打包成可执行文件，`dir`表示打包成目录(默认情况)，`one`表示打包成单独的可执行文件
- - 开关`-g`/`--genwhl`，生成whl发布包
+ - 开关`-h`/`--help`显示命令行帮助信息。
+ - 开关`-v`/`--version`显示软件版本信息。
+ - 开关`-d`/`--dir`输入构建目录名称，通常在源码目录下，默认为`build`。
+ - 开关`-b`/`--build`生成`whl`文件同时运行`pyinstaller`将源码打包成可执行文件，`dir`表示打包成目录(默认情况)，`one`表示打包成单独的可执行文件。
+ - 开关`-u`/`--update`将源文件中的`.ui`和`.qrc`编译成`.py`文件，用于调试。
+ - 开关`-t`/`--translate`用于多语言翻译，`up`表示更新源码中的`.ts`文件，`gui`表示启动`linguistgui`界面并打开`.ts`文件，`gen`表示将`.ts`文件编译成`.qm`文件，此开关一般单独用于调试。
+ - 开关`-p`/`--pyd`，是否将`.py`文件编译成`.pyd`/`.so`。
 
 一般情况下，使用以下命令即可快速构建可执行程序：
 ```bash
-python build.py -p
+python build.py -b
 ```
-生成的可执行文件/文件夹在`[source_dir]/build/pycff/dist`路径下。
+生成的可执行文件/压缩包在`[source_dir]/build/pkg`路径下，同时生成的whl文件位于`[source_dir]/build/dist`路径下。
 
-使用以下命令即可快速构建whl发布包：
+生成whl文件后，通过以下命令安装：
 ```bash
-python build.py -g
+pip install pycff-{version}-py3-none-{platform}_{machine}.whl
 ```
-生成的whl文件在`[source_dir]/build/dist`路径下，通过`pip install pycff-{version}-py3-none-{platform}.whl`安装该发布包。发布包安装后，可以通过`pycff`或者`python -m pycff`启动主程序。
+发布包安装后，可以通过`pycff`或者`python -m pycff`启动主程序。
 
 ## 3. 快速上手
 
