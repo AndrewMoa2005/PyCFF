@@ -513,15 +513,15 @@ if __name__ == "__main__":
             rename_whl(os.path.join(dir, "dist"))
         os.mkdir(os.path.join(dir, "pkg"))
         version = get_version(dir)
-        system = platform.system()
-        machine = platform.machine()
+        system = platform.system().lower()
+        machine = platform.machine().lower()
         if one:
             pybuild_one(os.path.join(dir, src_folders[0]), hd=hd)
             shutil.copy(
                 os.path.join(dir, src_folders[0], "dist", exe_name),
                 os.path.join(dir, "pkg", exe_name),
             )
-            if system.lower() == "windows":
+            if system == "windows":
                 shutil.move(
                     os.path.join(dir, "pkg", exe_name),
                     os.path.join(
@@ -537,27 +537,36 @@ if __name__ == "__main__":
                 )
         else:
             pybuild_dir(os.path.join(dir, src_folders[0]), hd=hd)
-            if system.lower() == "windows":
+            if system == "windows":
                 zip_dir(
                     os.path.join(dir, src_folders[0], "dist"),
                     os.path.join(
-                        dir, "pkg", app_name + f"-v{version}-{system}_{machine}.zip"
+                        dir, "pkg", app_name + f"-v{version}-win_{machine}.zip"
                     ),
                 )
-            elif system.lower() == "linux":
+            elif system == "linux":
                 tar_xz_dir(
                     os.path.join(dir, src_folders[0], "dist"),
                     os.path.join(
-                        dir, "pkg", app_name + f"-v{version}-{system}_{machine}.tar.xz"
+                        dir, "pkg", app_name + f"-v{version}-linux_{machine}.tar.xz"
                     ),
                 )
-            else:
+            elif system == "darwin":
                 zip_dir(
                     os.path.join(dir, src_folders[0], "dist"),
                     os.path.join(
                         dir,
                         "pkg",
-                        app_name + f"-v{version}-{system}_{machine}.zip",
+                        app_name + f"-v{version}-macosx_{machine}.zip",
+                    ),
+                )
+            else:
+                tar_xz_dir(
+                    os.path.join(dir, src_folders[0], "dist"),
+                    os.path.join(
+                        dir,
+                        "pkg",
+                        app_name + f"-v{version}-unknown_{machine}.tar.xz",
                     ),
                 )
 

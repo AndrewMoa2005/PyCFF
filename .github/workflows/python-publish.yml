@@ -28,7 +28,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-latest-arm, macos-latest, windows-latest, windows-latest-arm]
+        os: [ubuntu-latest, macos-latest, windows-latest, windows-11-arm, ubuntu-24.04-arm]
 
     steps:
       - uses: actions/checkout@v4
@@ -56,4 +56,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets._GITHUB_TOKEN }}
         with:
-          asset_paths: '["./build/pkg/PyCFF-*"]'
+          asset_paths: '["./build/pkg/PyCFF-*", "./build/dist/*"]'
