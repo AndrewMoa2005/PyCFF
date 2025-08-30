@@ -52,10 +52,6 @@ files = [
 src_folders = ["pycff", "translations", "images"]
 build_dir = "build"
 app_name = "PyCFF"
-if platform.system().lower() == "windows":
-    exe_name = app_name + ".exe"
-else:
-    exe_name = app_name
 
 
 def rename_whl(dir):
@@ -182,7 +178,7 @@ def gen_rc(dir=script_dir):
         return False
 
 
-def pybuild_dir(dir=os.path.join(script_dir, build_dir), hd=False):
+def pybuild_dir(dir=os.path.join(script_dir, build_dir), hd=False, name=app_name):
     """
     run:  pyinstaller --contents-directory . --windowed --add-data "translations/*.qm:translations" --icon "image/curve.ico" --name PyCFF --exclude PyQt6 application.py
     :param target_dir: pwd
@@ -198,7 +194,7 @@ def pybuild_dir(dir=os.path.join(script_dir, build_dir), hd=False):
         "--icon",
         "image/curve.ico",
         "--name",
-        app_name,
+        name,
         "--exclude",
         "PyQt6",
         "--version-file",
@@ -222,7 +218,7 @@ def pybuild_dir(dir=os.path.join(script_dir, build_dir), hd=False):
         return False
 
 
-def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False):
+def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False, name=app_name):
     """
     run:  pyinstaller --onefile --windowed --add-data "translations/*.qm:translations" --icon "image/curve.ico" --name PyCFF --exclude PyQt6 application.py
     :param target_dir: pwd
@@ -237,7 +233,7 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False):
         "--icon",
         "image/curve.ico",
         "--name",
-        exe_name,
+        name,
         "--exclude",
         "PyQt6",
         "--version-file",
@@ -515,44 +511,52 @@ if __name__ == "__main__":
         version = get_version(dir)
         system = platform.system().lower()
         machine = platform.machine().lower()
+        if system == "windows":
+            dir_name = f"{app_name}-v{version}-win_{machine}"
+        elif system == "linux":
+            dir_name = f"{app_name}-v{version}-linux_{machine}"
+        elif system == "darwin":
+            dir_name = f"{app_name}-v{version}-macosx_{machine}"
+        else:
+            dir_name = f"{app_name}-v{version}-unknown_{machine}"
         if one:
-            if pybuild_one(os.path.join(dir, src_folders[0]), hd=hd) is False:
+            if system == "windows":
+                exe_name = dir_name + ".exe"
+            else:
+                exe_name = dir_name + ".run"
+            if (
+                pybuild_one(os.path.join(dir, src_folders[0]), hd=hd, name=exe_name)
+                is False
+            ):
                 print("error: pyinstaller build failed! ")
                 exit(1)
             shutil.copy(
                 os.path.join(dir, src_folders[0], "dist", exe_name),
                 os.path.join(dir, "pkg", exe_name),
             )
-            if system == "windows":
-                shutil.move(
-                    os.path.join(dir, "pkg", exe_name),
-                    os.path.join(
-                        dir, "pkg", app_name + f"-v{version}-{system}_{machine}.exe"
-                    ),
-                )
-            else:
-                shutil.move(
-                    os.path.join(dir, "pkg", exe_name),
-                    os.path.join(
-                        dir, "pkg", app_name + f"-v{version}-{system}_{machine}.run"
-                    ),
-                )
         else:
-            if pybuild_dir(os.path.join(dir, src_folders[0]), hd=hd) is False:
+            if (
+                pybuild_dir(os.path.join(dir, src_folders[0]), hd=hd, name=dir_name)
+                is False
+            ):
                 print("error: pyinstaller build failed! ")
                 exit(1)
             if system == "windows":
                 zip_dir(
                     os.path.join(dir, src_folders[0], "dist"),
                     os.path.join(
-                        dir, "pkg", app_name + f"-v{version}-win_{machine}.zip"
+                        dir,
+                        "pkg",
+                        dir_name + ".zip",
                     ),
                 )
             elif system == "linux":
                 tar_xz_dir(
                     os.path.join(dir, src_folders[0], "dist"),
                     os.path.join(
-                        dir, "pkg", app_name + f"-v{version}-linux_{machine}.tar.xz"
+                        dir,
+                        "pkg",
+                        dir_name + ".tar.xz",
                     ),
                 )
             elif system == "darwin":
@@ -561,7 +565,7 @@ if __name__ == "__main__":
                     os.path.join(
                         dir,
                         "pkg",
-                        app_name + f"-v{version}-macosx_{machine}.zip",
+                        dir_name + ".zip",
                     ),
                 )
             else:
@@ -570,7 +574,7 @@ if __name__ == "__main__":
                     os.path.join(
                         dir,
                         "pkg",
-                        app_name + f"-v{version}-unknown_{machine}.tar.xz",
+                        dir_name + ".tar.xz",
                     ),
                 )
 
