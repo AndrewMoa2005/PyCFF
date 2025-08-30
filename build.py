@@ -482,6 +482,10 @@ if __name__ == "__main__":
         exit(0)
 
     def build_program(one=False, pyd=False, hd=False):
+        if pyd and (platform.system().lower() == "darwin"):
+            print("warnning: macos build must be without -p/--pyd")
+            hd = False
+            pyd = False
         dir = copy_files(dir=build_dir)
         if dir is None:
             print("error: copy files failed! ")
