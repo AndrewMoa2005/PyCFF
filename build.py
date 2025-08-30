@@ -81,7 +81,7 @@ def zip_dir(dirpath, outFullName):
     :param dirpath: dir to zip
     :param outFullName: zip file path
     """
-    zip = zipfile.ZipFile(outFullName, "w", zipfile.ZIP_DEFLATED)
+    zip = zipfile.ZipFile(outFullName, "w", zipfile.ZIP_LZMA)
     for path, dirnames, filenames in os.walk(dirpath):
         # Remove the target root path and only compress the files and subfolders under the target folder
         fpath = path.replace(dirpath, "")
