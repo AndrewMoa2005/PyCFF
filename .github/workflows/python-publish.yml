@@ -48,7 +48,7 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
-          python build.py -b -p
+          python build.py -b one -p
           # python -m twine upload build/dist/* --verbose
 
       - name: Upload release binaries
