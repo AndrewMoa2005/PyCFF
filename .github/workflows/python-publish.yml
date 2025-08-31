@@ -24,11 +24,11 @@ permissions:
   statuses: read
 
 jobs:
-  deploy-pypi:
+  release-package:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest, ubuntu-24.04-arm, windows-11-arm]
+        os: [ubuntu-latest, macos-latest, windows-latest, ubuntu-24.04-arm]
 
     steps:
       - uses: actions/checkout@v4
