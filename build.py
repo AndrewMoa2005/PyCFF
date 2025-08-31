@@ -197,6 +197,14 @@ def pybuild_dir(dir=os.path.join(script_dir, build_dir), hd=False, name=app_name
         name,
         "--exclude",
         "PyQt6",
+        "--exclude-module",
+        "Pillow",
+        "--exclude-module",
+        "PIL",
+        "--exclude-module",
+        "Cython",
+        "--exclude-module",
+        "setuptools",
         "--version-file",
         "../file-version-info.txt",
         "__main__.py",
@@ -236,6 +244,14 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False, name=app_name
         name,
         "--exclude",
         "PyQt6",
+        "--exclude-module",
+        "Pillow",
+        "--exclude-module",
+        "PIL",
+        "--exclude-module",
+        "Cython",
+        "--exclude-module",
+        "setuptools",        
         "--version-file",
         "../file-version-info.txt",
         "__main__.py",
@@ -522,8 +538,10 @@ if __name__ == "__main__":
         if one:
             if system == "windows":
                 exe_name = dir_name + ".exe"
+            elif system == "linux":
+                exe_name = dir_name + ".elf"
             else:
-                exe_name = dir_name + ".run"
+                exe_name = dir_name + ".bin"
             if (
                 pybuild_one(os.path.join(dir, src_folders[0]), hd=hd, name=exe_name)
                 is False
@@ -560,12 +578,12 @@ if __name__ == "__main__":
                     ),
                 )
             elif system == "darwin":
-                zip_dir(
+                tar_xz_dir(
                     os.path.join(dir, src_folders[0], "dist"),
                     os.path.join(
                         dir,
                         "pkg",
-                        dir_name + ".zip",
+                        dir_name + ".tar.xz",
                     ),
                 )
             else:
