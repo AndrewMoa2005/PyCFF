@@ -24,7 +24,7 @@ permissions:
   statuses: read
 
 jobs:
-  release-package:
+  publish-release-packages:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -48,7 +48,7 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
-          python build.py -b one -p
+          python build.py -b dir -p
           # python -m twine upload build/dist/* --verbose
 
       - name: Upload release binaries
