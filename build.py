@@ -63,7 +63,7 @@ def rename_whl(dir):
     py_version = sys.version.split(".")[:2]
     py_version = "".join(py_version)
     for file in glob(os.path.join(dir, "*.whl")):
-        os.rename(file, file.replace("none", f"cp{py_version}"))
+        os.rename(file, file.replace("py3", f"cp{py_version}").replace("none", "abi3"))
 
 
 def check_src_exists(dir=script_dir):
@@ -396,10 +396,22 @@ def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable
     system = platform.system().lower()
     machine = platform.machine().lower()
     if system == "windows":
+        if "arm" in machine:
+            machine = "arm64"
+        elif "64" in machine:
+            machine = "amd64"
+        else:
+            machine = "x86"
         plat_name = f"win_{machine}"
     elif system == "darwin":
-        plat_name = f"macosx_{machine}"
+        plat_name = f"macosx_12_0_universal2"
     elif system == "linux":
+        if "arm" in machine:
+            machine = "_aarch64"
+        elif "64" in machine:
+            machine = "_x86_64"
+        else:
+            machine = "x86"
         plat_name = f"manylinux_{machine}"
     else:
         plat_name = "any"
