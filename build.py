@@ -408,6 +408,8 @@ def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable
     elif system == "linux":
         if "arm" in machine:
             machine = "aarch64"
+        elif "aarch64" in machine:
+            machine = "aarch64"
         elif "64" in machine:
             machine = "x86_64"
         else:
