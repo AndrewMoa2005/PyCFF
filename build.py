@@ -251,7 +251,7 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False, name=app_name
         "--exclude-module",
         "Cython",
         "--exclude-module",
-        "setuptools",        
+        "setuptools",
         "--version-file",
         "../file-version-info.txt",
         "__main__.py",
@@ -417,12 +417,43 @@ def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable
 
 def get_version(dir=script_dir) -> str:
     """
+    get git version
+    Returns:
+        str: git version
+    """
+    try:
+        subprocess.run(
+            ["git", "--version"],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print("error: git is not installed or not in PATH!")
+        return None
+    try:
+        git_version = subprocess.check_output(
+            ["git", "describe", "--tags"], text=True, cwd=dir
+        ).strip()
+    except subprocess.CalledProcessError:
+        print("error: git command not found!")
+        return None
+    print("current git tag: ", git_version)
+    git_version = git_version.lstrip("v")
+    git_version = git_version.split("-", 1)[0]
+    ll = git_version.split(".")
+    if len(ll) > 4:
+        print("error: git version format error!")
+    return git_version
+    """
     load version string from pyproject.toml
+    """
     """
     with open(os.path.join(dir, "pyproject.toml"), "rb") as f:
         data = tomllib.load(f)
     version = data["project"]["version"]
     return version
+    """
 
 
 def reflush_txt_version(dir=script_dir, txtfile="file-version-info.txt"):
@@ -525,6 +556,9 @@ if __name__ == "__main__":
             rename_whl(os.path.join(dir, "dist"))
         os.mkdir(os.path.join(dir, "pkg"))
         version = get_version(dir)
+        if version is None:
+            print("error: get version failed! ")
+            exit(1)
         system = platform.system().lower()
         machine = platform.machine().lower()
         if system == "windows":

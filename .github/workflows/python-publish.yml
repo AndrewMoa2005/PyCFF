@@ -49,7 +49,7 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
           python build.py -b dir -p
-          # python -m twine upload build/dist/* --verbose
+          python -m twine upload build/dist/* --verbose
 
       - name: Upload release binaries
         uses: alexellis/upload-assets@0.4.0
