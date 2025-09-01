@@ -62,6 +62,11 @@
 
 ### 2.1 构建环境
 
+构建依赖：
+ - Python >= 3.12
+ - Git
+ - C/C++ Compiler (可选) ： 仅在构建pyd/so时需要
+
 源代码提供了`build.py`脚本方便快速构建，用户构建前应先建立虚拟环境：
 ```bash
 python -m venv myvenv # myvenv 为虚拟环境名称，根据需要自己定义

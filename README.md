@@ -62,6 +62,11 @@ The software includes predefined functions such as polynomials, exponentials, lo
 
 ### 2.1 Build Environment
 
+Build dependencies:
+ - Python >= 3.12
+ - Git
+ - C/C++ Compiler (optional) : required when building pyd/so
+
 The source code provides a `build.py` script for quick and easy building. Users should create a virtual environment before building:
 ```bash
 python -m venv myvenv # myvenv is the name of the virtual environment, which can be defined as needed
