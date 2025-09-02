@@ -29,7 +29,7 @@ from PySide6.QtWidgets import (
 class CleverTableWidget(QTableWidget):
     # 构造函数
     def __init__(
-        self, parent=None, rowCount=0, columnCount=0, editable=True, shortcut=False
+        self, parent=None, rowCount=0, columnCount=0, editable=True, shortcut=True
     ):
         super().__init__(parent, rowCount=rowCount, columnCount=columnCount)
         self.editable = editable
@@ -73,12 +73,18 @@ class CleverTableWidget(QTableWidget):
         self.move_left_action.setShortcut("Alt+Left")
         self.move_right_action.setShortcut("Alt+Right")
         if shortcut:
-            QShortcut(QKeySequence("Alt+Up"), self).activated.connect(self.move_up)
-            QShortcut(QKeySequence("Alt+Down"), self).activated.connect(self.move_down)
-            QShortcut(QKeySequence("Alt+Left"), self).activated.connect(self.move_left)
-            QShortcut(QKeySequence("Alt+Right"), self).activated.connect(
-                self.move_right
-            )
+            short_a_up = QShortcut(QKeySequence("Alt+Up"), self)
+            short_a_up.activated.connect(self.move_up)
+            short_a_up.setContext(Qt.WidgetShortcut)
+            short_a_down = QShortcut(QKeySequence("Alt+Down"), self)
+            short_a_down.activated.connect(self.move_down)
+            short_a_down.setContext(Qt.WidgetShortcut)
+            short_a_left = QShortcut(QKeySequence("Alt+Left"), self)
+            short_a_left.activated.connect(self.move_left)
+            short_a_left.setContext(Qt.WidgetShortcut)
+            short_a_right = QShortcut(QKeySequence("Alt+Right"), self)
+            short_a_right.activated.connect(self.move_right)
+            short_a_right.setContext(Qt.WidgetShortcut)
         # 排序、替换相关操作
         self.ascending_clo_action = QAction(self.tr("列升序"), self)
         self.descending_clo_action = QAction(self.tr("列降序"), self)
@@ -96,15 +102,21 @@ class CleverTableWidget(QTableWidget):
         self.paste_clo_action.setShortcut("Alt+V")
         self.float_clo_action.setShortcut("Alt+U")
         if shortcut:
-            QShortcut(QKeySequence("Alt+A"), self).activated.connect(
-                self.sort_clo_ascending
-            )
-            QShortcut(QKeySequence("Alt+D"), self).activated.connect(
-                self.sort_clo_descending
-            )
-            QShortcut(QKeySequence("Alt+R"), self).activated.connect(self.reverse_clo)
-            QShortcut(QKeySequence("Alt+V"), self).activated.connect(self.paste_clo)
-            QShortcut(QKeySequence("Alt+U"), self).activated.connect(self.float_clo)
+            short_a_a = QShortcut(QKeySequence("Alt+A"), self)
+            short_a_a.activated.connect(self.sort_clo_ascending)
+            short_a_a.setContext(Qt.WidgetShortcut)
+            short_a_d = QShortcut(QKeySequence("Alt+D"), self)
+            short_a_d.activated.connect(self.sort_clo_descending)
+            short_a_d.setContext(Qt.WidgetShortcut)
+            short_a_r = QShortcut(QKeySequence("Alt+R"), self)
+            short_a_r.activated.connect(self.reverse_clo)
+            short_a_r.setContext(Qt.WidgetShortcut)
+            short_a_v = QShortcut(QKeySequence("Alt+V"), self)
+            short_a_v.activated.connect(self.paste_clo)
+            short_a_v.setContext(Qt.WidgetShortcut)
+            short_a_u = QShortcut(QKeySequence("Alt+U"), self)
+            short_a_u.activated.connect(self.float_clo)
+            short_a_u.setContext(Qt.WidgetShortcut)
         # 设置浮点数的显示格式
         self.digital_format_action = QAction(self.tr("设置数字格式"), self)
         self.digital_format_action.triggered.connect(self.digital_format)
@@ -120,21 +132,27 @@ class CleverTableWidget(QTableWidget):
         self.align_right_action.setShortcut("Ctrl+R")
         self.align_center_action.setShortcut("Ctrl+E")
         if shortcut:
-            QShortcut(QKeySequence("Ctrl+C"), self).activated.connect(
-                self.copy_selection
-            )
-            QShortcut(QKeySequence("Ctrl+V"), self).activated.connect(
-                self.paste_selection
-            )
-            QShortcut(QKeySequence("Ctrl+0"), self).activated.connect(
-                self.clear_selection
-            )
-            QShortcut(QKeySequence("Del"), self).activated.connect(
-                self.delete_selection
-            )
-            QShortcut(QKeySequence("Ctrl+L"), self).activated.connect(self.align_left)
-            QShortcut(QKeySequence("Ctrl+R"), self).activated.connect(self.align_right)
-            QShortcut(QKeySequence("Ctrl+E"), self).activated.connect(self.align_center)
+            short_c_c = QShortcut(QKeySequence("Ctrl+C"), self)
+            short_c_c.activated.connect(self.copy_selection)
+            short_c_c.setContext(Qt.WidgetShortcut)
+            short_c_v = QShortcut(QKeySequence("Ctrl+V"), self)
+            short_c_v.activated.connect(self.paste_selection)
+            short_c_v.setContext(Qt.WidgetShortcut)
+            short_c_0 = QShortcut(QKeySequence("Ctrl+0"), self)
+            short_c_0.activated.connect(self.clear_selection)
+            short_c_0.setContext(Qt.WidgetShortcut)
+            short_del = QShortcut(QKeySequence("Del"), self)
+            short_del.activated.connect(self.delete_selection)
+            short_del.setContext(Qt.WidgetShortcut)
+            short_c_l = QShortcut(QKeySequence("Ctrl+L"), self)
+            short_c_l.activated.connect(self.align_left)
+            short_c_l.setContext(Qt.WidgetShortcut)
+            short_c_r = QShortcut(QKeySequence("Ctrl+R"), self)
+            short_c_r.activated.connect(self.align_right)
+            short_c_r.setContext(Qt.WidgetShortcut)
+            short_c_e = QShortcut(QKeySequence("Ctrl+E"), self)
+            short_c_e.activated.connect(self.align_center)
+            short_c_e.setContext(Qt.WidgetShortcut)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showContextMenu)
         if self.editable:
