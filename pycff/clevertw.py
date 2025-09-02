@@ -28,7 +28,9 @@ from PySide6.QtWidgets import (
 
 class CleverTableWidget(QTableWidget):
     # 构造函数
-    def __init__(self, parent=None, rowCount=0, columnCount=0, editable=True):
+    def __init__(
+        self, parent=None, rowCount=0, columnCount=0, editable=True, shortcut=False
+    ):
         super().__init__(parent, rowCount=rowCount, columnCount=columnCount)
         self.editable = editable
         if not self.editable:
@@ -66,11 +68,11 @@ class CleverTableWidget(QTableWidget):
         self.move_down_action.triggered.connect(self.move_down)
         self.move_left_action.triggered.connect(self.move_left)
         self.move_right_action.triggered.connect(self.move_right)
-        if self.editable:
-            self.move_up_action.setShortcut("Alt+Up")
-            self.move_down_action.setShortcut("Alt+Down")
-            self.move_left_action.setShortcut("Alt+Left")
-            self.move_right_action.setShortcut("Alt+Right")
+        self.move_up_action.setShortcut("Alt+Up")
+        self.move_down_action.setShortcut("Alt+Down")
+        self.move_left_action.setShortcut("Alt+Left")
+        self.move_right_action.setShortcut("Alt+Right")
+        if shortcut:
             QShortcut(QKeySequence("Alt+Up"), self).activated.connect(self.move_up)
             QShortcut(QKeySequence("Alt+Down"), self).activated.connect(self.move_down)
             QShortcut(QKeySequence("Alt+Left"), self).activated.connect(self.move_left)
@@ -88,12 +90,12 @@ class CleverTableWidget(QTableWidget):
         self.reverse_clo_action.triggered.connect(self.reverse_clo)
         self.paste_clo_action.triggered.connect(self.paste_clo)
         self.float_clo_action.triggered.connect(self.float_clo)
-        if self.editable:
-            self.ascending_clo_action.setShortcut("Alt+A")
-            self.descending_clo_action.setShortcut("Alt+D")
-            self.reverse_clo_action.setShortcut("Alt+R")
-            self.paste_clo_action.setShortcut("Alt+V")
-            self.float_clo_action.setShortcut("Alt+U")
+        self.ascending_clo_action.setShortcut("Alt+A")
+        self.descending_clo_action.setShortcut("Alt+D")
+        self.reverse_clo_action.setShortcut("Alt+R")
+        self.paste_clo_action.setShortcut("Alt+V")
+        self.float_clo_action.setShortcut("Alt+U")
+        if shortcut:
             QShortcut(QKeySequence("Alt+A"), self).activated.connect(
                 self.sort_clo_ascending
             )
@@ -111,15 +113,16 @@ class CleverTableWidget(QTableWidget):
         self.transpose_action.triggered.connect(self.transpose_table)
         # 设置快捷键
         self.copy_action.setShortcut("Ctrl+C")
-        if self.editable:
-            self.paste_action.setShortcut("Ctrl+V")
-            self.clear_action.setShortcut("Ctrl+0")
-            self.delete_action.setShortcut("Del")
+        self.paste_action.setShortcut("Ctrl+V")
+        self.clear_action.setShortcut("Ctrl+0")
+        self.delete_action.setShortcut("Del")
         self.align_left_action.setShortcut("Ctrl+L")
         self.align_right_action.setShortcut("Ctrl+R")
         self.align_center_action.setShortcut("Ctrl+E")
-        QShortcut(QKeySequence("Ctrl+C"), self).activated.connect(self.copy_selection)
-        if self.editable:
+        if shortcut:
+            QShortcut(QKeySequence("Ctrl+C"), self).activated.connect(
+                self.copy_selection
+            )
             QShortcut(QKeySequence("Ctrl+V"), self).activated.connect(
                 self.paste_selection
             )
@@ -129,9 +132,9 @@ class CleverTableWidget(QTableWidget):
             QShortcut(QKeySequence("Del"), self).activated.connect(
                 self.delete_selection
             )
-        QShortcut(QKeySequence("Ctrl+L"), self).activated.connect(self.align_left)
-        QShortcut(QKeySequence("Ctrl+R"), self).activated.connect(self.align_right)
-        QShortcut(QKeySequence("Ctrl+E"), self).activated.connect(self.align_center)
+            QShortcut(QKeySequence("Ctrl+L"), self).activated.connect(self.align_left)
+            QShortcut(QKeySequence("Ctrl+R"), self).activated.connect(self.align_right)
+            QShortcut(QKeySequence("Ctrl+E"), self).activated.connect(self.align_center)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showContextMenu)
         if self.editable:
@@ -519,6 +522,8 @@ class CleverTableWidget(QTableWidget):
         """
         粘贴字符串中的数字到所选列，以任意非数字字符分隔
         """
+        if self.editable is False:
+            return
         selected_list = self.get_selected_columns_list()
         if len(selected_list) != 1:
             QMessageBox.warning(
