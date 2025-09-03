@@ -10,6 +10,15 @@ name: Test Build Python Package
 
 on:
   workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Test scenario tags'  
+        required: true
+        default: '1.2.3.4'
 
 permissions:
   contents: write
@@ -30,6 +39,10 @@ jobs:
         os: [windows-11-arm, ubuntu-24.04-arm, ubuntu-latest, macos-latest, windows-latest]
 
     steps:
+      - run: |
+        echo "Log level: ${{ github.event.inputs.logLevel }}"
+        echo "Tags: ${{ github.event.inputs.tags }}" 
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
@@ -41,10 +54,6 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
           python -m pip install twine wheel
-
-      - name: Echo git tags
-        run: |
-          git describe --tags
 
       - name: Build Test
         env:
