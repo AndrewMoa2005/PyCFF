@@ -42,12 +42,9 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install twine wheel
 
-      - name: Get version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-        
-      - name: Echo Version
-        run: echo ${{ steps.get_version.outputs.VERSION }}
+      - name: Echo git tags
+        run: |
+          git describe --tags
 
       - name: Build Test
         env:
@@ -55,7 +52,6 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
           python build.py -b dir -p
-          # python -m twine upload build/dist/* --verbose
 
       - name: Print Message
         run: echo "workflow run success on ${{ matrix.os }}"
