@@ -18,7 +18,6 @@ on:
       tags:
         description: 'Test scenario tags'  
         required: true
-        default: '1.2.3.4'
 
 permissions:
   contents: write
@@ -40,8 +39,8 @@ jobs:
 
     steps:
       - run: |
-        echo "Log level: ${{ github.event.inputs.logLevel }}"
-        echo "Tags: ${{ github.event.inputs.tags }}" 
+          echo "Log level: ${{ github.event.inputs.logLevel }}"
+          echo "Tags: ${{ github.event.inputs.tags }}" 
 
       - uses: actions/checkout@v4
 
