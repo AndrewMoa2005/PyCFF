@@ -55,17 +55,69 @@ build_dir = "build"
 app_name = "PyCFF"
 
 
-def rename_whl(dir):
+def rename_whl(dir, pyd=False):
     """
-    rename whl file in dir, add py version info
+    rename whl file in dir and add py version info if pyd is True.
+    check whether the whl file exists on PyPI, and if so, increment the version number.
     Args:
         dir (str): dir to rename whl file
     """
     py_version = sys.version.split(".")[:2]
     py_version = "".join(py_version)
-    for file in glob(os.path.join(dir, "*.whl")):
-        os.rename(file, file.replace("py3", f"cp{py_version}").replace("none", "abi3"))
-    print("rename whl file success")
+    if pyd:
+        for file in glob(os.path.join(dir, "*.whl")):
+            new_file = file.replace("py3", f"cp{py_version}").replace("none", "abi3")
+            os.rename(file, new_file)
+            print(f"use pyd: {file} -> {new_file}")
+
+    def check_whl_exists(whl_name):
+        try:
+            import requests
+
+            package_name = whl_name.split("-")[0]
+            response = requests.get(f"https://pypi.org/pypi/{package_name}/json")
+            if response.status_code != 200:
+                return False
+            data = response.json()
+            all_files = []
+            for version in data["releases"].values():
+                for file_info in version:
+                    if file_info["filename"].endswith(".whl"):
+                        all_files.append(file_info["filename"])
+            return whl_name in all_files
+        except ImportError:
+            print("error: requests module not installed, please install it first")
+            return False
+        except Exception as e:
+            print(f"error: check whl exists failed: {e}")
+            return False
+
+    # check whl file exists on PyPI
+    loop = True
+    while loop:
+        loop = False
+        for file in glob(os.path.join(dir, "*.whl")):
+            if check_whl_exists(file):
+                loop = True
+                print(
+                    f"warning: whl file {file} exists on PyPI, increment the sub version..."
+                )
+                if pyd is False:
+                    pattern = r"pycff-(.*?)-py\d"
+                else:
+                    pattern = r"pycff-(.*?)-cp\d"
+                version_match = re.search(pattern, file)
+                version = version_match.group(1) if version_match else None
+                if "-" in version:
+                    sub = version.split("-")[1]
+                    new_sub = int(sub) + 1
+                    version = version.replace(f"-{sub}", f"-{new_sub}")
+                else:
+                    version = f"{version}-1"
+                new_file = file.replace(version, f"{version}")
+                os.rename(file, new_file)
+                print(f"rename: {file} -> {new_file}")
+                break
 
 
 def check_src_exists(dir=script_dir):
@@ -208,6 +260,8 @@ def pybuild_dir(dir=os.path.join(script_dir, build_dir), hd=False, name=app_name
         "Cython",
         "--exclude-module",
         "setuptools",
+        "--exclude-module",
+        "requests",
         "--version-file",
         "../file-version-info.txt",
         "__main__.py",
@@ -255,6 +309,8 @@ def pybuild_one(dir=os.path.join(script_dir, build_dir), hd=False, name=app_name
         "Cython",
         "--exclude-module",
         "setuptools",
+        "--exclude-module",
+        "requests",
         "--version-file",
         "../file-version-info.txt",
         "__main__.py",
@@ -437,30 +493,15 @@ def get_version(dir=script_dir) -> str:
     Returns:
         str: git version
     """
+    import setuptools_git_versioning as sgv
+
     try:
-        subprocess.run(
-            ["git", "--version"],
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        print("error: git is not installed or not in PATH!")
-        return None
-    try:
-        git_version = subprocess.check_output(
-            ["git", "describe", "--tags"], text=True, cwd=dir
-        ).strip()
-    except subprocess.CalledProcessError:
-        print("error: git command not found!")
-        return None
-    print("current git tag: ", git_version)
-    git_version = git_version.lstrip("v")
-    git_version = git_version.split("-", 1)[0]
-    ll = git_version.split(".")
-    if len(ll) > 4:
-        print("error: git version format error!")
-    return git_version
+        version = sgv.get_version().base_version
+        print("current git version: ", version)
+    except Exception as e:
+        print("error: ", {str(e)})
+        return "0.0.0.1"
+    return version
     """
     load version string from pyproject.toml
     """
@@ -569,8 +610,7 @@ if __name__ == "__main__":
             print("error: check src files failed! ")
             exit(1)
         gen_whl(dir)
-        if pyd:
-            rename_whl(os.path.join(dir, "dist"))
+        rename_whl(os.path.join(dir, "dist"), pyd=pyd)
         for f_whl in os.listdir(os.path.join(dir, "dist")):
             if f_whl.endswith(".whl"):
                 print("build whl file: ", os.path.join(dir, "dist", f_whl))
