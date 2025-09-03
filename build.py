@@ -9,7 +9,8 @@ import re
 import platform
 import zipfile
 import tarfile
-import tomllib
+
+# import tomllib
 from glob import glob
 
 pyexecutable = os.path.basename(sys.executable)
@@ -64,6 +65,7 @@ def rename_whl(dir):
     py_version = "".join(py_version)
     for file in glob(os.path.join(dir, "*.whl")):
         os.rename(file, file.replace("py3", f"cp{py_version}").replace("none", "abi3"))
+    print("rename whl file success")
 
 
 def check_src_exists(dir=script_dir):
@@ -72,6 +74,7 @@ def check_src_exists(dir=script_dir):
         if src not in dir_files:
             print(f"error: source file {src} not exists in {dir}!")
             return False
+    print("check source file success")
     return True
 
 
@@ -393,28 +396,27 @@ def gen_whl(dir=os.path.join(script_dir, build_dir), pyexecutable=sys.executable
     :param pyexecutable: python executable
     """
     # check platform
+    # https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
     system = platform.system().lower()
     machine = platform.machine().lower()
     if system == "windows":
-        if "arm" in machine:
-            machine = "_arm64"
-        elif "64" in machine:
-            machine = "_amd64"
+        if machine in ["arm", "arm64", "aarch", "aarch64"]:
+            plat_name = f"win_arm64"
+        elif machine in ["amd64", "x86_64", "x64"]:
+            plat_name = f"win_amd64"
         else:
-            machine = "32"
-        plat_name = f"win{machine}"
+            plat_name = f"win32"
     elif system == "darwin":
         plat_name = "macosx_12_0_universal2"
     elif system == "linux":
-        if "arm" in machine:
-            machine = "aarch64"
-        elif "aarch64" in machine:
-            machine = "aarch64"
-        elif "64" in machine:
-            machine = "x86_64"
+        if machine in ["arm", "arm64", "aarch", "aarch64"]:
+            plat_name = "manylinux2014_aarch64"
+        elif machine in ["i386", "i686", "x86"]:
+            plat_name = "manylinux2014_i686"
+        elif machine in ["x86_64", "x64", "amd64"]:
+            plat_name = "manylinux2014_x86_64"
         else:
-            machine = "i686"
-        plat_name = f"manylinux2014_{machine}"
+            plat_name = f"manylinux2014_{machine}"
     else:
         plat_name = "any"
     # create wheel
@@ -568,6 +570,9 @@ if __name__ == "__main__":
         gen_whl(dir)
         if pyd:
             rename_whl(os.path.join(dir, "dist"))
+        for f_whl in os.listdir(os.path.join(dir, "dist")):
+            if f_whl.endswith(".whl"):
+                print("build whl file: ", os.path.join(dir, "dist", f_whl))
         os.mkdir(os.path.join(dir, "pkg"))
         version = get_version(dir)
         if version is None:
@@ -582,7 +587,7 @@ if __name__ == "__main__":
         elif system == "darwin":
             dir_name = f"{app_name}-v{version}-macosx_{machine}"
         else:
-            dir_name = f"{app_name}-v{version}-unknown_{machine}"
+            dir_name = f"{app_name}-v{version}-{system}_{machine}"
         if one:
             if system == "windows":
                 exe_name = dir_name + ".exe"
@@ -643,6 +648,8 @@ if __name__ == "__main__":
                         dir_name + ".tar.xz",
                     ),
                 )
+        for f_pkg in os.listdir(os.path.join(dir, "pkg")):
+            print("build binary file: ", os.path.join(os.path.join(dir, "pkg"), f_pkg))
 
     b_dir = args.dir is not None
     b_build = args.build is not None
