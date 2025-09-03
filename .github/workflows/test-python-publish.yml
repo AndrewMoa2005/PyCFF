@@ -42,6 +42,13 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install twine wheel
 
+      - name: Get version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        
+      - name: Echo Version
+        run: echo ${{ steps.get_version.outputs.VERSION }}
+
       - name: Build Test
         env:
           TWINE_USERNAME: __token__

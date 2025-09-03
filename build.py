@@ -477,6 +477,7 @@ def reflush_txt_version(dir=script_dir, txtfile="file-version-info.txt"):
     replace version string in file-version-info.txt
     """
     version = get_version(dir)
+    print("current version: ", version)
     with open(os.path.join(dir, txtfile), "r") as f:
         data = f.read()
     data = data.replace("AA.BB.CC.DD", version)
