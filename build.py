@@ -74,7 +74,7 @@ def rename_whl(dir, pyd=False):
         try:
             import requests
 
-            package_name = whl_name.split("-")[0]
+            package_name = app_name.lower()
             response = requests.get(f"https://pypi.org/pypi/{package_name}/json")
             if response.status_code != 200:
                 return False
