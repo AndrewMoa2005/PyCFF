@@ -18,6 +18,8 @@ hd_list = [
     "PySide6.QtCharts",
     "PySide6.QtGui",
     "PySide6.QtSvg",
+    "PySide6.QtWidgets",
+    "PySide6.QtCore",
     "numpy",
     "scipy.optimize",
     "pycff.form_ui",
