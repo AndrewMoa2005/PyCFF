@@ -64,8 +64,8 @@ The software includes predefined functions such as polynomials, exponentials, lo
 
 Build dependencies:
  - Python >= 3.12
- - Git
- - C/C++ Compiler (optional) : required when building pyd/so
+ - Git (optional) : update version number when building
+ - C/C++ Compiler (optional) : required when building pyd/so files
 
 The source code provides a `build.py` script for quick and easy building. Users should create a virtual environment before building:
 ```bash
