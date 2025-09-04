@@ -898,8 +898,19 @@ class CleverTableWidget(QTableWidget):
             return
         if self.editable is False:
             return
+        for row in range(self.rowCount() - 1, -1, -1):
+            n = 0
+            for clo in range(self.columnCount()):
+                item = self.item(row, clo)
+                text = item.text() if item is not None else ""
+                if text in ["", " "]:
+                    n += 1
+                if n == self.columnCount():
+                    self.removeRow(row)
+        """
         while self.max_content_row + 1 < self.rowCount():
             self.removeRow(self.rowCount() - 1)
+        """
 
     def clear_empty_col(self):
         """
@@ -909,8 +920,19 @@ class CleverTableWidget(QTableWidget):
             return
         if self.editable is False:
             return
+        for clo in range(self.columnCount() - 1, -1, -1):
+            n = 0
+            for row in range(self.rowCount()):
+                item = self.item(row, clo)
+                text = item.text() if item is not None else ""
+                if text in ["", " "]:
+                    n += 1
+                if n == self.rowCount():
+                    self.removeColumn(clo)
+        """
         while self.max_content_col + 1 < self.columnCount():
             self.removeColumn(self.columnCount() - 1)
+        """
 
     def clear_empty_space(self):
         """

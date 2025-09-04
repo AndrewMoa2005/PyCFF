@@ -154,7 +154,7 @@
         <location filename="../clevertw.py" line="592"/>
         <location filename="../clevertw.py" line="803"/>
         <location filename="../clevertw.py" line="810"/>
-        <location filename="../clevertw.py" line="931"/>
+        <location filename="../clevertw.py" line="953"/>
         <source>警告</source>
         <translation>Warning</translation>
     </message>
@@ -179,7 +179,7 @@
         <translation>The pasted data does not contain valid numeric characters</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="932"/>
+        <location filename="../clevertw.py" line="954"/>
         <source>表格为空，无法进行转置操作</source>
         <translation>The table is empty and cannot be transposed</translation>
     </message>
@@ -187,54 +187,54 @@
 <context>
     <name>DeleteInsertDialog</name>
     <message>
-        <location filename="../clevertw.py" line="1380"/>
+        <location filename="../clevertw.py" line="1402"/>
         <source>删除</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1381"/>
+        <location filename="../clevertw.py" line="1403"/>
         <source>插入</source>
         <translation>Insert</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1400"/>
+        <location filename="../clevertw.py" line="1422"/>
         <source>确定</source>
         <translation>Confirm</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1401"/>
+        <location filename="../clevertw.py" line="1423"/>
         <source>取消</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1418"/>
+        <location filename="../clevertw.py" line="1440"/>
         <source>右侧单元格左移(L)</source>
         <translation>Right cell shift left (L)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1419"/>
+        <location filename="../clevertw.py" line="1441"/>
         <source>下方单元格上移(U)</source>
         <translation>Lower cell moved up (U)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1420"/>
         <location filename="../clevertw.py" line="1442"/>
+        <location filename="../clevertw.py" line="1464"/>
         <source>整行(R)</source>
         <translation>A row (R)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1421"/>
         <location filename="../clevertw.py" line="1443"/>
+        <location filename="../clevertw.py" line="1465"/>
         <source>整列(C)</source>
         <translation>A column (C)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1440"/>
+        <location filename="../clevertw.py" line="1462"/>
         <source>活动单元格右移(R)</source>
         <translation>Move the active cell right (R)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1441"/>
+        <location filename="../clevertw.py" line="1463"/>
         <source>活动单元格下移(D)</source>
         <translation>Move the active cell down (D)</translation>
     </message>
@@ -275,7 +275,7 @@
 <context>
     <name>TestUsingCleverTW</name>
     <message>
-        <location filename="../clevertw.py" line="1503"/>
+        <location filename="../clevertw.py" line="1525"/>
         <source>Test Using CleverTableWidget</source>
         <translation>Test Using CleverTableWidget</translation>
     </message>

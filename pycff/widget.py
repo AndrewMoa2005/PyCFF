@@ -560,7 +560,7 @@ class Widget(QWidget):
         self.ui.inputTable.selectAll()
         # self.ui.inputTable.float_col()
         self.ui.inputTable.clearSelection()
-        self.ui.inputTable.clear_empty_space()        
+        self.ui.inputTable.clear_empty_space()
         self.inputTableChanged()
         self.onXDataBoxChanged()
         self.onYDataBoxChanged()
@@ -601,7 +601,7 @@ class Widget(QWidget):
     def inputTableChanged(self):
         # 刷新xDataBox和yDataBox
         max_row, max_col = self.ui.inputTable.get_max_content_pos()
-        qDebug("max_content_pos: %s, %s" % (max_row, max_col))
+        qDebug("input_max_content_pos: %s, %s" % (max_row, max_col))
         column_num = max_col + 1
         column_list = []
         x = self.ui.xDataBox.currentIndex()

@@ -154,7 +154,7 @@
         <location filename="../clevertw.py" line="592"/>
         <location filename="../clevertw.py" line="803"/>
         <location filename="../clevertw.py" line="810"/>
-        <location filename="../clevertw.py" line="931"/>
+        <location filename="../clevertw.py" line="953"/>
         <source>警告</source>
         <translation>警告</translation>
     </message>
@@ -179,7 +179,7 @@
         <translation>粘贴数据中不包含有效数字字符</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="932"/>
+        <location filename="../clevertw.py" line="954"/>
         <source>表格为空，无法进行转置操作</source>
         <translation>表格为空，无法进行转置操作</translation>
     </message>
@@ -187,54 +187,54 @@
 <context>
     <name>DeleteInsertDialog</name>
     <message>
-        <location filename="../clevertw.py" line="1380"/>
+        <location filename="../clevertw.py" line="1402"/>
         <source>删除</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1381"/>
+        <location filename="../clevertw.py" line="1403"/>
         <source>插入</source>
         <translation>插入</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1400"/>
+        <location filename="../clevertw.py" line="1422"/>
         <source>确定</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1401"/>
+        <location filename="../clevertw.py" line="1423"/>
         <source>取消</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1418"/>
+        <location filename="../clevertw.py" line="1440"/>
         <source>右侧单元格左移(L)</source>
         <translation>右侧单元格左移(L)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1419"/>
+        <location filename="../clevertw.py" line="1441"/>
         <source>下方单元格上移(U)</source>
         <translation>下方单元格上移(U)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1420"/>
         <location filename="../clevertw.py" line="1442"/>
+        <location filename="../clevertw.py" line="1464"/>
         <source>整行(R)</source>
         <translation>整行(R)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1421"/>
         <location filename="../clevertw.py" line="1443"/>
+        <location filename="../clevertw.py" line="1465"/>
         <source>整列(C)</source>
         <translation>整列(C)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1440"/>
+        <location filename="../clevertw.py" line="1462"/>
         <source>活动单元格右移(R)</source>
         <translation>活动单元格右移(R)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1441"/>
+        <location filename="../clevertw.py" line="1463"/>
         <source>活动单元格下移(D)</source>
         <translation>活动单元格下移(D)</translation>
     </message>
@@ -275,7 +275,7 @@
 <context>
     <name>TestUsingCleverTW</name>
     <message>
-        <location filename="../clevertw.py" line="1503"/>
+        <location filename="../clevertw.py" line="1525"/>
         <source>Test Using CleverTableWidget</source>
         <translation>测试智能表格控件</translation>
     </message>
