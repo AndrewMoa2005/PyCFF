@@ -33,28 +33,28 @@
 
 | 函数名 | 用法 | 说明 | 
 |---|---|---|
-| exp | exp(a) | 求a的指数值 |
-| pow | pow(a, b) | 求a的b次幂 |
-| abs | abs(a) | 求a的绝对值 |
-| sqrt | sqrt(a) | 求a的平方根 |
-| cbrt | cbrt(a) | 求a的立方根 |
-| log | log(a) | 求a的对数(以e为底) |
-| log10 | log10(a) | 求a的对数(以10为底) |
-| log2 | log2(a) | 求a的对数(以2为底) |
-| min | min(a) | 求a的最小值 |
-| max | max(a) | 求a的最大值 |
-| sin | sin(a) | 求a的正弦值 |
-| cos | cos(a) | 求a的余弦值 |
-| tan | tan(a) | 求a的正切值 |
-| asin | asin(a) | 求a的反正弦 |
-| acos | acos(a) | 求a的反余弦 |
-| atan | atan(a) | 求a的反正切 |
-| sinh | sinh(a) | 求a的双曲正弦值 |
-| cosh | cosh(a) | 求a的双曲余弦值 |
-| tanh | tanh(a) | 求a的双曲正切值 |
-| asinh | asinh(a) | 求a的反双曲正弦 |
-| acosh | acosh(a) | 求a的反双曲余弦 |
-| atanh | atanh(a) | 求a的反双曲正切 |
+| exp | exp(x) | 求x的指数值 |
+| pow | pow(x, y) | 求x的y次幂 |
+| abs | abs(x) | 求x的绝对值 |
+| sqrt | sqrt(x) | 求x的平方根 |
+| cbrt | cbrt(x) | 求x的立方根 |
+| log | log(x) | 求x的对数(以e为底) |
+| log10 | log10(x) | 求x的对数(以10为底) |
+| log2 | log2(x) | 求x的对数(以2为底) |
+| min | min(x) | 求x的最小值 |
+| max | max(x) | 求x的最大值 |
+| sin | sin(x) | 求x的正弦值 |
+| cos | cos(x) | 求x的余弦值 |
+| tan | tan(x) | 求x的正切值 |
+| asin | asin(x) | 求x的反正弦 |
+| acos | acos(x) | 求x的反余弦 |
+| atan | atan(x) | 求x的反正切 |
+| sinh | sinh(x) | 求x的双曲正弦值 |
+| cosh | cosh(x) | 求x的双曲余弦值 |
+| tanh | tanh(x) | 求x的双曲正切值 |
+| asinh | asinh(x) | 求x的反双曲正弦 |
+| acosh | acosh(x) | 求x的反双曲余弦 |
+| atanh | atanh(x) | 求x的反双曲正切 |
 | pi | pi() | 圆周率 |
 | e | e() | 自然对数的底数 |
 

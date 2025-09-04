@@ -33,28 +33,28 @@ The software includes predefined functions such as polynomials, exponentials, lo
 
 | Function | Usage | Description |
 |---|---|---|
-| exp | exp(a) | Calculates the exponential value of a |
-| pow | pow(a, b) | Calculates a raised to the power of b |
-| abs | abs(a) | Calculates the absolute value of a |
-| sqrt | sqrt(a) | Calculates the square root of a |
-| cbrt | cbrt(a) | Calculates the cube root of a |
-| log | log(a) | Calculates the base e logarithm of a |
-| log10 | log10(a) | Calculates the base 10 logarithm of a |
-| log2 | log2(a) | Calculates the base 2 logarithm of a |
-| min | min(a) | Calculates the minimum value of a |
-| max | max(a) | Calculates the maximum value of a |
-| sin | sin(a) | Calculates the sine of a |
-| cos | cos(a) | Find the cosine of a |
-| tan | tan(a) | Find the tangent of a |
-| asin | asin(a) | Find the inverse sine of a |
-| acos | acos(a) | Find the inverse cosine of a |
-| atan | atan(a) | Find the inverse tangent of a |
-| sinh | sinh(a) | Find the hyperbolic sine of a |
-| cosh | cosh(a) | Find the hyperbolic cosine of a |
-| tanh | tanh(a) | Find the hyperbolic tangent of a |
-| asinh | asinh(a) | Find the inverse hyperbolic sine of a |
-| acosh | acosh(a) | Find the inverse hyperbolic cosine of a |
-| atanh | atanh(a) | Find the inverse hyperbolic tangent of a |
+| exp | exp(x) | Calculates the exponential value of x |
+| pow | pow(x, y) | Calculates x raised to the power of y |
+| abs | abs(x) | Calculates the absolute value of x |
+| sqrt | sqrt(x) | Calculates the square root of x |
+| cbrt | cbrt(x) | Calculates the cube root of x |
+| log | log(x) | Calculates the base e logarithm of x |
+| log10 | log10(x) | Calculates the base 10 logarithm of x |
+| log2 | log2(x) | Calculates the base 2 logarithm of x |
+| min | min(x) | Calculates the minimum value of x |
+| max | max(x) | Calculates the maximum value of x |
+| sin | sin(x) | Calculates the sine of x |
+| cos | cos(x) | Find the cosine of x |
+| tan | tan(x) | Find the tangent of x |
+| asin | asin(x) | Find the inverse sine of x |
+| acos | acos(x) | Find the inverse cosine of x |
+| atan | atan(x) | Find the inverse tangent of x |
+| sinh | sinh(x) | Find the hyperbolic sine of x |
+| cosh | cosh(x) | Find the hyperbolic cosine of x |
+| tanh | tanh(x) | Find the hyperbolic tangent of x |
+| asinh | asinh(x) | Find the inverse hyperbolic sine of x |
+| acosh | acosh(x) | Find the inverse hyperbolic cosine of x |
+| atanh | atanh(x) | Find the inverse hyperbolic tangent of x |
 | pi | pi() | Pi |
 | e | e() | base of natural logarithms |
 
