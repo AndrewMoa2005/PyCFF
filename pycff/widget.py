@@ -66,7 +66,6 @@ class Widget(QWidget):
         self.ui.loadBtn.clicked.connect(self.onLoadBtnClicked)
         self.ui.saveBtn.clicked.connect(self.onSaveBtnClicked)
         self.ui.refreshBtn.clicked.connect(self.onRefreshBtnClicked)
-        self.ui.transBtn.clicked.connect(self.onTransBtnClicked)
         self.ui.fitBtn.clicked.connect(self.onFitBtnClicked)
         self.ui.curveBtn.clicked.connect(self.onCurveBtnClicked)
         self.ui.calcYOut.clicked.connect(self.onCalcYOutClicked)
@@ -75,11 +74,11 @@ class Widget(QWidget):
         self.ui.funcLabel.setVisible(self.ui.comboBox.currentIndex() != 5)
         self.ui.funcInput.setVisible(self.ui.comboBox.currentIndex() == 5)
         self.ui.outputTable.disable_editing()
-        self.ui.rowSpin.valueChanged.connect(self.onRowSpinChanged)
-        self.ui.colSpin.valueChanged.connect(self.onColSpinChanged)
         self.ui.xDataBox.activated.connect(self.onXDataBoxChanged)
         self.ui.yDataBox.activated.connect(self.onYDataBoxChanged)
         self.ui.refineSP.setEnabled(self.ui.refineCB.isChecked())
+        self.ui.inputTable.enable_infinite()
+        self.ui.inputTable.cellChanged.connect(self.inputTableChanged)
         # Add QCharts
         self.chart = QChart()
         self.chartView = QChartView(self.chart)
@@ -108,8 +107,6 @@ class Widget(QWidget):
         self.fit_nonl_func: str = None
         # initialize default data
         self.onRefreshBtnClicked()
-        self.onXDataBoxChanged()
-        self.onYDataBoxChanged()
         self.onPlotBtnClicked()
         self.onFitBtnClicked()
         self.onCurveBtnClicked()
@@ -444,42 +441,41 @@ class Widget(QWidget):
                         self, self.tr("格式错误"), self.tr("CSV文件没有数据")
                     )
                     return
-                clo_num = len(rows[0])
+                col_num = len(rows[0])
                 row_num = len(data_rows)
                 for row in range(row_num):
-                    if len(data_rows[row]) != clo_num:
+                    if len(data_rows[row]) != col_num:
                         QMessageBox.critical(
                             self,
                             self.tr("格式错误"),
                             self.tr("第%s行数据不完整") % (row + 1),
                         )
                         return
-                if self.ui.inputTable.columnCount() < clo_num:
-                    self.ui.inputTable.setColumnCount(clo_num)
-                for clo in range(clo_num):
-                    header = rows[0][clo]
+                if self.ui.inputTable.columnCount() < col_num:
+                    self.ui.inputTable.setColumnCount(col_num)
+                for col in range(col_num):
+                    header = rows[0][col]
                     if not header or header in ("", " "):
-                        header = f"{clo+1}"
-                    header_item = self.ui.inputTable.horizontalHeaderItem(clo)
+                        header = f"{col+1}"
+                    header_item = self.ui.inputTable.horizontalHeaderItem(col)
                     if header_item:
                         header_item.setText(header)
                     else:
                         self.ui.inputTable.setHorizontalHeaderItem(
-                            clo, QTableWidgetItem(header)
+                            col, QTableWidgetItem(header)
                         )
                 if self.ui.inputTable.rowCount() < row_num:
                     self.ui.inputTable.setRowCount(row_num)
                 self.ui.inputTable.clearContents()
                 for row in range(row_num):
-                    for clo in range(clo_num):
-                        item = self.ui.inputTable.item(row, clo)
+                    for col in range(col_num):
+                        item = self.ui.inputTable.item(row, col)
                         if item:
-                            item.setText(data_rows[row][clo])
+                            item.setText(data_rows[row][col])
                         else:
                             self.ui.inputTable.setItem(
-                                row, clo, QTableWidgetItem(data_rows[row][clo])
+                                row, col, QTableWidgetItem(data_rows[row][col])
                             )
-            self.inputTableChanged()
             qDebug("Loaded file: %s" % path)
         except Exception as e:
             QMessageBox.critical(
@@ -562,19 +558,12 @@ class Widget(QWidget):
     def onRefreshBtnClicked(self):
         # self.ui.inputTable.renumber_header()
         self.ui.inputTable.selectAll()
-        self.ui.inputTable.float_clo()
+        # self.ui.inputTable.float_col()
         self.ui.inputTable.clearSelection()
-        self.ui.inputTable.clear_empty_space()
+        self.ui.inputTable.clear_empty_space()        
         self.inputTableChanged()
-        self.ui.rowSpin.setValue(self.ui.inputTable.rowCount())
-        self.ui.colSpin.setValue(self.ui.inputTable.columnCount())
         self.onXDataBoxChanged()
         self.onYDataBoxChanged()
-
-    def onTransBtnClicked(self):
-        self.ui.inputTable.transpose_table()
-        self.ui.rowSpin.setValue(self.ui.inputTable.rowCount())
-        self.ui.colSpin.setValue(self.ui.inputTable.columnCount())
 
     def onComboBoxChanged(self):
         self.ui.funcLabel.setVisible(self.ui.comboBox.currentIndex() != 5)
@@ -610,7 +599,10 @@ class Widget(QWidget):
             self.ui.funcLabel.setText(text)
 
     def inputTableChanged(self):
-        column_num = self.ui.inputTable.columnCount()
+        # 刷新xDataBox和yDataBox
+        max_row, max_col = self.ui.inputTable.get_max_content_pos()
+        qDebug("max_content_pos: %s, %s" % (max_row, max_col))
+        column_num = max_col + 1
         column_list = []
         x = self.ui.xDataBox.currentIndex()
         y = self.ui.yDataBox.currentIndex()
@@ -633,13 +625,6 @@ class Widget(QWidget):
             self.ui.yDataBox.setCurrentIndex(y)
         else:
             self.ui.yDataBox.setCurrentIndex(column_num - 1)
-
-    def onRowSpinChanged(self, n):
-        self.ui.inputTable.setRowCount(n)
-
-    def onColSpinChanged(self, n):
-        self.ui.inputTable.setColumnCount(n)
-        self.inputTableChanged()
 
     def onXDataBoxChanged(self):
         col = self.ui.xDataBox.currentIndex()
@@ -735,7 +720,7 @@ class Widget(QWidget):
                 0,
                 self.createFormattedItem(coef[i], scientific, decimals),
             )
-        self.ui.outputTable.renumber_header_clo()
+        self.ui.outputTable.renumber_header_col()
         self.ui.outputTable.clear_empty_space()
         self.ui.outputTable.disable_editing()
 

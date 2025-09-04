@@ -84,7 +84,7 @@ color: rgb(0, 0, 255);</string>
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabIn">
       <attribute name="title">
@@ -116,59 +116,6 @@ color: rgb(0, 0, 255);</string>
            </property>
            <property name="icon">
             <iconset theme="QIcon::ThemeIcon::DocumentSaveAs"/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="transBtn">
-           <property name="toolTip">
-            <string>转置表格数据</string>
-           </property>
-           <property name="text">
-            <string>转置</string>
-           </property>
-           <property name="icon">
-            <iconset theme="QIcon::ThemeIcon::ViewFullscreen"/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_14">
-           <property name="text">
-            <string>行数</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="rowSpin">
-           <property name="toolTip">
-            <string>输入行数</string>
-           </property>
-           <property name="minimum">
-            <number>0</number>
-           </property>
-           <property name="value">
-            <number>5</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_15">
-           <property name="text">
-            <string>列数</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="colSpin">
-           <property name="toolTip">
-            <string>输入列数</string>
-           </property>
-           <property name="minimum">
-            <number>0</number>
-           </property>
-           <property name="value">
-            <number>2</number>
            </property>
           </widget>
          </item>

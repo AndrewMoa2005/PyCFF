@@ -29,12 +29,28 @@ from PySide6.QtWidgets import (
 class CleverTableWidget(QTableWidget):
     # 构造函数
     def __init__(
-        self, parent=None, rowCount=0, columnCount=0, editable=True, shortcut=True
+        self,
+        parent=None,
+        rowCount=0,
+        columnCount=0,
+        editable=True,
+        shortcut=True,
+        infinite=False,
     ):
+        """
+        智能表格控件
+        Args:
+            parent (QWidget, 可选): 父控件
+            rowCount (int, 可选): 行数. 默认 0.
+            columnCount (int, 可选): 列数. 默认 0.
+            editable (bool, 可选): 是否可编辑. 默认 True.
+            shortcut (bool, 可选): 是否启用快捷键. 默认 True.
+            infinite (bool, 可选): 是否无限行数. 默认 False.
+        """
         super().__init__(parent, rowCount=rowCount, columnCount=columnCount)
         self.editable = editable
-        if not self.editable:
-            self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.infinite = infinite
+        self.shortcut = shortcut
         self.copy_action = QAction(self.tr("复制"), self)
         self.paste_action = QAction(self.tr("粘贴"), self)
         self.clear_action = QAction(self.tr("清空"), self)
@@ -72,51 +88,22 @@ class CleverTableWidget(QTableWidget):
         self.move_down_action.setShortcut("Alt+Down")
         self.move_left_action.setShortcut("Alt+Left")
         self.move_right_action.setShortcut("Alt+Right")
-        if shortcut:
-            short_a_up = QShortcut(QKeySequence("Alt+Up"), self)
-            short_a_up.activated.connect(self.move_up)
-            short_a_up.setContext(Qt.WidgetShortcut)
-            short_a_down = QShortcut(QKeySequence("Alt+Down"), self)
-            short_a_down.activated.connect(self.move_down)
-            short_a_down.setContext(Qt.WidgetShortcut)
-            short_a_left = QShortcut(QKeySequence("Alt+Left"), self)
-            short_a_left.activated.connect(self.move_left)
-            short_a_left.setContext(Qt.WidgetShortcut)
-            short_a_right = QShortcut(QKeySequence("Alt+Right"), self)
-            short_a_right.activated.connect(self.move_right)
-            short_a_right.setContext(Qt.WidgetShortcut)
         # 排序、替换相关操作
-        self.ascending_clo_action = QAction(self.tr("列升序"), self)
-        self.descending_clo_action = QAction(self.tr("列降序"), self)
-        self.reverse_clo_action = QAction(self.tr("列逆序"), self)
-        self.paste_clo_action = QAction(self.tr("粘贴替换列"), self)
-        self.float_clo_action = QAction(self.tr("上浮数字"), self)
-        self.ascending_clo_action.triggered.connect(self.sort_clo_ascending)
-        self.descending_clo_action.triggered.connect(self.sort_clo_descending)
-        self.reverse_clo_action.triggered.connect(self.reverse_clo)
-        self.paste_clo_action.triggered.connect(self.paste_clo)
-        self.float_clo_action.triggered.connect(self.float_clo)
-        self.ascending_clo_action.setShortcut("Alt+A")
-        self.descending_clo_action.setShortcut("Alt+D")
-        self.reverse_clo_action.setShortcut("Alt+R")
-        self.paste_clo_action.setShortcut("Alt+V")
-        self.float_clo_action.setShortcut("Alt+U")
-        if shortcut:
-            short_a_a = QShortcut(QKeySequence("Alt+A"), self)
-            short_a_a.activated.connect(self.sort_clo_ascending)
-            short_a_a.setContext(Qt.WidgetShortcut)
-            short_a_d = QShortcut(QKeySequence("Alt+D"), self)
-            short_a_d.activated.connect(self.sort_clo_descending)
-            short_a_d.setContext(Qt.WidgetShortcut)
-            short_a_r = QShortcut(QKeySequence("Alt+R"), self)
-            short_a_r.activated.connect(self.reverse_clo)
-            short_a_r.setContext(Qt.WidgetShortcut)
-            short_a_v = QShortcut(QKeySequence("Alt+V"), self)
-            short_a_v.activated.connect(self.paste_clo)
-            short_a_v.setContext(Qt.WidgetShortcut)
-            short_a_u = QShortcut(QKeySequence("Alt+U"), self)
-            short_a_u.activated.connect(self.float_clo)
-            short_a_u.setContext(Qt.WidgetShortcut)
+        self.ascending_col_action = QAction(self.tr("列升序"), self)
+        self.descending_col_action = QAction(self.tr("列降序"), self)
+        self.reverse_col_action = QAction(self.tr("列逆序"), self)
+        self.paste_col_action = QAction(self.tr("粘贴替换列"), self)
+        self.float_col_action = QAction(self.tr("上浮数字"), self)
+        self.ascending_col_action.triggered.connect(self.sort_col_ascending)
+        self.descending_col_action.triggered.connect(self.sort_col_descending)
+        self.reverse_col_action.triggered.connect(self.reverse_col)
+        self.paste_col_action.triggered.connect(self.paste_col)
+        self.float_col_action.triggered.connect(self.float_col)
+        self.ascending_col_action.setShortcut("Alt+A")
+        self.descending_col_action.setShortcut("Alt+D")
+        self.reverse_col_action.setShortcut("Alt+R")
+        self.paste_col_action.setShortcut("Alt+V")
+        self.float_col_action.setShortcut("Alt+U")
         # 设置浮点数的显示格式
         self.digital_format_action = QAction(self.tr("设置数字格式"), self)
         self.digital_format_action.triggered.connect(self.digital_format)
@@ -131,28 +118,6 @@ class CleverTableWidget(QTableWidget):
         self.align_left_action.setShortcut("Ctrl+L")
         self.align_right_action.setShortcut("Ctrl+R")
         self.align_center_action.setShortcut("Ctrl+E")
-        if shortcut:
-            short_c_c = QShortcut(QKeySequence("Ctrl+C"), self)
-            short_c_c.activated.connect(self.copy_selection)
-            short_c_c.setContext(Qt.WidgetShortcut)
-            short_c_v = QShortcut(QKeySequence("Ctrl+V"), self)
-            short_c_v.activated.connect(self.paste_selection)
-            short_c_v.setContext(Qt.WidgetShortcut)
-            short_c_0 = QShortcut(QKeySequence("Ctrl+0"), self)
-            short_c_0.activated.connect(self.clear_selection)
-            short_c_0.setContext(Qt.WidgetShortcut)
-            short_del = QShortcut(QKeySequence("Del"), self)
-            short_del.activated.connect(self.delete_selection)
-            short_del.setContext(Qt.WidgetShortcut)
-            short_c_l = QShortcut(QKeySequence("Ctrl+L"), self)
-            short_c_l.activated.connect(self.align_left)
-            short_c_l.setContext(Qt.WidgetShortcut)
-            short_c_r = QShortcut(QKeySequence("Ctrl+R"), self)
-            short_c_r.activated.connect(self.align_right)
-            short_c_r.setContext(Qt.WidgetShortcut)
-            short_c_e = QShortcut(QKeySequence("Ctrl+E"), self)
-            short_c_e.activated.connect(self.align_center)
-            short_c_e.setContext(Qt.WidgetShortcut)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showContextMenu)
         if self.editable:
@@ -160,19 +125,270 @@ class CleverTableWidget(QTableWidget):
             self.horizontalHeader().sectionDoubleClicked.connect(
                 self.change_horizontal_header
             )
+            # 不使用编辑行标题功能
+            """
             self.verticalHeader().sectionDoubleClicked.connect(
                 self.change_vertical_header
             )
+            """
+        if not self.editable:
+            self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.shortcut_init = False  # 快捷键初始化标识
+        if self.shortcut:
+            self.enable_shortcut()
+        # 内容所覆盖的最大坐标，以0为起始
+        self.max_content_row = 0
+        self.max_content_col = 0
+        self.cellChanged.connect(self._max_content_pos)
+
+    def resizeEvent(self, event):
+        # 窗口大小调整时，自动填充可见区域
+        if self.infinite:
+            self._fill_visible_area()
+        super().resizeEvent(event)
+
+    def initial_shortcut(
+        self, key: str, func: callable, context=Qt.WidgetShortcut
+    ) -> QShortcut:
+        """
+        初始化快捷键
+        Args:
+            key (str): 快捷键
+            func (callable): 快捷键触发的函数
+            context (Qt.WidgetShortcut, 可选): 快捷键的上下文. 默认为 Qt.WidgetShortcut.
+        Returns:
+            QShortcut: 初始化后的快捷键
+        """
+        s = QShortcut(QKeySequence(key), self)
+        s.activated.connect(func)
+        s.setContext(context)
+        return s
+
+    def enable_shortcut(self):
+        """
+        启用快捷键
+        """
+        if self.shortcut is False:
+            self.shortcut = True
+        # 初始化
+        if self.shortcut_init is False:
+            # 移动操作快捷键
+            self.short_a_up = self.initial_shortcut("Alt+Up", self.move_up)
+            self.short_a_down = self.initial_shortcut("Alt+Down", self.move_down)
+            self.short_a_left = self.initial_shortcut("Alt+Left", self.move_left)
+            self.short_a_right = self.initial_shortcut("Alt+Right", self.move_right)
+            # 排序、替换相关操作快捷键
+            self.short_a_a = self.initial_shortcut("Alt+A", self.sort_col_ascending)
+            self.short_a_d = self.initial_shortcut("Alt+D", self.sort_col_descending)
+            self.short_a_r = self.initial_shortcut("Alt+R", self.reverse_col)
+            self.short_a_v = self.initial_shortcut("Alt+V", self.paste_col)
+            self.short_a_u = self.initial_shortcut("Alt+U", self.float_col)
+            # 复制、对齐操作相关快捷键
+            self.short_c_c = self.initial_shortcut("Ctrl+C", self.copy_selection)
+            self.short_c_v = self.initial_shortcut("Ctrl+V", self.paste_selection)
+            self.short_c_0 = self.initial_shortcut("Ctrl+0", self.clear_selection)
+            self.short_del = self.initial_shortcut("Del", self.delete_selection)
+            self.short_c_l = self.initial_shortcut("Ctrl+L", self.align_left)
+            self.short_c_r = self.initial_shortcut("Ctrl+R", self.align_right)
+            self.short_c_e = self.initial_shortcut("Ctrl+E", self.align_center)
+            # 设置标签
+            self.shortcut_init = True
+        else:
+            # 移动操作快捷键
+            self.short_a_up.setEnabled(True)
+            self.short_a_down.setEnabled(True)
+            self.short_a_left.setEnabled(True)
+            self.short_a_right.setEnabled(True)
+            # 排序、替换相关操作快捷键
+            self.short_a_a.setEnabled(True)
+            self.short_a_d.setEnabled(True)
+            self.short_a_r.setEnabled(True)
+            self.short_a_v.setEnabled(True)
+            self.short_a_u.setEnabled(True)
+            # 复制、对齐操作相关快捷键
+            self.short_c_c.setEnabled(True)
+            self.short_c_v.setEnabled(True)
+            self.short_c_0.setEnabled(True)
+            self.short_del.setEnabled(True)
+            self.short_c_l.setEnabled(True)
+            self.short_c_r.setEnabled(True)
+            self.short_c_e.setEnabled(True)
+
+    def disable_shortcut(self):
+        """
+        禁用快捷键
+        """
+        if self.shortcut is True:
+            self.shortcut = False
+        if self.shortcut_init is True:
+            # 移动操作快捷键
+            self.short_a_up.setEnabled(False)
+            self.short_a_down.setEnabled(False)
+            self.short_a_left.setEnabled(False)
+            self.short_a_right.setEnabled(False)
+            # 排序、替换相关操作快捷键
+            self.short_a_a.setEnabled(False)
+            self.short_a_d.setEnabled(False)
+            self.short_a_r.setEnabled(False)
+            self.short_a_v.setEnabled(False)
+            self.short_a_u.setEnabled(False)
+            # 复制、对齐操作相关快捷键
+            self.short_c_c.setEnabled(False)
+            self.short_c_v.setEnabled(False)
+            self.short_c_0.setEnabled(False)
+            self.short_del.setEnabled(False)
+            self.short_c_l.setEnabled(False)
+            self.short_c_r.setEnabled(False)
+            self.short_c_e.setEnabled(False)
+
+    def is_shortcut(self):
+        """
+        判断是否启用快捷键
+        """
+        return self.shortcut
+
+    def is_infinite(self):
+        """
+        判断是否启用无限行数
+        """
+        return self.infinite
+
+    def is_editable(self):
+        """
+        判断是否启用可编辑
+        """
+        return self.editable
+
+    def enable_infinite(self):
+        """
+        启用无限行数
+        """
+        self.infinite = True
+        # 连接滚动条信号
+        self.horizontalScrollBar().valueChanged.connect(self._handle_horizontal_scroll)
+        self.verticalScrollBar().valueChanged.connect(self._handle_vertical_scroll)
+        # 初始填充可见区域
+        self._fill_visible_area()
+
+    def _handle_horizontal_scroll(self, value):
+        """处理水平滚动"""
+        scrollbar = self.horizontalScrollBar()
+        if value == scrollbar.maximum():
+            # 滚动到最右侧，添加新列
+            self._add_columns_at_end()
+        else:
+            # 回滚，检查并删除空列
+            self._remove_columns_at_end()
+        self.renumber_header_col()
+
+    def _handle_vertical_scroll(self, value):
+        """处理垂直滚动"""
+        scrollbar = self.verticalScrollBar()
+        if value == scrollbar.maximum():
+            # 滚动到底部，添加新行
+            self._add_rows_at_end()
+        else:
+            # 回滚，检查并删除空行
+            self._remove_rows_at_end()
+        self.renumber_header_row()
+
+    def _fill_visible_area(self):
+        """填充当前可见区域"""
+        viewport = self.viewport()
+        # 获取viewport的右下角坐标(x0, y0)
+        x0 = viewport.width()
+        y0 = viewport.height()
+        # 获取最后一个单元格的右下角坐标(x1, y1)
+        last_row = self.rowCount() - 1
+        last_col = self.columnCount() - 1
+        x1 = self.columnViewportPosition(last_col) + self.columnWidth(last_col)
+        y1 = self.rowViewportPosition(last_row) + self.rowHeight(last_row)
+        self.renumber_header()
+        # 当最后一个单元格的坐标小于viewport坐标时，添加新行或新列
+        while x1 < x0:
+            self._add_columns_at_end()
+            last_col = self.columnCount() - 1
+            x1 = self.columnViewportPosition(last_col) + self.columnWidth(last_col)
+        while y1 < y0:
+            self._add_rows_at_end()
+            last_row = self.rowCount() - 1
+            y1 = self.rowViewportPosition(last_row) + self.rowHeight(last_row)
+        # 获取最后一个单元格的左上角坐标(x10, y10)
+        x10 = self.columnViewportPosition(last_col)
+        y10 = self.rowViewportPosition(last_row)
+        # 当最后一个单元格的坐标大于viewport坐标时，移除不可见空行或空列
+        while x10 > x0:
+            if self.col_is_empty(last_col):
+                self._remove_columns_at_end()
+                last_col = self.columnCount() - 1
+                x10 = self.columnViewportPosition(last_col)
+            else:
+                break
+        while y10 > y0:
+            if self.row_is_empty(last_row):
+                self._remove_rows_at_end()
+                last_row = self.rowCount() - 1
+                y10 = self.rowViewportPosition(last_row)
+            else:
+                break
+
+    def _add_rows_at_end(self):
+        """在末尾添加新行"""
+        current_count = self.rowCount()
+        self.setRowCount(current_count + 1)
+
+    def _remove_rows_at_end(self):
+        """移除末尾不可见空行"""
+        if self.rowCount() <= 0:
+            return
+        rows = self.rowCount() - 1
+        if self.row_is_empty(rows):
+            self.removeRow(rows)
+
+    def _add_columns_at_end(self):
+        """在末尾添加新列"""
+        current_count = self.columnCount()
+        self.setColumnCount(current_count + 1)
+
+    def _remove_columns_at_end(self):
+        """移除末尾不可见空列"""
+        if self.columnCount() <= 0:
+            return
+        cols = self.columnCount() - 1
+        if self.col_is_empty(cols):
+            self.removeColumn(cols)
+
+    def disable_infinite(self):
+        """
+        禁用无限行数
+        """
+        self.infinite = False
+        # 断开连接滚动条信号
+        self.horizontalScrollBar().valueChanged.disconnect(
+            self._handle_horizontal_scroll
+        )
+        self.verticalScrollBar().valueChanged.disconnect(self._handle_vertical_scroll)
+        # 清除空行
+        self.clear_empty_space()
 
     def disable_editing(self):
+        """
+        禁用可编辑
+        """
         self.editable = False
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
     def enable_editing(self):
+        """
+        启用可编辑
+        """
         self.editable = True
         self.setEditTriggers(QTableWidget.EditTrigger.DoubleClicked)
 
     def change_horizontal_header(self, index):
+        """
+        编辑列标题
+        """
         if self.editable is False:
             return
         item = self.horizontalHeaderItem(index)
@@ -192,6 +408,15 @@ class CleverTableWidget(QTableWidget):
             item.setText(new_header)
 
     def change_vertical_header(self, index):
+        """
+        编辑行标题
+        """
+        import warnings
+
+        warnings.warn(
+            "function predict is deprecated",
+            DeprecationWarning,
+        )
         if self.editable is False:
             return
         item = self.verticalHeaderItem(index)
@@ -211,6 +436,9 @@ class CleverTableWidget(QTableWidget):
             item.setText(new_header)
 
     def showContextMenu(self, pos):
+        """
+        显示上下文菜单
+        """
         menu = QMenu(self)
         align_menu = QMenu(self.tr("对齐方式"), self)
         insert_action = QAction(self.tr("插入"), self)
@@ -260,11 +488,11 @@ class CleverTableWidget(QTableWidget):
                     menu.addAction(insert_action_common)
         if self.editable:
             menu.addSeparator()
-            menu.addAction(self.ascending_clo_action)
-            menu.addAction(self.descending_clo_action)
-            menu.addAction(self.reverse_clo_action)
-            menu.addAction(self.paste_clo_action)
-            menu.addAction(self.float_clo_action)
+            menu.addAction(self.ascending_col_action)
+            menu.addAction(self.descending_col_action)
+            menu.addAction(self.reverse_col_action)
+            menu.addAction(self.paste_col_action)
+            menu.addAction(self.float_col_action)
         menu.addSeparator()
         menu.addMenu(align_menu)
         menu.addAction(self.highlight_action)
@@ -278,6 +506,9 @@ class CleverTableWidget(QTableWidget):
         menu.exec(self.viewport().mapToGlobal(pos))
 
     def move_up(self):
+        """
+        向上移动选中区域
+        """
         if self.editable is False:
             return
         selected_ranges = self.selectedRanges()
@@ -296,22 +527,25 @@ class CleverTableWidget(QTableWidget):
         left = selected_ranges[0].leftColumn()
         right = selected_ranges[0].rightColumn()
         bottom = selected_ranges[0].bottomRow()
-        for clo in range(left, right + 1):
+        for col in range(left, right + 1):
             for row in range(top, bottom + 1):
-                item = self.takeItem(row, clo)
+                item = self.takeItem(row, col)
                 if not item:
                     item = QTableWidgetItem().setText("")
-                item_prev = self.takeItem(row - 1, clo)
+                item_prev = self.takeItem(row - 1, col)
                 if not item_prev:
                     item_prev = QTableWidgetItem().setText("")
-                self.setItem(row - 1, clo, item)
-                self.setItem(row, clo, item_prev)
+                self.setItem(row - 1, col, item)
+                self.setItem(row, col, item_prev)
         self.clearSelection()
         self.setRangeSelected(
             QTableWidgetSelectionRange(top - 1, left, bottom - 1, right), True
         )
 
     def move_down(self):
+        """
+        向下移动选中区域
+        """
         if self.editable is False:
             return
         selected_ranges = self.selectedRanges()
@@ -325,22 +559,25 @@ class CleverTableWidget(QTableWidget):
         top = selected_ranges[0].topRow()
         left = selected_ranges[0].leftColumn()
         right = selected_ranges[0].rightColumn()
-        for clo in range(left, right + 1):
+        for col in range(left, right + 1):
             for row in range(bottom, top - 1, -1):
-                item = self.takeItem(row, clo)
+                item = self.takeItem(row, col)
                 if not item:
                     item = QTableWidgetItem().setText("")
-                item_next = self.takeItem(row + 1, clo)
+                item_next = self.takeItem(row + 1, col)
                 if not item_next:
                     item_next = QTableWidgetItem().setText("")
-                self.setItem(row + 1, clo, item)
-                self.setItem(row, clo, item_next)
+                self.setItem(row + 1, col, item)
+                self.setItem(row, col, item_next)
         self.clearSelection()
         self.setRangeSelected(
             QTableWidgetSelectionRange(top + 1, left, bottom + 1, right), True
         )
 
     def move_left(self):
+        """
+        向左移动选中区域
+        """
         if self.editable is False:
             return
         selected_ranges = self.selectedRanges()
@@ -360,21 +597,24 @@ class CleverTableWidget(QTableWidget):
         right = selected_ranges[0].rightColumn()
         bottom = selected_ranges[0].bottomRow()
         for row in range(top, bottom + 1):
-            for clo in range(left, right + 1):
-                item = self.takeItem(row, clo)
+            for col in range(left, right + 1):
+                item = self.takeItem(row, col)
                 if not item:
                     item = QTableWidgetItem().setText("")
-                item_prev = self.takeItem(row, clo - 1)
+                item_prev = self.takeItem(row, col - 1)
                 if not item_prev:
                     item_prev = QTableWidgetItem().setText("")
-                self.setItem(row, clo - 1, item)
-                self.setItem(row, clo, item_prev)
+                self.setItem(row, col - 1, item)
+                self.setItem(row, col, item_prev)
         self.clearSelection()
         self.setRangeSelected(
             QTableWidgetSelectionRange(top, left - 1, bottom, right - 1), True
         )
 
     def move_right(self):
+        """
+        向右移动选中区域
+        """
         if self.editable is False:
             return
         selected_ranges = self.selectedRanges()
@@ -389,15 +629,15 @@ class CleverTableWidget(QTableWidget):
         left = selected_ranges[0].leftColumn()
         bottom = selected_ranges[0].bottomRow()
         for row in range(top, bottom + 1):
-            for clo in range(right, left - 1, -1):
-                item = self.takeItem(row, clo)
+            for col in range(right, left - 1, -1):
+                item = self.takeItem(row, col)
                 if not item:
                     item = QTableWidgetItem().setText("")
-                item_next = self.takeItem(row, clo + 1)
+                item_next = self.takeItem(row, col + 1)
                 if not item_next:
                     item_next = QTableWidgetItem().setText("")
-                self.setItem(row, clo + 1, item)
-                self.setItem(row, clo, item_next)
+                self.setItem(row, col + 1, item)
+                self.setItem(row, col, item_next)
         self.clearSelection()
         self.setRangeSelected(
             QTableWidgetSelectionRange(top, left + 1, bottom, right + 1), True
@@ -466,6 +706,9 @@ class CleverTableWidget(QTableWidget):
                         continue
 
     def get_selected_columns_list(self):
+        """
+        获取选中的列索引列表
+        """
         selected_items = self.selectedItems()
         selected_list = []
         for i in selected_items:
@@ -476,7 +719,10 @@ class CleverTableWidget(QTableWidget):
         selected_list = list(set(selected_list))
         return selected_list
 
-    def sort_clo_ascending(self):
+    def sort_col_ascending(self):
+        """
+        按升序对选中的列进行排序
+        """
         if self.editable is False:
             return
         selected_list = self.get_selected_columns_list()
@@ -501,13 +747,19 @@ class CleverTableWidget(QTableWidget):
             for new_row, item in enumerate(items):
                 self.setItem(new_row, selected_column, item)
 
-    def sort_clo_descending(self):
+    def sort_col_descending(self):
+        """
+        按降序对选中的列进行排序
+        """
         if self.editable is False:
             return
-        self.sort_clo_ascending()
-        self.reverse_clo()
+        self.sort_col_ascending()
+        self.reverse_col()
 
-    def reverse_clo(self):
+    def reverse_col(self):
+        """
+        反转选中的列
+        """
         if self.editable is False:
             return
         selected_list = self.get_selected_columns_list()
@@ -526,6 +778,9 @@ class CleverTableWidget(QTableWidget):
                 self.setItem(new_row, selected_column, item)
 
     def filter_string_to_float_list(self, input_str: str) -> list:
+        """
+        从字符串中提取浮点数列表
+        """
         pattern = r"[-+]?\d+\.?\d*(?:[eE][-+]?\d+)?"
         matches = re.findall(pattern, input_str)
         output_list = []
@@ -536,7 +791,7 @@ class CleverTableWidget(QTableWidget):
                 continue
         return output_list
 
-    def paste_clo(self):
+    def paste_col(self):
         """
         粘贴字符串中的数字到所选列，以任意非数字字符分隔
         """
@@ -557,25 +812,28 @@ class CleverTableWidget(QTableWidget):
             return
         if len(float_list) > self.rowCount():
             self.setRowCount(len(float_list))
-        clo = selected_list[0]
+        col = selected_list[0]
         for row in range(self.rowCount()):
             if row < len(float_list):
                 item = QTableWidgetItem(str(float_list[row]))
                 # item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-                self.setItem(row, clo, item)
+                self.setItem(row, col, item)
             else:
-                self.setItem(row, clo, QTableWidgetItem(""))
+                self.setItem(row, col, QTableWidgetItem(""))
 
-    def float_clo(self):
+    def float_col(self):
+        """
+        将选中的列的数字上浮到顶部
+        """
         if self.editable is False:
             return
         selected_list = self.get_selected_columns_list()
         if not selected_list:
             return
-        for clo in selected_list:
+        for col in selected_list:
             number_list = []
             for row in range(self.rowCount()):
-                item = self.item(row, clo)
+                item = self.item(row, col)
                 text = item.text() if item is not None else ""
                 try:
                     float(text)
@@ -585,46 +843,81 @@ class CleverTableWidget(QTableWidget):
             for row in range(self.rowCount()):
                 if row < len(number_list):
                     item = QTableWidgetItem(str(number_list[row]))
-                    self.setItem(row, clo, item)
+                    self.setItem(row, col, item)
                 else:
-                    self.setItem(row, clo, QTableWidgetItem(""))
+                    self.setItem(row, col, QTableWidgetItem(""))
+
+    def row_is_empty(self, row: int) -> bool:
+        for col in range(self.columnCount() - 1, 0, -1):
+            item = self.item(row, col)
+            text = item.text() if item is not None else ""
+            if text in ["", " "]:
+                continue
+            else:
+                return False
+        return True
+
+    def col_is_empty(self, col: int) -> bool:
+        for row in range(self.rowCount() - 1, 0, -1):
+            item = self.item(row, col)
+            text = item.text() if item is not None else ""
+            if text in ["", " "]:
+                continue
+            else:
+                return False
+        return True
+
+    def _max_content_pos(self):
+        """
+        获取最大内容所在位置, 从0开始
+        """
+        max_row = self.rowCount() - 1
+        max_col = self.columnCount() - 1
+        for row in range(max_row, 0, -1):
+            if self.row_is_empty(row):
+                max_row -= 1
+            else:
+                break
+        for col in range(max_col, 0, -1):
+            if self.col_is_empty(col):
+                max_col -= 1
+            else:
+                break
+        self.max_content_row = max_row
+        self.max_content_col = max_col
+
+    def get_max_content_pos(self):
+        self._max_content_pos()
+        return self.max_content_row, self.max_content_col
 
     def clear_empty_row(self):
         """
         清除空行
         """
+        if self.infinite:
+            return
         if self.editable is False:
             return
-        for row in range(self.rowCount() - 1, -1, -1):
-            n = 0
-            for clo in range(self.columnCount()):
-                item = self.item(row, clo)
-                text = item.text() if item is not None else ""
-                if text in ["", " "]:
-                    n += 1
-                if n == self.columnCount():
-                    self.removeRow(row)
+        while self.max_content_row + 1 < self.rowCount():
+            self.removeRow(self.rowCount() - 1)
 
     def clear_empty_col(self):
         """
         清除空列
         """
+        if self.infinite:
+            return
         if self.editable is False:
             return
-        for clo in range(self.columnCount() - 1, -1, -1):
-            n = 0
-            for row in range(self.rowCount()):
-                item = self.item(row, clo)
-                text = item.text() if item is not None else ""
-                if text in ["", " "]:
-                    n += 1
-                if n == self.rowCount():
-                    self.removeColumn(clo)
+        while self.max_content_col + 1 < self.columnCount():
+            self.removeColumn(self.columnCount() - 1)
 
     def clear_empty_space(self):
         """
-        清除空行和空列
+        清除表格
         """
+        if self.infinite:
+            return
         self.clear_empty_col()
         self.clear_empty_row()
 
@@ -649,10 +942,13 @@ class CleverTableWidget(QTableWidget):
                         self.setItem(row, col, item_cr)
                         self.setItem(col, row, item_rc)
                 # 交换表头
-                head_col = self.takeHorizontalHeaderItem(row)
-                head_row = self.takeVerticalHeaderItem(row)
-                self.setHorizontalHeaderItem(row, head_row)
-                self.setVerticalHeaderItem(row, head_col)
+                if not self.infinite:
+                    head_col = self.takeHorizontalHeaderItem(row)
+                    head_row = self.takeVerticalHeaderItem(row)
+                    self.setHorizontalHeaderItem(row, head_row)
+                    self.setVerticalHeaderItem(row, head_col)
+                else:
+                    self.renumber_header()
 
         if self.rowCount() == self.columnCount():
             trans()
@@ -669,18 +965,27 @@ class CleverTableWidget(QTableWidget):
         else:
             self.clear_empty_space()
 
-    def renumber_header_clo(self):
+    def renumber_header_col(self):
         """
-        重编号列标题
+        重编号列标题为Excel风格的字母顺序
         """
         if self.editable is False:
             return
-        for clo in range(self.columnCount()):
-            header = self.horizontalHeaderItem(clo)
+
+        def num_to_letters(n):
+            letters = ""
+            while n > 0:
+                n -= 1
+                letters = chr(ord("A") + n % 26) + letters
+                n = n // 26
+            return letters
+
+        for col in range(self.columnCount()):
+            header = self.horizontalHeaderItem(col)
             if header is None:
                 header = QTableWidgetItem()
-                self.setHorizontalHeaderItem(clo, header)
-            header.setText(str(clo + 1))
+                self.setHorizontalHeaderItem(col, header)
+            header.setText(num_to_letters(col + 1))
 
     def renumber_header_row(self):
         """
@@ -699,10 +1004,13 @@ class CleverTableWidget(QTableWidget):
         """
         重编号列和行标题
         """
-        self.renumber_header_clo()
+        self.renumber_header_col()
         self.renumber_header_row()
 
     def get_first_empty_row_id(self):
+        """
+        获取第一个空行的ID
+        """
         first_empty_row_id = 0
         for row in range(self.rowCount()):
             exist_item = False
@@ -718,6 +1026,9 @@ class CleverTableWidget(QTableWidget):
         return first_empty_row_id
 
     def read_table_context(self):
+        """
+        读取表格内容
+        """
         context = [
             [
                 self.item(row, col).text() if self.item(row, col) is not None else ""
@@ -764,6 +1075,9 @@ class CleverTableWidget(QTableWidget):
         return True
 
     def copy_selection(self):
+        """
+        复制表格选中内容到剪贴板
+        """
         if not self._judge_rectangular_selected():
             return
         selected = self.selectedRanges()[0]
@@ -787,6 +1101,9 @@ class CleverTableWidget(QTableWidget):
         QApplication.clipboard().setText(text)
 
     def paste_selection(self):
+        """
+        从剪贴板粘贴内容到表格
+        """
         if self.editable is False:
             return
         if not self._judge_rectangular_selected():
@@ -811,12 +1128,18 @@ class CleverTableWidget(QTableWidget):
                 )
 
     def clear_selection(self):
+        """
+        清除选中区域内容
+        """
         if self.editable is False:
             return
         for item in self.selectedItems():
             self.setItem(item.row(), item.column(), QTableWidgetItem(""))
 
     def delete_selection(self):
+        """
+        删除选中区域内容
+        """
         if self.editable is False:
             return
         if not self._judge_rectangular_selected():
@@ -962,6 +1285,9 @@ class CleverTableWidget(QTableWidget):
                     self.setItem(row, col, QTableWidgetItem(""))
 
     def align_right(self):
+        """
+        右对齐选中区域内容
+        """
         self._set_null_item()
         for item in self.selectedItems():
             item.setTextAlignment(
@@ -969,6 +1295,9 @@ class CleverTableWidget(QTableWidget):
             )
 
     def align_left(self):
+        """
+        左对齐选中区域内容
+        """
         self._set_null_item()
         for item in self.selectedItems():
             item.setTextAlignment(
@@ -976,11 +1305,18 @@ class CleverTableWidget(QTableWidget):
             )
 
     def align_center(self):
+        """
+        居中对齐选中区域内容
+        """
         self._set_null_item()
         for item in self.selectedItems():
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
     def highlight_background(self, choice):
+        """
+        高亮选中区域背景
+        """
+
         def highlight_operation():
             self._set_null_item()
             yellow_bg = QColor(255, 255, 0)
@@ -996,6 +1332,10 @@ class CleverTableWidget(QTableWidget):
         return highlight_operation
 
     def bold_text(self, choice):
+        """
+        加粗选中区域内容
+        """
+
         def bold_operation():
             self._set_null_item()
             for item in self.selectedItems():
@@ -1119,6 +1459,9 @@ class DeleteInsertDialog(QDialog):
             self.buttonOK.clicked.connect(self.insert_button_ok_clicked)
 
     def delete_button_ok_clicked(self):
+        """
+        删除按钮点击事件
+        """
         if self.radioButtonA.isChecked():
             self.DelSignal.emit("Move Left")
         elif self.radioButtonB.isChecked():
@@ -1132,6 +1475,9 @@ class DeleteInsertDialog(QDialog):
         self.close()
 
     def insert_button_ok_clicked(self):
+        """
+        插入按钮点击事件
+        """
         if self.radioButtonA.isChecked():
             self.InsertSignal.emit("Move Right")
         elif self.radioButtonB.isChecked():
@@ -1179,6 +1525,6 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     ui = TestUsingCleverTW()
     ui.show()
-    # ui.tableWidget.setHorizontalHeaderLabels(["A", "B", "C", "D", "E"])
-    # ui.tableWidget.transpose_table()
+    ui.tableWidget.enable_infinite()
+    ui.tableWidget.renumber_header_col()
     sys.exit(app.exec())
