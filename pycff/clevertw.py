@@ -1645,16 +1645,15 @@ class CleverTableWidget(QTableWidget):
         try:
             book = openpyxl.Workbook()
             sheet = book.active
+            sheet.title = "Sheet1"
             # deal row data
             for row in range(self.max_content_row + 1):
-                row_data = []
                 for col in range(self.max_content_col + 1):
                     item = self.item(row, col)
                     text = item.text() if item else ""
                     if text in ("", " ", None):
                         continue
-                    row_data.append(text)
-                sheet.append(row_data)
+                    sheet.cell(row=row + 1, column=col + 1, value=text)
             book.save(path)
             QMessageBox.information(
                 self, self.tr("保存成功"), self.tr(f"文件已保存至：{path}")

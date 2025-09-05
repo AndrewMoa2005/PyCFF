@@ -84,7 +84,7 @@ color: rgb(0, 0, 255);</string>
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabIn">
       <attribute name="title">
@@ -102,7 +102,7 @@ color: rgb(0, 0, 255);</string>
             <string>加载</string>
            </property>
            <property name="icon">
-            <iconset theme="QIcon::ThemeIcon::DocumentOpen"/>
+            <iconset theme="QIcon::ThemeIcon::FolderOpen"/>
            </property>
           </widget>
          </item>
@@ -115,7 +115,7 @@ color: rgb(0, 0, 255);</string>
             <string>保存</string>
            </property>
            <property name="icon">
-            <iconset theme="QIcon::ThemeIcon::DocumentSaveAs"/>
+            <iconset theme="QIcon::ThemeIcon::DocumentSave"/>
            </property>
           </widget>
          </item>
@@ -503,7 +503,7 @@ color: rgb(0, 0, 255);</string>
             <string>设置大小</string>
            </property>
            <property name="icon">
-            <iconset theme="QIcon::ThemeIcon::WindowNew"/>
+            <iconset theme="QIcon::ThemeIcon::ViewFullscreen"/>
            </property>
           </widget>
          </item>
@@ -529,7 +529,20 @@ color: rgb(0, 0, 255);</string>
             <string>保存</string>
            </property>
            <property name="icon">
-            <iconset theme="QIcon::ThemeIcon::CameraPhoto"/>
+            <iconset theme="QIcon::ThemeIcon::DocumentSaveAs"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="copyPlotBtn">
+           <property name="toolTip">
+            <string>复制图片到剪贴板</string>
+           </property>
+           <property name="text">
+            <string>复制</string>
+           </property>
+           <property name="icon">
+            <iconset theme="QIcon::ThemeIcon::EditCopy"/>
            </property>
           </widget>
          </item>
@@ -545,8 +558,8 @@ color: rgb(0, 0, 255);</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>98</width>
-            <height>28</height>
+            <width>756</width>
+            <height>412</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
