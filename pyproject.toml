@@ -24,6 +24,9 @@ dependencies = [
     "numpy", 
     "scipy", 
     "PySide6",
+    "openpyxl",
+    "xlrd",
+    "xlwt",
     ]
 
 [tool.pyside6-project]
