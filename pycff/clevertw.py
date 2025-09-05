@@ -1480,11 +1480,16 @@ class CleverTableWidget(QTableWidget):
                 self.clearContents()
                 for row in range(row_num):
                     for col in range(col_num):
+                        if rows[row][col] is None:
+                            continue
+                        text = str(rows[row][col])
+                        if text in ["", " "]:
+                            continue
                         item = self.item(row, col)
                         if item:
-                            item.setText(rows[row][col])
+                            item.setText(text)
                         else:
-                            self.setItem(row, col, QTableWidgetItem(rows[row][col]))
+                            self.setItem(row, col, QTableWidgetItem(text))
             qDebug("Loaded file: %s" % path)
         except Exception as e:
             QMessageBox.critical(
@@ -1525,17 +1530,12 @@ class CleverTableWidget(QTableWidget):
                 self.setRowCount(sheet.nrows)
                 self.renumber_header_row()
             for row in range(sheet.nrows):
+                r_list = sheet.row_values(row)
                 for col in range(sheet.ncols):
-                    self.setItem(row, col, QTableWidgetItem(sheet.cell_value(row, col)))
-                    qDebug(
-                        "Loaded cell (%s, %s): %s , type: %s"
-                        % (
-                            row,
-                            col,
-                            sheet.cell_value(row, col),
-                            sheet.cell_type(row, col),
-                        )
-                    )
+                    text = str(r_list[col])
+                    if text in ["", " "]:
+                        continue
+                    self.setItem(row, col, QTableWidgetItem(text))
             qDebug("Loaded file: %s" % path)
             qDebug("Loaded sheet: %s" % sheet.name)
         except Exception as e:
@@ -1553,7 +1553,7 @@ class CleverTableWidget(QTableWidget):
         if not path:
             return
         try:
-            book = openpyxl.load_workbook(path)
+            book = openpyxl.load_workbook(path, data_only=True)
             if len(book.sheetnames) > 1:
                 active, _ = self._dialog_choose_sheet(
                     book.sheetnames, active_names=book.active.title
@@ -1585,11 +1585,14 @@ class CleverTableWidget(QTableWidget):
                 for col in range(col_num):
                     if rows[row][col] is None:
                         continue
+                    text = str(rows[row][col])
+                    if text in ["", " "]:
+                        continue
                     item = self.item(row, col)
                     if item:
-                        item.setText(str(rows[row][col]))
+                        item.setText(text)
                     else:
-                        self.setItem(row, col, QTableWidgetItem(str(rows[row][col])))
+                        self.setItem(row, col, QTableWidgetItem(text))
             qDebug("Loaded file: %s" % path)
             qDebug("Loaded sheet: %s" % sheet.title)
         except Exception as e:
@@ -1649,7 +1652,7 @@ class CleverTableWidget(QTableWidget):
                     item = self.item(row, col)
                     text = item.text() if item else ""
                     if text in ("", " ", None):
-                        text = " "
+                        continue
                     row_data.append(text)
                 sheet.append(row_data)
             book.save(path)

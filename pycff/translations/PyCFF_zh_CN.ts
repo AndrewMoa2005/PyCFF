@@ -195,11 +195,11 @@
     </message>
     <message>
         <location filename="../clevertw.py" line="1466"/>
-        <location filename="../clevertw.py" line="1491"/>
-        <location filename="../clevertw.py" line="1517"/>
+        <location filename="../clevertw.py" line="1496"/>
+        <location filename="../clevertw.py" line="1522"/>
         <location filename="../clevertw.py" line="1543"/>
         <location filename="../clevertw.py" line="1569"/>
-        <location filename="../clevertw.py" line="1597"/>
+        <location filename="../clevertw.py" line="1600"/>
         <source>加载错误</source>
         <translation>加载错误</translation>
     </message>
@@ -209,9 +209,9 @@
         <translation>CSV文件没有内容</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1491"/>
+        <location filename="../clevertw.py" line="1496"/>
         <location filename="../clevertw.py" line="1543"/>
-        <location filename="../clevertw.py" line="1597"/>
+        <location filename="../clevertw.py" line="1600"/>
         <source>加载文件失败
 
 %s</source>
@@ -220,36 +220,36 @@
 %s</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1518"/>
+        <location filename="../clevertw.py" line="1523"/>
         <location filename="../clevertw.py" line="1570"/>
         <source>Excel文件没有内容</source>
         <translation>Excel文件没有内容</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1623"/>
-        <location filename="../clevertw.py" line="1657"/>
-        <location filename="../clevertw.py" line="1689"/>
+        <location filename="../clevertw.py" line="1626"/>
+        <location filename="../clevertw.py" line="1660"/>
+        <location filename="../clevertw.py" line="1692"/>
         <source>保存成功</source>
         <translation>保存成功</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1624"/>
-        <location filename="../clevertw.py" line="1658"/>
-        <location filename="../clevertw.py" line="1690"/>
+        <location filename="../clevertw.py" line="1627"/>
+        <location filename="../clevertw.py" line="1661"/>
+        <location filename="../clevertw.py" line="1693"/>
         <source>文件已保存至：{path}</source>
         <translation>文件已保存至：{path}</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1629"/>
-        <location filename="../clevertw.py" line="1663"/>
-        <location filename="../clevertw.py" line="1695"/>
+        <location filename="../clevertw.py" line="1632"/>
+        <location filename="../clevertw.py" line="1666"/>
+        <location filename="../clevertw.py" line="1698"/>
         <source>保存错误</source>
         <translation>保存错误</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1630"/>
-        <location filename="../clevertw.py" line="1664"/>
-        <location filename="../clevertw.py" line="1696"/>
+        <location filename="../clevertw.py" line="1633"/>
+        <location filename="../clevertw.py" line="1667"/>
+        <location filename="../clevertw.py" line="1699"/>
         <source>保存文件时出现错误
 
 %s</source>
@@ -261,54 +261,54 @@
 <context>
     <name>DeleteInsertDialog</name>
     <message>
-        <location filename="../clevertw.py" line="1710"/>
+        <location filename="../clevertw.py" line="1713"/>
         <source>删除</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1711"/>
+        <location filename="../clevertw.py" line="1714"/>
         <source>插入</source>
         <translation>插入</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1730"/>
+        <location filename="../clevertw.py" line="1733"/>
         <source>确定</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1731"/>
+        <location filename="../clevertw.py" line="1734"/>
         <source>取消</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1748"/>
+        <location filename="../clevertw.py" line="1751"/>
         <source>右侧单元格左移(L)</source>
         <translation>右侧单元格左移(L)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1749"/>
+        <location filename="../clevertw.py" line="1752"/>
         <source>下方单元格上移(U)</source>
         <translation>下方单元格上移(U)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1750"/>
-        <location filename="../clevertw.py" line="1772"/>
+        <location filename="../clevertw.py" line="1753"/>
+        <location filename="../clevertw.py" line="1775"/>
         <source>整行(R)</source>
         <translation>整行(R)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1751"/>
-        <location filename="../clevertw.py" line="1773"/>
+        <location filename="../clevertw.py" line="1754"/>
+        <location filename="../clevertw.py" line="1776"/>
         <source>整列(C)</source>
         <translation>整列(C)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1770"/>
+        <location filename="../clevertw.py" line="1773"/>
         <source>活动单元格右移(R)</source>
         <translation>活动单元格右移(R)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1771"/>
+        <location filename="../clevertw.py" line="1774"/>
         <source>活动单元格下移(D)</source>
         <translation>活动单元格下移(D)</translation>
     </message>
@@ -349,7 +349,7 @@
 <context>
     <name>TestUsingCleverTW</name>
     <message>
-        <location filename="../clevertw.py" line="1833"/>
+        <location filename="../clevertw.py" line="1836"/>
         <source>Test Using CleverTableWidget</source>
         <translation>测试智能表格控件</translation>
     </message>
