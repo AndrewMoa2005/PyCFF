@@ -435,16 +435,15 @@ class Widget(QWidget):
                         self, self.tr("格式错误"), self.tr("CSV文件没有内容")
                     )
                     return
-                data_rows = rows[1:]
-                if len(data_rows) < 1:
+                if len(rows) < 2:
                     QMessageBox.critical(
                         self, self.tr("格式错误"), self.tr("CSV文件没有数据")
                     )
                     return
                 col_num = len(rows[0])
-                row_num = len(data_rows)
+                row_num = len(rows)
                 for row in range(row_num):
-                    if len(data_rows[row]) != col_num:
+                    if len(rows[row]) != col_num:
                         QMessageBox.critical(
                             self,
                             self.tr("格式错误"),
@@ -453,28 +452,19 @@ class Widget(QWidget):
                         return
                 if self.ui.inputTable.columnCount() < col_num:
                     self.ui.inputTable.setColumnCount(col_num)
-                for col in range(col_num):
-                    header = rows[0][col]
-                    if not header or header in ("", " "):
-                        header = f"{col+1}"
-                    header_item = self.ui.inputTable.horizontalHeaderItem(col)
-                    if header_item:
-                        header_item.setText(header)
-                    else:
-                        self.ui.inputTable.setHorizontalHeaderItem(
-                            col, QTableWidgetItem(header)
-                        )
+                    self.ui.inputTable.renumber_header_col()
                 if self.ui.inputTable.rowCount() < row_num:
                     self.ui.inputTable.setRowCount(row_num)
+                    self.ui.inputTable.renumber_header_row()
                 self.ui.inputTable.clearContents()
                 for row in range(row_num):
                     for col in range(col_num):
                         item = self.ui.inputTable.item(row, col)
                         if item:
-                            item.setText(data_rows[row][col])
+                            item.setText(rows[row][col])
                         else:
                             self.ui.inputTable.setItem(
-                                row, col, QTableWidgetItem(data_rows[row][col])
+                                row, col, QTableWidgetItem(rows[row][col])
                             )
             qDebug("Loaded file: %s" % path)
         except Exception as e:
@@ -496,19 +486,10 @@ class Widget(QWidget):
                 return
             with open(path, "w", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
-                # deal row header
-                headers = []
-                for col in range(self.ui.inputTable.columnCount()):
-                    item = self.ui.inputTable.horizontalHeaderItem(col)
-                    text = item.text() if item else ""
-                    if text in ("", " ", None):
-                        text = " "
-                    headers.append(text)
-                writer.writerow(headers)
                 # deal row data
-                for row in range(self.ui.inputTable.rowCount()):
+                for row in range(self.ui.inputTable.max_content_row + 1):
                     row_data = []
-                    for col in range(self.ui.inputTable.columnCount()):
+                    for col in range(self.ui.inputTable.max_content_col + 1):
                         item = self.ui.inputTable.item(row, col)
                         text = item.text() if item else ""
                         if text in ("", " ", None):
@@ -557,10 +538,10 @@ class Widget(QWidget):
 
     def onRefreshBtnClicked(self):
         # self.ui.inputTable.renumber_header()
-        self.ui.inputTable.selectAll()
+        # self.ui.inputTable.selectAll()
         # self.ui.inputTable.float_col()
         self.ui.inputTable.clearSelection()
-        self.ui.inputTable.clear_empty_space()
+        # self.ui.inputTable.clear_empty_space()
         self.inputTableChanged()
         self.onXDataBoxChanged()
         self.onYDataBoxChanged()
