@@ -3,6 +3,9 @@
 # reference: https://blog.csdn.net/weixin_40134371/article/details/138843448
 
 import re
+import openpyxl
+import xlrd, xlwt
+import csv
 from PySide6.QtCore import Qt, Signal, Slot, qDebug
 from PySide6.QtGui import QAction, QKeySequence, QShortcut, QColor
 from PySide6.QtWidgets import (
@@ -23,10 +26,14 @@ from PySide6.QtWidgets import (
     QCheckBox,
     QInputDialog,
     QLineEdit,
+    QListWidget,
+    QDialogButtonBox,
 )
 
 
 class CleverTableWidget(QTableWidget):
+    ContentsChangeSignal = Signal(int, int)
+
     # 构造函数
     def __init__(
         self,
@@ -541,6 +548,7 @@ class CleverTableWidget(QTableWidget):
         self.setRangeSelected(
             QTableWidgetSelectionRange(top - 1, left, bottom - 1, right), True
         )
+        self._max_content_pos()
 
     def move_down(self):
         """
@@ -573,6 +581,7 @@ class CleverTableWidget(QTableWidget):
         self.setRangeSelected(
             QTableWidgetSelectionRange(top + 1, left, bottom + 1, right), True
         )
+        self._max_content_pos()
 
     def move_left(self):
         """
@@ -610,6 +619,7 @@ class CleverTableWidget(QTableWidget):
         self.setRangeSelected(
             QTableWidgetSelectionRange(top, left - 1, bottom, right - 1), True
         )
+        self._max_content_pos()
 
     def move_right(self):
         """
@@ -642,6 +652,7 @@ class CleverTableWidget(QTableWidget):
         self.setRangeSelected(
             QTableWidgetSelectionRange(top, left + 1, bottom, right + 1), True
         )
+        self._max_content_pos()
 
     def digital_format(self):
         """
@@ -746,6 +757,7 @@ class CleverTableWidget(QTableWidget):
                 self.takeItem(row, selected_column)
             for new_row, item in enumerate(items):
                 self.setItem(new_row, selected_column, item)
+        self._max_content_pos()
 
     def sort_col_descending(self):
         """
@@ -776,6 +788,7 @@ class CleverTableWidget(QTableWidget):
                 self.takeItem(row, selected_column)
             for new_row, item in enumerate(items):
                 self.setItem(new_row, selected_column, item)
+        self._max_content_pos()
 
     def filter_string_to_float_list(self, input_str: str) -> list:
         """
@@ -820,6 +833,7 @@ class CleverTableWidget(QTableWidget):
                 self.setItem(row, col, item)
             else:
                 self.setItem(row, col, QTableWidgetItem(""))
+        self._max_content_pos()
 
     def float_col(self):
         """
@@ -846,6 +860,7 @@ class CleverTableWidget(QTableWidget):
                     self.setItem(row, col, item)
                 else:
                     self.setItem(row, col, QTableWidgetItem(""))
+        self._max_content_pos()
 
     def row_is_empty(self, row: int) -> bool:
         for col in range(self.columnCount() - 1, 0, -1):
@@ -885,6 +900,7 @@ class CleverTableWidget(QTableWidget):
                 break
         self.max_content_row = max_row
         self.max_content_col = max_col
+        self.ContentsChangeSignal.emit(max_row, max_col)
 
     def get_max_content_pos(self):
         self._max_content_pos()
@@ -1148,6 +1164,7 @@ class CleverTableWidget(QTableWidget):
                     selected.leftColumn() + c,
                     QTableWidgetItem(text),
                 )
+        self._max_content_pos()
 
     def clear_selection(self):
         """
@@ -1157,6 +1174,7 @@ class CleverTableWidget(QTableWidget):
             return
         for item in self.selectedItems():
             self.setItem(item.row(), item.column(), QTableWidgetItem(""))
+        self._max_content_pos()
 
     def delete_selection(self):
         """
@@ -1170,6 +1188,7 @@ class CleverTableWidget(QTableWidget):
         delete_dialog.DelSignal.connect(self._delete_operations)
         delete_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
         delete_dialog.exec()
+        self._max_content_pos()
 
     @Slot(str)
     def _delete_operations(self, message):
@@ -1240,6 +1259,7 @@ class CleverTableWidget(QTableWidget):
         insert_dialog.InsertSignal.connect(self._insert_operations)
         insert_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
         insert_dialog.exec()
+        self._max_content_pos()
 
     @Slot(str)
     def _insert_operations(self, message):
@@ -1388,6 +1408,294 @@ class CleverTableWidget(QTableWidget):
                 continue
             else:
                 self.setRowHidden(row, True)
+
+    def _dialog_choose_sheet(
+        self, sheetnames: list[str], active_names: str = None, active_index: int = 0
+    ) -> tuple[str, int]:
+        """
+        弹出对话框选择工作表
+        Args:
+            sheetnames (list[str]): 工作表名称列表
+            active_names (str, optional): 活动工作表名称. Defaults to None.
+            active_index (int, optional): 活动工作表索引. Defaults to 0.
+        Returns:
+            tuple[str, int]: 工作表名称, 工作表索引
+        """
+        if len(sheetnames) <= 1:
+            return
+        if active_names in sheetnames:
+            active_index = sheetnames.index(active_names)
+        else:
+            active_index = 0
+        dialog = QDialog(self)
+        dialog.setWindowTitle(self.tr("选择工作表"))
+        layout = QVBoxLayout()
+        label = QLabel(self.tr("请选择要加载的工作表:"))
+        layout.addWidget(label)
+        # Create list widget for sheets
+        sheet_list = QListWidget()
+        sheet_list.addItems(sheetnames)
+        sheet_list.setCurrentRow(active_index)
+        layout.addWidget(sheet_list)
+        # Add buttons
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        button_box.accepted.connect(dialog.accept)
+        button_box.rejected.connect(dialog.reject)
+        layout.addWidget(button_box)
+        dialog.setLayout(layout)
+        if dialog.exec() != QDialog.Accepted:
+            return
+        sheet_name = sheet_list.currentItem().text()
+        sheet_number = sheetnames.index(sheet_name)
+        return sheet_name, sheet_number
+
+    def load_csv(self, path: str):
+        """
+        加载CSV文件
+        Args:
+            path (str): 文件路径
+        """
+        if not path:
+            return
+        try:
+            with open(path, "r", newline="", encoding="utf-8") as f:
+                reader = csv.reader(f)
+                rows = [row for row in reader if row]
+                if len(rows) < 1:
+                    QMessageBox.critical(
+                        self, self.tr("加载错误"), self.tr("CSV文件没有内容")
+                    )
+                    return
+                col_num = len(rows[0])
+                row_num = len(rows)
+                for row in range(row_num):
+                    if len(rows[row]) > col_num:
+                        col_num = len(rows[row])
+                if self.columnCount() < col_num:
+                    self.setColumnCount(col_num)
+                    self.renumber_header_col()
+                if self.rowCount() < row_num:
+                    self.setRowCount(row_num)
+                    self.renumber_header_row()
+                self.clearContents()
+                for row in range(row_num):
+                    for col in range(col_num):
+                        item = self.item(row, col)
+                        if item:
+                            item.setText(rows[row][col])
+                        else:
+                            self.setItem(row, col, QTableWidgetItem(rows[row][col]))
+            qDebug("Loaded file: %s" % path)
+        except Exception as e:
+            QMessageBox.critical(
+                self, self.tr("加载错误"), self.tr("加载文件失败\n\n%s" % e)
+            )
+            qDebug("Error loading file: %s" % e)
+
+    def load_excel03(self, path: str):
+        """
+        加载Excel97-03文件
+        Args:
+            path (str): 文件路径
+        """
+        if not path:
+            return
+        try:
+            book = xlrd.open_workbook(path)
+            if len(book.sheet_names()) > 1:
+                _, sheet_index = self._dialog_choose_sheet(
+                    book.sheet_names(), active_index=0
+                )
+                sheet = book.sheet_by_index(sheet_index)
+            else:
+                sheet = book.sheet_by_index(0)
+            is_empty = sheet.nrows == 0 or (
+                sheet.nrows == 1 and sheet.ncols == 1 and sheet.cell_value(0, 0) == ""
+            )
+            if is_empty:
+                QMessageBox.critical(
+                    self, self.tr("加载错误"), self.tr("Excel文件没有内容")
+                )
+                return
+            self.clearContents()
+            if self.columnCount() < sheet.ncols:
+                self.setColumnCount(sheet.ncols)
+                self.renumber_header_col()
+            if self.rowCount() < sheet.nrows:
+                self.setRowCount(sheet.nrows)
+                self.renumber_header_row()
+            for row in range(sheet.nrows):
+                for col in range(sheet.ncols):
+                    self.setItem(row, col, QTableWidgetItem(sheet.cell_value(row, col)))
+                    qDebug(
+                        "Loaded cell (%s, %s): %s , type: %s"
+                        % (
+                            row,
+                            col,
+                            sheet.cell_value(row, col),
+                            sheet.cell_type(row, col),
+                        )
+                    )
+            qDebug("Loaded file: %s" % path)
+            qDebug("Loaded sheet: %s" % sheet.name)
+        except Exception as e:
+            QMessageBox.critical(
+                self, self.tr("加载错误"), self.tr("加载文件失败\n\n%s" % e)
+            )
+            qDebug("Error loading file: %s" % e)
+
+    def load_excel(self, path: str):
+        """
+        加载Excel文件
+        Args:
+            path (str): 文件路径
+        """
+        if not path:
+            return
+        try:
+            book = openpyxl.load_workbook(path)
+            if len(book.sheetnames) > 1:
+                active, _ = self._dialog_choose_sheet(
+                    book.sheetnames, active_names=book.active.title
+                )
+                sheet = book[active]
+            else:
+                sheet = book.active
+            rows = []
+            for row in sheet.iter_rows(values_only=True):
+                rows.append(row)
+            if len(rows) < 1:
+                QMessageBox.critical(
+                    self, self.tr("加载错误"), self.tr("Excel文件没有内容")
+                )
+                return
+            col_num = len(rows[0])
+            row_num = len(rows)
+            for row in range(row_num):
+                if len(rows[row]) > col_num:
+                    col_num = len(rows[row])
+            if self.columnCount() < col_num:
+                self.setColumnCount(col_num)
+                self.renumber_header_col()
+            if self.rowCount() < row_num:
+                self.setRowCount(row_num)
+                self.renumber_header_row()
+            self.clearContents()
+            for row in range(row_num):
+                for col in range(col_num):
+                    if rows[row][col] is None:
+                        continue
+                    item = self.item(row, col)
+                    if item:
+                        item.setText(str(rows[row][col]))
+                    else:
+                        self.setItem(row, col, QTableWidgetItem(str(rows[row][col])))
+            qDebug("Loaded file: %s" % path)
+            qDebug("Loaded sheet: %s" % sheet.title)
+        except Exception as e:
+            QMessageBox.critical(
+                self, self.tr("加载错误"), self.tr("加载文件失败\n\n%s" % e)
+            )
+            qDebug("Error loading file: %s" % e)
+
+    def save_csv(self, path: str):
+        """
+        保存CSV文件
+        Args:
+            path (str): 文件路径
+        """
+        if not path:
+            return
+        try:
+            with open(path, "w", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                # deal row data
+                for row in range(self.max_content_row + 1):
+                    row_data = []
+                    for col in range(self.max_content_col + 1):
+                        item = self.item(row, col)
+                        text = item.text() if item else ""
+                        if text in ("", " ", None):
+                            text = " "
+                        row_data.append(text)
+                    writer.writerow(row_data)
+            QMessageBox.information(
+                self, self.tr("保存成功"), self.tr(f"文件已保存至：{path}")
+            )
+            qDebug("Saved file: %s" % path)
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                self.tr("保存错误"),
+                self.tr("保存文件时出现错误\n\n%s" % e),
+            )
+            qDebug("Error saving file: %s" % e)
+
+    def save_excel(self, path: str):
+        """
+        保存Excel文件
+        Args:
+            path (str): 文件路径
+        """
+        if not path:
+            return
+        try:
+            book = openpyxl.Workbook()
+            sheet = book.active
+            # deal row data
+            for row in range(self.max_content_row + 1):
+                row_data = []
+                for col in range(self.max_content_col + 1):
+                    item = self.item(row, col)
+                    text = item.text() if item else ""
+                    if text in ("", " ", None):
+                        text = " "
+                    row_data.append(text)
+                sheet.append(row_data)
+            book.save(path)
+            QMessageBox.information(
+                self, self.tr("保存成功"), self.tr(f"文件已保存至：{path}")
+            )
+            qDebug("Saved file: %s" % path)
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                self.tr("保存错误"),
+                self.tr("保存文件时出现错误\n\n%s" % e),
+            )
+            qDebug("Error saving file: %s" % e)
+
+    def save_excel03(self, path: str):
+        """
+        保存Excel97-03文件
+        Args:
+            path (str): 文件路径
+        """
+        if not path:
+            return
+        try:
+            book = xlwt.Workbook(encoding="utf-8")
+            sheet = book.add_sheet("Sheet1")
+            # deal row data
+            for row in range(self.max_content_row + 1):
+                for col in range(self.max_content_col + 1):
+                    item = self.item(row, col)
+                    text = item.text() if item else ""
+                    if text in ("", " ", None):
+                        continue
+                    sheet.write(row, col, text)
+            book.save(path)
+            QMessageBox.information(
+                self, self.tr("保存成功"), self.tr(f"文件已保存至：{path}")
+            )
+            qDebug("Saved file: %s" % path)
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                self.tr("保存错误"),
+                self.tr("保存文件时出现错误\n\n%s" % e),
+            )
+            qDebug("Error saving file: %s" % e)
 
 
 class DeleteInsertDialog(QDialog):

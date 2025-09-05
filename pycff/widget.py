@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import csv
 import numpy as np
-import openpyxl
-import xlrd, xlwt
 
 from PySide6.QtWidgets import (
     QWidget,
@@ -21,9 +18,6 @@ from PySide6.QtWidgets import (
     QColorDialog,
     QComboBox,
     QHBoxLayout,
-    QVBoxLayout,
-    QListWidget,
-    QDialogButtonBox,
 )
 from PySide6.QtCharts import (
     QChart,
@@ -83,7 +77,7 @@ class Widget(QWidget):
         self.ui.yDataBox.activated.connect(self.onYDataBoxChanged)
         self.ui.refineSP.setEnabled(self.ui.refineCB.isChecked())
         self.ui.inputTable.enable_infinite()
-        self.ui.inputTable.cellChanged.connect(self.inputTableChanged)
+        self.ui.inputTable.ContentsChangeSignal.connect(self.inputTableChanged)
         # Add QCharts
         self.chart = QChart()
         self.chartView = QChartView(self.chart)
@@ -422,164 +416,6 @@ class Widget(QWidget):
         self.chartView.setRenderHint(QPainter.Antialiasing)
         self.chartView.show()
 
-    def loadCSV(self, path):
-        if not path:
-            return
-        try:
-            with open(path, "r", newline="", encoding="utf-8") as f:
-                reader = csv.reader(f)
-                rows = [row for row in reader if row]
-                if len(rows) < 1:
-                    QMessageBox.critical(
-                        self, self.tr("加载错误"), self.tr("CSV文件没有内容")
-                    )
-                    return
-                col_num = len(rows[0])
-                row_num = len(rows)
-                for row in range(row_num):
-                    if len(rows[row]) > col_num:
-                        col_num = len(rows[row])
-                if self.ui.inputTable.columnCount() < col_num:
-                    self.ui.inputTable.setColumnCount(col_num)
-                    self.ui.inputTable.renumber_header_col()
-                if self.ui.inputTable.rowCount() < row_num:
-                    self.ui.inputTable.setRowCount(row_num)
-                    self.ui.inputTable.renumber_header_row()
-                self.ui.inputTable.clearContents()
-                for row in range(row_num):
-                    for col in range(col_num):
-                        item = self.ui.inputTable.item(row, col)
-                        if item:
-                            item.setText(rows[row][col])
-                        else:
-                            self.ui.inputTable.setItem(
-                                row, col, QTableWidgetItem(rows[row][col])
-                            )
-            qDebug("Loaded file: %s" % path)
-        except Exception as e:
-            QMessageBox.critical(
-                self, self.tr("加载错误"), self.tr("加载文件失败\n\n%s" % e)
-            )
-            qDebug("Error loading file: %s" % e)
-
-    def _dialog_choose_sheet(
-        self, sheetnames: list[str], active_names: str = None, active_index: int = 0
-    ) -> tuple[str, int]:
-        if len(sheetnames) <= 1:
-            return
-        if active_names in sheetnames:
-            active_index = sheetnames.index(active_names)
-        else:
-            active_index = 0
-        dialog = QDialog(self)
-        dialog.setWindowTitle(self.tr("选择工作表"))
-        layout = QVBoxLayout()
-        label = QLabel(self.tr("请选择要加载的工作表:"))
-        layout.addWidget(label)
-        # Create list widget for sheets
-        sheet_list = QListWidget()
-        sheet_list.addItems(sheetnames)
-        sheet_list.setCurrentRow(active_index)
-        layout.addWidget(sheet_list)
-        # Add buttons
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        button_box.accepted.connect(dialog.accept)
-        button_box.rejected.connect(dialog.reject)
-        layout.addWidget(button_box)
-        dialog.setLayout(layout)
-        if dialog.exec() != QDialog.Accepted:
-            return
-        sheet_name = sheet_list.currentItem().text()
-        sheet_number = sheetnames.index(sheet_name)
-        return sheet_name, sheet_number
-
-    def loadExcel03(self, path):
-        if not path:
-            return
-        try:
-            book = xlrd.open_workbook(path)
-            if len(book.sheet_names()) > 1:
-                _, sheet_index = self._dialog_choose_sheet(
-                    book.sheet_names(), active_index=0
-                )
-                sheet = book.sheet_by_index(sheet_index)
-            else:
-                sheet = book.sheet_by_index(0)
-            is_empty = sheet.nrows == 0 or (
-                sheet.nrows == 1 and sheet.ncols == 1 and sheet.cell_value(0, 0) == ""
-            )
-            if is_empty:
-                QMessageBox.critical(
-                    self, self.tr("加载错误"), self.tr("Excel文件没有内容")
-                )
-                return
-            self.ui.inputTable.clearContents()
-            if self.ui.inputTable.columnCount() < sheet.ncols:
-                self.ui.inputTable.setColumnCount(sheet.ncols)
-                self.ui.inputTable.renumber_header_col()
-            if self.ui.inputTable.rowCount() < sheet.nrows:
-                self.ui.inputTable.setRowCount(sheet.nrows)
-                self.ui.inputTable.renumber_header_row()
-            for row in range(sheet.nrows):
-                for col in range(sheet.ncols):
-                    self.ui.inputTable.setItem(
-                        row, col, QTableWidgetItem(sheet.cell_value(row, col))
-                    )
-            qDebug("Loaded file: %s" % path)
-        except Exception as e:
-            QMessageBox.critical(
-                self, self.tr("加载错误"), self.tr("加载文件失败\n\n%s" % e)
-            )
-            qDebug("Error loading file: %s" % e)
-
-    def loadExcel(self, path):
-        if not path:
-            return
-        try:
-            book = openpyxl.load_workbook(path)
-            if len(book.sheetnames) > 1:
-                active, _ = self._dialog_choose_sheet(
-                    book.sheetnames, active_names=book.active.title
-                )
-                sheet = book[active]
-            else:
-                sheet = book.active
-            rows = []
-            for row in sheet.iter_rows(values_only=True):
-                rows.append(row)
-            if len(rows) < 1:
-                QMessageBox.critical(
-                    self, self.tr("加载错误"), self.tr("Excel文件没有内容")
-                )
-                return
-            col_num = len(rows[0])
-            row_num = len(rows)
-            for row in range(row_num):
-                if len(rows[row]) > col_num:
-                    col_num = len(rows[row])
-            if self.ui.inputTable.columnCount() < col_num:
-                self.ui.inputTable.setColumnCount(col_num)
-                self.ui.inputTable.renumber_header_col()
-            if self.ui.inputTable.rowCount() < row_num:
-                self.ui.inputTable.setRowCount(row_num)
-                self.ui.inputTable.renumber_header_row()
-            self.ui.inputTable.clearContents()
-            for row in range(row_num):
-                for col in range(col_num):
-                    item = self.ui.inputTable.item(row, col)
-                    if item:
-                        item.setText(rows[row][col])
-                    else:
-                        self.ui.inputTable.setItem(
-                            row, col, QTableWidgetItem(rows[row][col])
-                        )
-            qDebug("Loaded file: %s" % path)
-        except Exception as e:
-            QMessageBox.critical(
-                self, self.tr("加载错误"), self.tr("加载文件失败\n\n%s" % e)
-            )
-            qDebug("Error loading file: %s" % e)
-
     def onLoadBtnClicked(self):
         path, _ = QFileDialog.getOpenFileName(
             self,
@@ -591,109 +427,17 @@ class Widget(QWidget):
         )
         if not path:
             return
+        max_row, max_col = self.ui.inputTable.get_max_content_pos()
+        qDebug("input_max_content_pos: %s, %s" % (max_row, max_col))
         if path.endswith(".csv"):
-            self.loadCSV(path)
+            self.ui.inputTable.load_csv(path)
         elif path.endswith(".xlsx"):
-            self.loadExcel(path)
+            self.ui.inputTable.load_excel(path)
         elif path.endswith(".xls"):
-            self.loadExcel03(path)
+            self.ui.inputTable.load_excel03(path)
         else:
             QMessageBox.warning(self, self.tr("加载失败"), self.tr("不支持的文件格式"))
             return
-
-    def saveCSV(self, path):
-        if not path:
-            return
-        try:
-            with open(path, "w", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                # deal row data
-                for row in range(self.ui.inputTable.max_content_row + 1):
-                    row_data = []
-                    for col in range(self.ui.inputTable.max_content_col + 1):
-                        item = self.ui.inputTable.item(row, col)
-                        text = item.text() if item else ""
-                        if text in ("", " ", None):
-                            text = " "
-                        row_data.append(text)
-                    writer.writerow(row_data)
-            QMessageBox.information(
-                self, self.tr("保存成功"), self.tr(f"文件已保存至：{path}")
-            )
-            qDebug("Saved file: %s" % path)
-        except Exception as e:
-            QMessageBox.critical(
-                self,
-                self.tr("保存错误"),
-                self.tr("保存文件时出现错误\n\n%s" % e),
-            )
-            qDebug("Error saving file: %s" % e)
-
-    def saveExcel(self, path):
-        if not path:
-            return
-        try:
-            book = openpyxl.Workbook()
-            sheet = book.active
-            if self.ui.titleDisplayCheck.isChecked():
-                t = self.ui.titleIn.text()
-                sheet.title = t if t is not None else "Sheet1"
-            else:
-                sheet.title = "Sheet1"
-            # deal row data
-            for row in range(self.ui.inputTable.max_content_row + 1):
-                row_data = []
-                for col in range(self.ui.inputTable.max_content_col + 1):
-                    item = self.ui.inputTable.item(row, col)
-                    text = item.text() if item else ""
-                    if text in ("", " ", None):
-                        text = " "
-                    row_data.append(text)
-                sheet.append(row_data)
-            book.save(path)
-            QMessageBox.information(
-                self, self.tr("保存成功"), self.tr(f"文件已保存至：{path}")
-            )
-            qDebug("Saved file: %s" % path)
-        except Exception as e:
-            QMessageBox.critical(
-                self,
-                self.tr("保存错误"),
-                self.tr("保存文件时出现错误\n\n%s" % e),
-            )
-            qDebug("Error saving file: %s" % e)
-
-    def saveExcel03(self, path):
-        if not path:
-            return
-        try:
-            book = xlwt.Workbook(encoding="utf-8")
-            if self.ui.titleDisplayCheck.isChecked():
-                t = self.ui.titleIn.text()
-                sheet_title = t if t is not None else "Sheet1"
-            else:
-                sheet_title = "Sheet1"
-            sheet = book.add_sheet(sheet_title)
-            # deal row data
-            for row in range(self.ui.inputTable.max_content_row + 1):
-                for col in range(self.ui.inputTable.max_content_col + 1):
-                    item = self.ui.inputTable.item(row, col)
-                    text = item.text() if item else ""
-                    if text in ("", " ", None):
-                        continue
-                    sheet.write(row, col, text)
-            book.save(path)
-            QMessageBox.information(
-                self, self.tr("保存成功"), self.tr(f"文件已保存至：{path}")
-            )
-            qDebug("Saved file: %s" % path)
-        except Exception as e:
-            QMessageBox.critical(
-                self,
-                self.tr("保存错误"),
-                self.tr("保存文件时出现错误\n\n%s" % e),
-            )
-            qDebug("Error saving file: %s" % e)
 
     def onSaveBtnClicked(self):
         path, _ = QFileDialog.getSaveFileName(
@@ -706,12 +450,14 @@ class Widget(QWidget):
         )
         if not path:
             return
+        max_row, max_col = self.ui.inputTable.get_max_content_pos()
+        qDebug("input_max_content_pos: %s, %s" % (max_row, max_col))
         if path.endswith(".csv"):
-            self.saveCSV(path)
+            self.ui.inputTable.save_csv(path)
         elif path.endswith(".xlsx"):
-            self.saveExcel(path)
+            self.ui.inputTable.save_excel(path)
         elif path.endswith(".xls"):
-            self.saveExcel03(path)
+            self.ui.inputTable.save_excel03(path)
         else:
             QMessageBox.warning(self, self.tr("保存失败"), self.tr("不支持的文件格式"))
             return
@@ -787,9 +533,10 @@ class Widget(QWidget):
         if text:
             self.ui.funcLabel.setText(text)
 
-    def inputTableChanged(self):
+    def inputTableChanged(self, max_row: int = None, max_col: int = None):
         # 刷新xDataBox和yDataBox
-        max_row, max_col = self.ui.inputTable.get_max_content_pos()
+        if max_row is None or max_col is None:
+            max_row, max_col = self.ui.inputTable.get_max_content_pos()
         qDebug("input_max_content_pos: %s, %s" % (max_row, max_col))
         column_num = max_col + 1
         column_list = []
