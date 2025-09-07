@@ -84,7 +84,7 @@ color: rgb(0, 0, 255);</string>
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabIn">
       <attribute name="title">
@@ -576,10 +576,13 @@ color: rgb(0, 0, 255);</string>
       <attribute name="title">
        <string>输出</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <layout class="QHBoxLayout" name="hbox6">
-         <item>
+        <widget class="QSplitter" name="splitter">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <widget class="QWidget" name="">
           <layout class="QVBoxLayout" name="vl1">
            <item>
             <layout class="QHBoxLayout" name="hl1">
@@ -802,9 +805,56 @@ color: rgb(0, 0, 255);</string>
              </item>
             </widget>
            </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QLabel" name="label_9">
+               <property name="text">
+                <string>X点</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="xIn">
+               <property name="toolTip">
+                <string>给定X值</string>
+               </property>
+               <property name="text">
+                <string notr="true"/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="calcYOut">
+               <property name="toolTip">
+                <string>根据给定的X值计算Y值</string>
+               </property>
+               <property name="text">
+                <string>计算Y值</string>
+               </property>
+               <property name="icon">
+                <iconset theme="QIcon::ThemeIcon::MediaSeekForward"/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="yOut">
+               <property name="toolTip">
+                <string>根据给定的X值计算Y值结果</string>
+               </property>
+               <property name="text">
+                <string notr="true"/>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
           </layout>
-         </item>
-         <item>
+         </widget>
+         <widget class="QWidget" name="verticalLayoutWidget">
           <layout class="QVBoxLayout" name="vl2">
            <item>
             <layout class="QHBoxLayout" name="hbox5">
@@ -944,112 +994,56 @@ li.checked::marker { content: &quot;\2612&quot;; }
              </property>
             </widget>
            </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <item>
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>Y点</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="yIn">
+               <property name="toolTip">
+                <string>给定Y值</string>
+               </property>
+               <property name="text">
+                <string notr="true"/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="calcXOut">
+               <property name="toolTip">
+                <string>根据给定的Y值计算X值</string>
+               </property>
+               <property name="text">
+                <string>计算X值</string>
+               </property>
+               <property name="icon">
+                <iconset theme="QIcon::ThemeIcon::MediaSeekBackward"/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="xOut">
+               <property name="toolTip">
+                <string>根据给定的Y值计算X值结果</string>
+               </property>
+               <property name="text">
+                <string notr="true"/>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
           </layout>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="hbox4">
-         <item>
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>X点</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="xIn">
-           <property name="toolTip">
-            <string>给定X值</string>
-           </property>
-           <property name="text">
-            <string notr="true"/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="calcYOut">
-           <property name="toolTip">
-            <string>根据给定的X值计算Y值</string>
-           </property>
-           <property name="text">
-            <string>计算Y值</string>
-           </property>
-           <property name="icon">
-            <iconset theme="QIcon::ThemeIcon::MediaSeekForward"/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="yOut">
-           <property name="toolTip">
-            <string>根据给定的X值计算Y值结果</string>
-           </property>
-           <property name="text">
-            <string notr="true"/>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="hSpace4">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_10">
-           <property name="text">
-            <string>Y点</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="yIn">
-           <property name="toolTip">
-            <string>给定Y值</string>
-           </property>
-           <property name="text">
-            <string notr="true"/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="calcXOut">
-           <property name="toolTip">
-            <string>根据给定的Y值计算X值</string>
-           </property>
-           <property name="text">
-            <string>计算X值</string>
-           </property>
-           <property name="icon">
-            <iconset theme="QIcon::ThemeIcon::MediaSeekBackward"/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="xOut">
-           <property name="toolTip">
-            <string>根据给定的Y值计算X值结果</string>
-           </property>
-           <property name="text">
-            <string notr="true"/>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+         </widget>
+        </widget>
        </item>
       </layout>
      </widget>

@@ -776,7 +776,7 @@ Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
     <message>
         <location filename="../form.ui" line="326"/>
         <location filename="../form.ui" line="397"/>
-        <location filename="../form.ui" line="827"/>
+        <location filename="../form.ui" line="877"/>
         <source>小数位数</source>
         <translation>Decimal</translation>
     </message>
@@ -793,7 +793,7 @@ Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
     <message>
         <location filename="../form.ui" line="346"/>
         <location filename="../form.ui" line="417"/>
-        <location filename="../form.ui" line="847"/>
+        <location filename="../form.ui" line="897"/>
         <source>科学记数法</source>
         <translation>Scientific</translation>
     </message>
@@ -960,159 +960,159 @@ Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
         <translation>Output</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="589"/>
+        <location filename="../form.ui" line="592"/>
         <source>方法</source>
         <translation>Function</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="596"/>
+        <location filename="../form.ui" line="599"/>
         <source>选择拟合的函数类型</source>
         <translation>Select the type of function you want to fit</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="600"/>
+        <location filename="../form.ui" line="603"/>
         <source>多项式</source>
         <translation>polynomial</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="605"/>
-        <location filename="../form.ui" line="610"/>
+        <location filename="../form.ui" line="608"/>
+        <location filename="../form.ui" line="613"/>
         <source>指数</source>
         <translation>exponential</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="615"/>
+        <location filename="../form.ui" line="618"/>
         <source>对数</source>
         <translation>logarithm</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="620"/>
+        <location filename="../form.ui" line="623"/>
         <source>乘幂</source>
         <translation>power</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="625"/>
+        <location filename="../form.ui" line="628"/>
         <source>自定义</source>
         <translation>custom</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="656"/>
+        <location filename="../form.ui" line="659"/>
         <source>自定义表达式，支持简单函数</source>
         <translation>Custom expressions with supports simple functions</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="695"/>
+        <location filename="../form.ui" line="698"/>
         <source>多项式次数</source>
         <translation>Degree of polynomial</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="702"/>
+        <location filename="../form.ui" line="705"/>
         <source>输入多项式函数的次数，最小次数为1</source>
         <translation>The number of times a polynomial function is entered, with a minimum of 1</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="715"/>
         <location filename="../form.ui" line="718"/>
+        <location filename="../form.ui" line="721"/>
         <source>设置截距</source>
         <translation>Intercept</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="728"/>
+        <location filename="../form.ui" line="731"/>
         <source>输入截距数值</source>
         <translation>Enter the intercept value</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="834"/>
+        <location filename="../form.ui" line="884"/>
         <source>输出系数的小数位数</source>
         <translation>The decimal place of the output coefficient</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="844"/>
+        <location filename="../form.ui" line="894"/>
         <source>输出系数是否采用科学计数法</source>
         <translation>Whether the output coefficient is scientifically counted</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="857"/>
+        <location filename="../form.ui" line="907"/>
         <source>根据输入散点数据计算拟合曲线的系数</source>
         <translation>The coefficients of the fitting curve are calculated based on the input scatter data</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="860"/>
+        <location filename="../form.ui" line="910"/>
         <source>计算系数</source>
         <translation>Calculate</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="887"/>
+        <location filename="../form.ui" line="937"/>
         <source>是否对拟合曲线进行细化</source>
         <translation>Choose whether to refine the fit curve</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="890"/>
+        <location filename="../form.ui" line="940"/>
         <source>曲线细化</source>
         <translation>Refine</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="897"/>
+        <location filename="../form.ui" line="947"/>
         <source>细化等级n，原X轴范围按10^n分割</source>
         <translation>refine level n, the original X-axis range is divided by 10^n</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="907"/>
+        <location filename="../form.ui" line="957"/>
         <source>更新绘图显示并添加拟合的函数曲线</source>
         <translation>Update the plot display and add the fitted function curves</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="910"/>
+        <location filename="../form.ui" line="960"/>
         <source>更新曲线</source>
         <translation>Update</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="956"/>
+        <location filename="../form.ui" line="813"/>
         <source>X点</source>
         <translation>X Value</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="963"/>
+        <location filename="../form.ui" line="820"/>
         <source>给定X值</source>
         <translation>Given X value</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="973"/>
+        <location filename="../form.ui" line="830"/>
         <source>根据给定的X值计算Y值</source>
         <translation>Calculate the Y value based on the given X value</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="976"/>
+        <location filename="../form.ui" line="833"/>
         <source>计算Y值</source>
         <translation>Calc Y</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="986"/>
+        <location filename="../form.ui" line="843"/>
         <source>根据给定的X值计算Y值结果</source>
         <translation>Calculate the Y value result based on the given X value</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="1012"/>
+        <location filename="../form.ui" line="1002"/>
         <source>Y点</source>
         <translation>Y Value</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="1019"/>
+        <location filename="../form.ui" line="1009"/>
         <source>给定Y值</source>
         <translation>Given Y value</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="1029"/>
+        <location filename="../form.ui" line="1019"/>
         <source>根据给定的Y值计算X值</source>
         <translation>Calculate the X value based on the given Y value</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="1032"/>
+        <location filename="../form.ui" line="1022"/>
         <source>计算X值</source>
         <translation>Calc X</translation>
     </message>
     <message>
-        <location filename="../form.ui" line="1042"/>
+        <location filename="../form.ui" line="1032"/>
         <source>根据给定的Y值计算X值结果</source>
         <translation>Calculate the X value result based on the given Y value</translation>
     </message>
