@@ -134,10 +134,12 @@ class CleverTableWidget(QTableWidget):
         self.hh = self.horizontalHeader()
         self.hh.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.hh.customContextMenuRequested.connect(self.showContextMenu)
+        self.selected_col = None
         # 行标题栏右键菜单
         self.vh = self.verticalHeader()
         self.vh.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.vh.customContextMenuRequested.connect(self.showContextMenu)
+        self.selected_row = None
         if self.editable:
             pass
             """
@@ -459,10 +461,10 @@ class CleverTableWidget(QTableWidget):
             and pos.y() < self.hh.y() + self.hh.height()
         ):
             # 单击点在列标题栏内
-            b_col = self.hh.logicalIndexAt(pos)
-            self.selectColumn(b_col)
+            self.selected_col = self.hh.logicalIndexAt(pos)
+            self.selectColumn(self.selected_col)
         else:
-            b_col = None
+            self.selected_col = None
         if (
             pos.x() > self.vh.x()
             and pos.x() < self.vh.x() + self.vh.width()
@@ -470,10 +472,10 @@ class CleverTableWidget(QTableWidget):
             and pos.y() < self.vh.y() + self.vh.height()
         ):
             # 单击点在行标题栏内
-            b_row = self.vh.logicalIndexAt(pos)
-            self.selectRow(b_row)
+            self.selected_row = self.vh.logicalIndexAt(pos)
+            self.selectRow(self.selected_row)
         else:
-            b_row = None
+            self.selected_row = None
         menu = QMenu(self)
         align_menu = QMenu(self.tr("对齐方式"), self)
         insert_action = QAction(self.tr("插入"), self)
@@ -484,7 +486,7 @@ class CleverTableWidget(QTableWidget):
             menu.addAction(self.paste_action)
             menu.addAction(self.clear_action)
             menu.addAction(self.delete_action)
-        align_menu.addAction(self.align_center_action)
+            align_menu.addAction(self.align_center_action)
         align_menu.addAction(self.align_left_action)
         align_menu.addAction(self.align_right_action)
         if self.editable:
@@ -521,14 +523,13 @@ class CleverTableWidget(QTableWidget):
                     menu.addAction(insert_action)
                 else:
                     menu.addAction(insert_action_common)
-        if self.editable:
-            if b_col is not None:
-                menu.addSeparator()
-                menu.addAction(self.ascending_col_action)
-                menu.addAction(self.descending_col_action)
-                menu.addAction(self.reverse_col_action)
-                menu.addAction(self.paste_col_action)
-                menu.addAction(self.float_col_action)
+        if self.editable and self.selected_col is not None:
+            menu.addSeparator()
+            menu.addAction(self.ascending_col_action)
+            menu.addAction(self.descending_col_action)
+            menu.addAction(self.reverse_col_action)
+            menu.addAction(self.paste_col_action)
+            menu.addAction(self.float_col_action)
         menu.addSeparator()
         menu.addMenu(align_menu)
         menu.addAction(self.highlight_action)
@@ -1215,10 +1216,16 @@ class CleverTableWidget(QTableWidget):
             return
         if not self._judge_rectangular_selected():
             return
-        delete_dialog = DeleteInsertDialog(dialog_type="delete")
-        delete_dialog.DelSignal.connect(self._delete_operations)
-        delete_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
-        delete_dialog.exec()
+        if self.selected_col is not None:
+            self._delete_operations("Delete Selected Cols")
+        elif self.selected_row is not None:
+            self._delete_operations("Delete Selected Rows")
+        else:
+            delete_dialog = DeleteInsertDialog(dialog_type="delete")
+            delete_dialog.DelSignal.connect(self._delete_operations)
+            delete_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
+            delete_dialog.exec()
+        self.renumber_header()
         self._max_content_pos()
 
     @Slot(str)
@@ -1280,17 +1287,23 @@ class CleverTableWidget(QTableWidget):
                 col_id = selected.leftColumn()
                 for i in range(selected.rightColumn() - selected.leftColumn() + 1):
                     self.insertColumn(col_id)
+            self.renumber_header()
+            self._max_content_pos()
 
         return insert
 
     def insert_base_on_selection(self):
         if not self._judge_rectangular_selected():
             return
-        insert_dialog = DeleteInsertDialog(dialog_type="insert")
-        insert_dialog.InsertSignal.connect(self._insert_operations)
-        insert_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
-        insert_dialog.exec()
-        self._max_content_pos()
+        if self.selected_col is not None:
+            self.insert_whole_base_on_selection(insert_type="C")
+        elif self.selected_row is not None:
+            self.insert_whole_base_on_selection(insert_type="R")
+        else:
+            insert_dialog = DeleteInsertDialog(dialog_type="insert")
+            insert_dialog.InsertSignal.connect(self._insert_operations)
+            insert_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
+            insert_dialog.exec()
 
     @Slot(str)
     def _insert_operations(self, message):
@@ -1316,7 +1329,8 @@ class CleverTableWidget(QTableWidget):
                         self.setItem(row, col, CTWItem(text))
                     else:
                         self.setItem(row, col, CTWItem(""))
-            qDebug("OK")
+            self.renumber_header()
+            self._max_content_pos()
         elif message == "Move Down":
             selected_rows_num = selected.bottomRow() - selected.topRow() + 1
             final_row = (
@@ -1340,6 +1354,8 @@ class CleverTableWidget(QTableWidget):
                         self.setItem(row, col, CTWItem(text))
                     else:
                         self.setItem(row, col, CTWItem(""))
+            self.renumber_header()
+            self._max_content_pos()
         elif message == "Insert Rows Above":
             self.insert_whole_base_on_selection("R")()
         elif message == "Insert Cols Left":
