@@ -450,6 +450,34 @@ class CleverTableWidget(QTableWidget):
         if ok_pressed:
             item.setText(new_header)
 
+    def _is_whole_row_selected(self):
+        """
+        判断是否选择了整行，返回选中的行号
+        """
+        selected_ranges = self.selectedRanges()
+        if len(selected_ranges) > 1:
+            return None
+        if not selected_ranges:
+            return None
+        selected = selected_ranges[0]
+        if (selected.rightColumn() - selected.leftColumn() + 1) == self.columnCount():
+            return selected.topRow()
+        return None
+
+    def _is_whole_column_selected(self):
+        """
+        判断是否选择了整列，返回选中的列号
+        """
+        selected_ranges = self.selectedRanges()
+        if len(selected_ranges) > 1:
+            return None
+        if not selected_ranges:
+            return None
+        selected = selected_ranges[0]
+        if (selected.bottomRow() - selected.topRow() + 1) == self.rowCount():
+            return selected.leftColumn()
+        return None
+
     def showContextMenu(self, pos):
         """
         显示上下文菜单
@@ -1220,6 +1248,10 @@ class CleverTableWidget(QTableWidget):
             self._delete_operations("Delete Selected Cols")
         elif self.selected_row is not None:
             self._delete_operations("Delete Selected Rows")
+        elif self._is_whole_row_selected() is not None:
+            self._delete_operations("Delete Selected Rows")
+        elif self._is_whole_column_selected() is not None:
+            self._delete_operations("Delete Selected Cols")
         else:
             delete_dialog = DeleteInsertDialog(dialog_type="delete")
             delete_dialog.DelSignal.connect(self._delete_operations)
@@ -1303,6 +1335,10 @@ class CleverTableWidget(QTableWidget):
             self.insert_whole_base_on_selection(insert_type="C")
         elif self.selected_row is not None:
             self.insert_whole_base_on_selection(insert_type="R")
+        elif self._is_whole_row_selected() is not None:
+            self.insert_whole_base_on_selection(insert_type="R")
+        elif self._is_whole_column_selected() is not None:
+            self.insert_whole_base_on_selection(insert_type="C")
         else:
             insert_dialog = DeleteInsertDialog(dialog_type="insert")
             insert_dialog.InsertSignal.connect(self._insert_operations)
