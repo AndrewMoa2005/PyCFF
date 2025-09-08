@@ -28,6 +28,7 @@ hd_list = [
     "pycff.form_ui",
     "pycff.resource_rc",
     "pycff.clevertw",
+    "pycff.clevertwitem",
     "pycff.cff",
     "pycff.widget",
 ]
@@ -35,6 +36,7 @@ src_list = [
     "form_ui",
     "resource_rc",
     "clevertw",
+    "clevertwitem",
     "cff",
     "widget",
     "application",

@@ -10,7 +10,6 @@ from PySide6.QtCore import Qt, Signal, Slot, qDebug
 from PySide6.QtGui import QAction, QKeySequence, QShortcut, QColor
 from PySide6.QtWidgets import (
     QTableWidget,
-    QTableWidgetItem,
     QTableWidgetSelectionRange,
     QDialog,
     QVBoxLayout,
@@ -29,6 +28,8 @@ from PySide6.QtWidgets import (
     QListWidget,
     QDialogButtonBox,
 )
+
+from .clevertwitem import CleverTableWidgetItem as CTWItem
 
 
 class CleverTableWidget(QTableWidget):
@@ -401,7 +402,7 @@ class CleverTableWidget(QTableWidget):
         item = self.horizontalHeaderItem(index)
         if item is None:
             val = self.model().headerData(index, Qt.Orientation.Horizontal)
-            item = QTableWidgetItem(str(val))
+            item = CTWItem(str(val))
             self.setHorizontalHeaderItem(index, item)
         old_header = item.text()
         new_header, ok_pressed = QInputDialog.getText(
@@ -429,7 +430,7 @@ class CleverTableWidget(QTableWidget):
         item = self.verticalHeaderItem(index)
         if item is None:
             val = self.model().headerData(index, Qt.Orientation.Vertical)
-            item = QTableWidgetItem(str(val))
+            item = CTWItem(str(val))
             self.setVerticalHeaderItem(index, item)
         old_header = item.text()
         new_header, ok_pressed = QInputDialog.getText(
@@ -538,10 +539,10 @@ class CleverTableWidget(QTableWidget):
             for row in range(top, bottom + 1):
                 item = self.takeItem(row, col)
                 if not item:
-                    item = QTableWidgetItem().setText("")
+                    item = CTWItem().setText("")
                 item_prev = self.takeItem(row - 1, col)
                 if not item_prev:
-                    item_prev = QTableWidgetItem().setText("")
+                    item_prev = CTWItem().setText("")
                 self.setItem(row - 1, col, item)
                 self.setItem(row, col, item_prev)
         self.clearSelection()
@@ -571,10 +572,10 @@ class CleverTableWidget(QTableWidget):
             for row in range(bottom, top - 1, -1):
                 item = self.takeItem(row, col)
                 if not item:
-                    item = QTableWidgetItem().setText("")
+                    item = CTWItem().setText("")
                 item_next = self.takeItem(row + 1, col)
                 if not item_next:
-                    item_next = QTableWidgetItem().setText("")
+                    item_next = CTWItem().setText("")
                 self.setItem(row + 1, col, item)
                 self.setItem(row, col, item_next)
         self.clearSelection()
@@ -609,10 +610,10 @@ class CleverTableWidget(QTableWidget):
             for col in range(left, right + 1):
                 item = self.takeItem(row, col)
                 if not item:
-                    item = QTableWidgetItem().setText("")
+                    item = CTWItem().setText("")
                 item_prev = self.takeItem(row, col - 1)
                 if not item_prev:
-                    item_prev = QTableWidgetItem().setText("")
+                    item_prev = CTWItem().setText("")
                 self.setItem(row, col - 1, item)
                 self.setItem(row, col, item_prev)
         self.clearSelection()
@@ -642,10 +643,10 @@ class CleverTableWidget(QTableWidget):
             for col in range(right, left - 1, -1):
                 item = self.takeItem(row, col)
                 if not item:
-                    item = QTableWidgetItem().setText("")
+                    item = CTWItem().setText("")
                 item_next = self.takeItem(row, col + 1)
                 if not item_next:
-                    item_next = QTableWidgetItem().setText("")
+                    item_next = CTWItem().setText("")
                 self.setItem(row, col + 1, item)
                 self.setItem(row, col, item_next)
         self.clearSelection()
@@ -678,10 +679,6 @@ class CleverTableWidget(QTableWidget):
                 self.sci_checkbox = QCheckBox(self.tr("使用科学计数法"))
                 hbox2.addWidget(self.sci_checkbox)
                 layout.addLayout(hbox2)
-                # 精度提示
-                self.warn_label = QLabel(self.tr("注意：格式化可能导致数值精度丢失"))
-                self.warn_label.setStyleSheet("color: red;")
-                layout.addWidget(self.warn_label)
                 # 按钮
                 btn_box = QHBoxLayout()
                 self.ok_btn = QPushButton(self.tr("确定"))
@@ -706,13 +703,17 @@ class CleverTableWidget(QTableWidget):
             for column in range(left_column, right_column + 1):
                 item = self.item(row, column)
                 if item:
+                    if type(item) is not CTWItem:
+                        item = CTWItem(item.text())
+                        self.setItem(row, column, item)
                     try:
                         num = float(item.text())
                         if use_sci:
                             fmt = f"{{:.{decimals}e}}"
                         else:
                             fmt = f"{{:.{decimals}f}}"
-                        item.setText(fmt.format(num))
+                        # item.setText(fmt.format(num))
+                        item.setDisplayText(fmt.format(num))
                     except Exception:
                         continue
 
@@ -828,11 +829,11 @@ class CleverTableWidget(QTableWidget):
         col = selected_list[0]
         for row in range(self.rowCount()):
             if row < len(float_list):
-                item = QTableWidgetItem(str(float_list[row]))
+                item = CTWItem(str(float_list[row]))
                 # item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.setItem(row, col, item)
             else:
-                self.setItem(row, col, QTableWidgetItem(""))
+                self.setItem(row, col, CTWItem(""))
         self._max_content_pos()
 
     def float_col(self):
@@ -856,10 +857,10 @@ class CleverTableWidget(QTableWidget):
                 number_list.append(text)
             for row in range(self.rowCount()):
                 if row < len(number_list):
-                    item = QTableWidgetItem(str(number_list[row]))
+                    item = CTWItem(str(number_list[row]))
                     self.setItem(row, col, item)
                 else:
-                    self.setItem(row, col, QTableWidgetItem(""))
+                    self.setItem(row, col, CTWItem(""))
         self._max_content_pos()
 
     def row_is_empty(self, row: int) -> bool:
@@ -1021,7 +1022,7 @@ class CleverTableWidget(QTableWidget):
         for col in range(self.columnCount()):
             header = self.horizontalHeaderItem(col)
             if header is None:
-                header = QTableWidgetItem()
+                header = CTWItem()
                 self.setHorizontalHeaderItem(col, header)
             header.setText(num_to_letters(col + 1))
 
@@ -1034,7 +1035,7 @@ class CleverTableWidget(QTableWidget):
         for row in range(self.rowCount()):
             header = self.verticalHeaderItem(row)
             if header is None:
-                header = QTableWidgetItem()
+                header = CTWItem()
                 self.setVerticalHeaderItem(row, header)
             header.setText(str(row + 1))
 
@@ -1162,7 +1163,7 @@ class CleverTableWidget(QTableWidget):
                 self.setItem(
                     selected.topRow() + r,
                     selected.leftColumn() + c,
-                    QTableWidgetItem(text),
+                    CTWItem(text),
                 )
         self._max_content_pos()
 
@@ -1173,7 +1174,7 @@ class CleverTableWidget(QTableWidget):
         if self.editable is False:
             return
         for item in self.selectedItems():
-            self.setItem(item.row(), item.column(), QTableWidgetItem(""))
+            self.setItem(item.row(), item.column(), CTWItem(""))
         self._max_content_pos()
 
     def delete_selection(self):
@@ -1205,9 +1206,9 @@ class CleverTableWidget(QTableWidget):
                             if self.item(row, col) is not None
                             else ""
                         )
-                        self.setItem(row, ori_col, QTableWidgetItem(text))
+                        self.setItem(row, ori_col, CTWItem(text))
                     else:
-                        self.setItem(row, ori_col, QTableWidgetItem(""))
+                        self.setItem(row, ori_col, CTWItem(""))
         elif message == "Move Up":
             selected_rows_num = selected.bottomRow() - selected.topRow() + 1
             start_row_index = selected.topRow() + selected_rows_num
@@ -1220,9 +1221,9 @@ class CleverTableWidget(QTableWidget):
                             if self.item(row, col) is not None
                             else ""
                         )
-                        self.setItem(ori_row, col, QTableWidgetItem(text))
+                        self.setItem(ori_row, col, CTWItem(text))
                     else:
-                        self.setItem(ori_row, col, QTableWidgetItem(""))
+                        self.setItem(ori_row, col, CTWItem(""))
         elif message == "Delete Selected Rows":
             # 从最后一列开始删除，避免删除后索引变化
             for row in sorted(
@@ -1282,9 +1283,9 @@ class CleverTableWidget(QTableWidget):
                             if self.item(row, ori_col) is not None
                             else ""
                         )
-                        self.setItem(row, col, QTableWidgetItem(text))
+                        self.setItem(row, col, CTWItem(text))
                     else:
-                        self.setItem(row, col, QTableWidgetItem(""))
+                        self.setItem(row, col, CTWItem(""))
             qDebug("OK")
         elif message == "Move Down":
             selected_rows_num = selected.bottomRow() - selected.topRow() + 1
@@ -1306,9 +1307,9 @@ class CleverTableWidget(QTableWidget):
                             if self.item(ori_row, col) is not None
                             else ""
                         )
-                        self.setItem(row, col, QTableWidgetItem(text))
+                        self.setItem(row, col, CTWItem(text))
                     else:
-                        self.setItem(row, col, QTableWidgetItem(""))
+                        self.setItem(row, col, CTWItem(""))
         elif message == "Insert Rows Above":
             self.insert_whole_base_on_selection("R")()
         elif message == "Insert Cols Left":
@@ -1324,7 +1325,7 @@ class CleverTableWidget(QTableWidget):
             for col in range(s.leftColumn(), s.rightColumn() + 1):
                 item = self.item(row, col)
                 if item is None:
-                    self.setItem(row, col, QTableWidgetItem(""))
+                    self.setItem(row, col, CTWItem(""))
 
     def align_right(self):
         """
@@ -1397,7 +1398,7 @@ class CleverTableWidget(QTableWidget):
     def write_dim2_list_to_table(dim2_list, tablewidget_object):
         for row, dim1_list in enumerate(dim2_list):
             for col, text in enumerate(dim1_list):
-                item = QTableWidgetItem(str(text))
+                item = CTWItem(str(text))
                 item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 tablewidget_object.setItem(row, col, item)
 
@@ -1489,7 +1490,7 @@ class CleverTableWidget(QTableWidget):
                         if item:
                             item.setText(text)
                         else:
-                            self.setItem(row, col, QTableWidgetItem(text))
+                            self.setItem(row, col, CTWItem(text))
             qDebug("Loaded file: %s" % path)
         except Exception as e:
             QMessageBox.critical(
@@ -1535,7 +1536,7 @@ class CleverTableWidget(QTableWidget):
                     text = str(r_list[col])
                     if text in ["", " "]:
                         continue
-                    self.setItem(row, col, QTableWidgetItem(text))
+                    self.setItem(row, col, CTWItem(text))
             qDebug("Loaded file: %s" % path)
             qDebug("Loaded sheet: %s" % sheet.name)
         except Exception as e:
@@ -1592,7 +1593,7 @@ class CleverTableWidget(QTableWidget):
                     if item:
                         item.setText(text)
                     else:
-                        self.setItem(row, col, QTableWidgetItem(text))
+                        self.setItem(row, col, CTWItem(text))
             qDebug("Loaded file: %s" % path)
             qDebug("Loaded sheet: %s" % sheet.title)
         except Exception as e:
@@ -1851,7 +1852,7 @@ if __name__ == "__main__":
         def add_table_content(self):
             for i in range(10):
                 for j in range(5):
-                    item = QTableWidgetItem("{}{}".format(i + 1, j + 1))
+                    item = CTWItem("{}{}".format(i + 1, j + 1))
                     self.tableWidget.setItem(i, j, item)
 
     app = QApplication(sys.argv)

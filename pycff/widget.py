@@ -6,7 +6,6 @@ import numpy as np
 from PySide6.QtWidgets import (
     QWidget,
     QMessageBox,
-    QTableWidgetItem,
     QFileDialog,
     QDialog,
     QFormLayout,
@@ -45,6 +44,7 @@ from PySide6.QtCore import (
 from PySide6.QtSvg import QSvgGenerator
 
 from .cff import LinearFit, NonLinearFit
+from .clevertwitem import CleverTableWidgetItem as CTWItem
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -364,9 +364,9 @@ class Widget(QWidget):
 
     def createFormattedItem(self, value, scientific, decimals):
         if scientific:
-            return QTableWidgetItem(f"{value:.{decimals}e}")
+            return CTWItem(f"{value:.{decimals}e}")
         else:
-            return QTableWidgetItem(f"{value:.{decimals}f}")
+            return CTWItem(f"{value:.{decimals}f}")
 
     def filterStringToList(self, input_str: str) -> list:
         pattern = r"[-+]?\d+\.?\d*(?:[eE][-+]?\d+)?"
@@ -538,7 +538,7 @@ class Widget(QWidget):
 
     def renumberTableRows(self):
         for i in range(self.ui.inputTable.rowCount()):
-            self.ui.inputTable.setVerticalHeaderItem(i, QTableWidgetItem(f"{i + 1}"))
+            self.ui.inputTable.setVerticalHeaderItem(i, CTWItem(f"{i + 1}"))
 
     def onRefreshBtnClicked(self):
         # self.ui.inputTable.renumber_header()
@@ -692,11 +692,9 @@ class Widget(QWidget):
         self.ui.outputTable.setRowCount(len(coef) + 1)
         for i in range(len(coef) + 1):
             if i == 0:
-                self.ui.outputTable.setVerticalHeaderItem(i, QTableWidgetItem("r2"))
+                self.ui.outputTable.setVerticalHeaderItem(i, CTWItem("r2"))
             else:
-                self.ui.outputTable.setVerticalHeaderItem(
-                    i, QTableWidgetItem(args[i - 1])
-                )
+                self.ui.outputTable.setVerticalHeaderItem(i, CTWItem(args[i - 1]))
         self.ui.outputTable.setItem(
             0, 0, self.createFormattedItem(r_squared, scientific, decimals)
         )

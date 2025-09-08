@@ -13,6 +13,7 @@ setup(
             "pycff/form_ui.py",
             "pycff/resource_rc.py",
             "pycff/clevertw.py",
+            "pycff/clevertwitem.py",
             "pycff/cff.py",
             "pycff/application.py",
         ]
@@ -22,6 +23,7 @@ setup(
         "pycff.form_ui",
         "pycff.resource_rc",
         "pycff.clevertw",
+        "pycff.clevertwitem",
         "pycff.cff",
         "pycff.application",
     ],

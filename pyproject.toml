@@ -38,6 +38,7 @@ files = [
     "pycff/form.ui",
     "pycff/widget.py",
     "pycff/clevertw.py",
+    "pycff/clevertwitem.py",
     "pycff/cff.py",
 ]
 
