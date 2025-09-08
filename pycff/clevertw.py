@@ -129,12 +129,12 @@ class CleverTableWidget(QTableWidget):
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showContextMenu)
         if self.editable:
-            # 设置双击可编辑表头
+            """
+            # 不使用编辑列标题功能
             self.horizontalHeader().sectionDoubleClicked.connect(
                 self.change_horizontal_header
             )
             # 不使用编辑行标题功能
-            """
             self.verticalHeader().sectionDoubleClicked.connect(
                 self.change_vertical_header
             )
@@ -419,12 +419,6 @@ class CleverTableWidget(QTableWidget):
         """
         编辑行标题
         """
-        import warnings
-
-        warnings.warn(
-            "function predict is deprecated",
-            DeprecationWarning,
-        )
         if self.editable is False:
             return
         item = self.verticalHeaderItem(index)
