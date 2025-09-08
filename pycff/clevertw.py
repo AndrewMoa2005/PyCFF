@@ -1225,8 +1225,6 @@ class CleverTableWidget(QTableWidget):
             delete_dialog.DelSignal.connect(self._delete_operations)
             delete_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
             delete_dialog.exec()
-        self.renumber_header()
-        self._max_content_pos()
 
     @Slot(str)
     def _delete_operations(self, message):
@@ -1275,6 +1273,10 @@ class CleverTableWidget(QTableWidget):
                 self.removeColumn(column)
         else:
             qDebug("Empty Message")
+        self.selected_col = None
+        self.selected_row = None
+        self.renumber_header()
+        self._max_content_pos()
 
     def insert_whole_base_on_selection(self, insert_type):
         def insert():
@@ -1287,6 +1289,8 @@ class CleverTableWidget(QTableWidget):
                 col_id = selected.leftColumn()
                 for i in range(selected.rightColumn() - selected.leftColumn() + 1):
                     self.insertColumn(col_id)
+            self.selected_col = None
+            self.selected_row = None
             self.renumber_header()
             self._max_content_pos()
 
@@ -1362,6 +1366,8 @@ class CleverTableWidget(QTableWidget):
             self.insert_whole_base_on_selection("C")()
         else:
             qDebug("Empty Message")
+        self.renumber_header()
+        self._max_content_pos()
 
     def _set_null_item(self):
         if not self._judge_rectangular_selected():
