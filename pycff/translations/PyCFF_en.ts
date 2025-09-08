@@ -114,104 +114,104 @@
         <translation>Table transposed</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="410"/>
+        <location filename="../clevertw.py" line="422"/>
         <source>设置列标题</source>
         <translation>Set the column headers</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="411"/>
+        <location filename="../clevertw.py" line="423"/>
         <source>请输入第%s列标题</source>
         <translation>Please input the %s column header</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="438"/>
+        <location filename="../clevertw.py" line="444"/>
         <source>设置行标题</source>
         <translation>Set the row headers</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="439"/>
+        <location filename="../clevertw.py" line="445"/>
         <source>请输入第%s行标题</source>
         <translation>Please input the %s row header</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="451"/>
+        <location filename="../clevertw.py" line="507"/>
         <source>对齐方式</source>
         <translation>Alignment</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="452"/>
-        <location filename="../clevertw.py" line="453"/>
+        <location filename="../clevertw.py" line="508"/>
+        <location filename="../clevertw.py" line="509"/>
         <source>插入</source>
         <translation>Insert</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="465"/>
+        <location filename="../clevertw.py" line="521"/>
         <source>移动单元格</source>
         <translation>Move cells</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="531"/>
-        <location filename="../clevertw.py" line="602"/>
-        <location filename="../clevertw.py" line="817"/>
-        <location filename="../clevertw.py" line="824"/>
-        <location filename="../clevertw.py" line="970"/>
+        <location filename="../clevertw.py" line="587"/>
+        <location filename="../clevertw.py" line="658"/>
+        <location filename="../clevertw.py" line="875"/>
+        <location filename="../clevertw.py" line="882"/>
+        <location filename="../clevertw.py" line="1028"/>
         <source>警告</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="532"/>
+        <location filename="../clevertw.py" line="588"/>
         <source>已到达顶部，无法向上移动</source>
         <translation>Reached the top and cannot be moved up</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="603"/>
+        <location filename="../clevertw.py" line="659"/>
         <source>已到达最左侧，无法向左移动</source>
         <translation>The leftmost side has been reached, and it cannot be moved to the left</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="818"/>
+        <location filename="../clevertw.py" line="876"/>
         <source>只能选择一列进行粘贴替换操作</source>
         <translation>Only one column can be selected for the paste replacement operation</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="825"/>
+        <location filename="../clevertw.py" line="883"/>
         <source>粘贴数据中不包含有效数字字符</source>
         <translation>The pasted data does not contain valid numeric characters</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="971"/>
+        <location filename="../clevertw.py" line="1029"/>
         <source>表格为空，无法进行转置操作</source>
         <translation>The table is empty and cannot be transposed</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1432"/>
+        <location filename="../clevertw.py" line="1519"/>
         <source>选择工作表</source>
         <translation>Select the worksheet</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1434"/>
+        <location filename="../clevertw.py" line="1521"/>
         <source>请选择要加载的工作表:</source>
         <translation>Please select the worksheet to be loaded:</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1467"/>
-        <location filename="../clevertw.py" line="1497"/>
-        <location filename="../clevertw.py" line="1523"/>
-        <location filename="../clevertw.py" line="1544"/>
-        <location filename="../clevertw.py" line="1570"/>
-        <location filename="../clevertw.py" line="1601"/>
+        <location filename="../clevertw.py" line="1554"/>
+        <location filename="../clevertw.py" line="1584"/>
+        <location filename="../clevertw.py" line="1610"/>
+        <location filename="../clevertw.py" line="1631"/>
+        <location filename="../clevertw.py" line="1657"/>
+        <location filename="../clevertw.py" line="1688"/>
         <source>加载错误</source>
         <translation>Loading error</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1468"/>
+        <location filename="../clevertw.py" line="1555"/>
         <source>CSV文件没有内容</source>
         <translation>CSV file is empty</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1497"/>
-        <location filename="../clevertw.py" line="1544"/>
-        <location filename="../clevertw.py" line="1601"/>
+        <location filename="../clevertw.py" line="1584"/>
+        <location filename="../clevertw.py" line="1631"/>
+        <location filename="../clevertw.py" line="1688"/>
         <source>加载文件失败
 
 %s</source>
@@ -220,36 +220,36 @@
 %s</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1524"/>
-        <location filename="../clevertw.py" line="1571"/>
+        <location filename="../clevertw.py" line="1611"/>
+        <location filename="../clevertw.py" line="1658"/>
         <source>Excel文件没有内容</source>
         <translation>Excel file is empty</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1627"/>
-        <location filename="../clevertw.py" line="1660"/>
-        <location filename="../clevertw.py" line="1692"/>
+        <location filename="../clevertw.py" line="1714"/>
+        <location filename="../clevertw.py" line="1747"/>
+        <location filename="../clevertw.py" line="1779"/>
         <source>保存成功</source>
         <translation>Save success</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1628"/>
-        <location filename="../clevertw.py" line="1661"/>
-        <location filename="../clevertw.py" line="1693"/>
+        <location filename="../clevertw.py" line="1715"/>
+        <location filename="../clevertw.py" line="1748"/>
+        <location filename="../clevertw.py" line="1780"/>
         <source>文件已保存至：{path}</source>
         <translation>File saved to: {path}</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1633"/>
-        <location filename="../clevertw.py" line="1666"/>
-        <location filename="../clevertw.py" line="1698"/>
+        <location filename="../clevertw.py" line="1720"/>
+        <location filename="../clevertw.py" line="1753"/>
+        <location filename="../clevertw.py" line="1785"/>
         <source>保存错误</source>
         <translation>Save error</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1634"/>
-        <location filename="../clevertw.py" line="1667"/>
-        <location filename="../clevertw.py" line="1699"/>
+        <location filename="../clevertw.py" line="1721"/>
+        <location filename="../clevertw.py" line="1754"/>
+        <location filename="../clevertw.py" line="1786"/>
         <source>保存文件时出现错误
 
 %s</source>
@@ -261,54 +261,54 @@
 <context>
     <name>DeleteInsertDialog</name>
     <message>
-        <location filename="../clevertw.py" line="1713"/>
+        <location filename="../clevertw.py" line="1800"/>
         <source>删除</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1714"/>
+        <location filename="../clevertw.py" line="1801"/>
         <source>插入</source>
         <translation>Insert</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1733"/>
+        <location filename="../clevertw.py" line="1820"/>
         <source>确定</source>
         <translation>Confirm</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1734"/>
+        <location filename="../clevertw.py" line="1821"/>
         <source>取消</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1751"/>
+        <location filename="../clevertw.py" line="1838"/>
         <source>右侧单元格左移(L)</source>
         <translation>Right cell shift left (L)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1752"/>
+        <location filename="../clevertw.py" line="1839"/>
         <source>下方单元格上移(U)</source>
         <translation>Lower cell moved up (U)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1753"/>
-        <location filename="../clevertw.py" line="1775"/>
+        <location filename="../clevertw.py" line="1840"/>
+        <location filename="../clevertw.py" line="1862"/>
         <source>整行(R)</source>
         <translation>A row (R)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1754"/>
-        <location filename="../clevertw.py" line="1776"/>
+        <location filename="../clevertw.py" line="1841"/>
+        <location filename="../clevertw.py" line="1863"/>
         <source>整列(C)</source>
         <translation>A column (C)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1773"/>
+        <location filename="../clevertw.py" line="1860"/>
         <source>活动单元格右移(R)</source>
         <translation>Move the active cell right (R)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1774"/>
+        <location filename="../clevertw.py" line="1861"/>
         <source>活动单元格下移(D)</source>
         <translation>Move the active cell down (D)</translation>
     </message>
@@ -316,27 +316,27 @@
 <context>
     <name>FormatDialog</name>
     <message>
-        <location filename="../clevertw.py" line="666"/>
+        <location filename="../clevertw.py" line="722"/>
         <source>设置数字格式</source>
         <translation>Set the numeric format</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="671"/>
+        <location filename="../clevertw.py" line="727"/>
         <source>小数点位数:</source>
         <translation>Decimal places:</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="679"/>
+        <location filename="../clevertw.py" line="735"/>
         <source>使用科学计数法</source>
         <translation>Use scientific</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="684"/>
+        <location filename="../clevertw.py" line="740"/>
         <source>确定</source>
         <translation>Confirm</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="685"/>
+        <location filename="../clevertw.py" line="741"/>
         <source>取消</source>
         <translation>Cancel</translation>
     </message>
@@ -344,7 +344,7 @@
 <context>
     <name>TestUsingCleverTW</name>
     <message>
-        <location filename="../clevertw.py" line="1836"/>
+        <location filename="../clevertw.py" line="1923"/>
         <source>Test Using CleverTableWidget</source>
         <translation>Test Using CleverTableWidget</translation>
     </message>

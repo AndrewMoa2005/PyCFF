@@ -27,7 +27,6 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QListWidget,
     QDialogButtonBox,
-    QHeaderView,
 )
 
 from .clevertwitem import CleverTableWidgetItem as CTWItem
