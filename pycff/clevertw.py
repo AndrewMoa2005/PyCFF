@@ -27,6 +27,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QListWidget,
     QDialogButtonBox,
+    QHeaderView,
 )
 
 from .clevertwitem import CleverTableWidgetItem as CTWItem
@@ -126,9 +127,19 @@ class CleverTableWidget(QTableWidget):
         self.align_left_action.setShortcut("Ctrl+L")
         self.align_right_action.setShortcut("Ctrl+R")
         self.align_center_action.setShortcut("Ctrl+E")
+        # 单元格右键菜单
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showContextMenu)
+        # 列标题栏右键菜单
+        self.hh = self.horizontalHeader()
+        self.hh.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.hh.customContextMenuRequested.connect(self.showContextMenu)
+        # 行标题栏右键菜单
+        self.vh = self.verticalHeader()
+        self.vh.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.vh.customContextMenuRequested.connect(self.showContextMenu)
         if self.editable:
+            pass
             """
             # 不使用编辑列标题功能
             self.horizontalHeader().sectionDoubleClicked.connect(
@@ -441,6 +452,28 @@ class CleverTableWidget(QTableWidget):
         """
         显示上下文菜单
         """
+        if (
+            pos.x() > self.hh.x()
+            and pos.x() < self.hh.x() + self.hh.width()
+            and pos.y() > self.hh.y()
+            and pos.y() < self.hh.y() + self.hh.height()
+        ):
+            # 单击点在列标题栏内
+            b_col = self.hh.logicalIndexAt(pos)
+            self.selectColumn(b_col)
+        else:
+            b_col = None
+        if (
+            pos.x() > self.vh.x()
+            and pos.x() < self.vh.x() + self.vh.width()
+            and pos.y() > self.vh.y()
+            and pos.y() < self.vh.y() + self.vh.height()
+        ):
+            # 单击点在行标题栏内
+            b_row = self.vh.logicalIndexAt(pos)
+            self.selectRow(b_row)
+        else:
+            b_row = None
         menu = QMenu(self)
         align_menu = QMenu(self.tr("对齐方式"), self)
         insert_action = QAction(self.tr("插入"), self)
@@ -489,12 +522,13 @@ class CleverTableWidget(QTableWidget):
                 else:
                     menu.addAction(insert_action_common)
         if self.editable:
-            menu.addSeparator()
-            menu.addAction(self.ascending_col_action)
-            menu.addAction(self.descending_col_action)
-            menu.addAction(self.reverse_col_action)
-            menu.addAction(self.paste_col_action)
-            menu.addAction(self.float_col_action)
+            if b_col is not None:
+                menu.addSeparator()
+                menu.addAction(self.ascending_col_action)
+                menu.addAction(self.descending_col_action)
+                menu.addAction(self.reverse_col_action)
+                menu.addAction(self.paste_col_action)
+                menu.addAction(self.float_col_action)
         menu.addSeparator()
         menu.addMenu(align_menu)
         menu.addAction(self.highlight_action)
@@ -715,14 +749,16 @@ class CleverTableWidget(QTableWidget):
         """
         获取选中的列索引列表
         """
-        selected_items = self.selectedItems()
+        selected_items = self.selectedIndexes()
+        if not selected_items:
+            return []
         selected_list = []
         for i in selected_items:
             if i.column() < 0 or i.column() >= self.columnCount():
-                return
+                continue
             selected_list.append(i.column())
         # remove duplicate elements
-        selected_list = list(set(selected_list))
+        selected_list = sorted(list(set(selected_list)))
         return selected_list
 
     def sort_col_ascending(self):
