@@ -33,6 +33,8 @@ from PySide6.QtGui import (
     QPainter,
     QPen,
     QColor,
+    QImage,
+    QBrush,
 )
 from PySide6.QtCore import (
     Qt,
@@ -139,7 +141,7 @@ class Widget(QWidget):
         qDebug(f"Qt version: {QT_VERSION_STR}")
         QMessageBox.aboutQt(
             self,
-            self.tr("Qt 版本") + f" {QT_VERSION_STR}",
+            self.tr("Qt版本: ") + f"{QT_VERSION_STR}",
         )
 
     def onThemeBtnClicked(self):
@@ -361,8 +363,8 @@ class Widget(QWidget):
         self.copyPlotDialog = QDialog(self)
         self.copyPlotDialog.setWindowTitle(self.tr("选择图片格式"))
         layout = QHBoxLayout(self.copyPlotDialog)
-        png_btn = QPushButton(self.tr("PNG格式"), self.copyPlotDialog)
-        svg_btn = QPushButton(self.tr("SVG格式"), self.copyPlotDialog)
+        png_btn = QPushButton(self.tr("位图格式"), self.copyPlotDialog)
+        svg_btn = QPushButton(self.tr("矢量格式(SVG)"), self.copyPlotDialog)
         layout.addWidget(png_btn)
         layout.addWidget(svg_btn)
         png_btn.clicked.connect(self.copyPNG)
@@ -372,7 +374,15 @@ class Widget(QWidget):
     def copyPNG(self):
         # copy to png format
         clipboard = QApplication.clipboard()
-        image = self.chartView.grab().toImage()
+        image = QImage(self.chartView.size(), QImage.Format_ARGB32)
+        image.fill(Qt.white)
+        painter = QPainter(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.TextAntialiasing)
+        # self.chart.setBackgroundBrush(QBrush(Qt.white))
+        self.chartView.render(painter)
+        painter.end()
+        # self.chart.setBackgroundBrush(QBrush(Qt.transparent))
         clipboard.setImage(image)
         qDebug("Copy PNG format image to clipboard")
         self.copyPlotDialog.close()

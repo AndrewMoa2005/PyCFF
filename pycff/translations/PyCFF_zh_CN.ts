@@ -352,22 +352,22 @@
 <context>
     <name>Widget</name>
     <message>
-        <location filename="../widget.py" line="64"/>
+        <location filename="../widget.py" line="66"/>
         <source>拟合函数曲线</source>
         <translation>拟合函数曲线</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="104"/>
+        <location filename="../widget.py" line="106"/>
         <source>Data Series</source>
         <translation>散点数据</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="105"/>
+        <location filename="../widget.py" line="107"/>
         <source>Fitted Curve</source>
         <translation>拟合曲线</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="130"/>
+        <location filename="../widget.py" line="132"/>
         <source>...声明...
 </source>
         <translation>      本程序是基于Python实现的函数曲线拟合程序，用于将离散数据拟合成函数曲线，旨在替代Excel、Origin中的函数曲线拟合功能，简化用户操作的同时提供简单的绘图和数据交互。
@@ -379,261 +379,246 @@ Email:	Andrew.Moa2005@163.com
 Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="175"/>
+        <location filename="../widget.py" line="177"/>
         <source>设置绘图大小</source>
         <translation>设置绘图大小</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="179"/>
+        <location filename="../widget.py" line="181"/>
         <source>宽度:</source>
         <translation>宽度:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="183"/>
+        <location filename="../widget.py" line="185"/>
         <source>高度:</source>
         <translation>高度:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="157"/>
-        <location filename="../widget.py" line="189"/>
-        <location filename="../widget.py" line="294"/>
+        <location filename="../widget.py" line="159"/>
+        <location filename="../widget.py" line="191"/>
+        <location filename="../widget.py" line="296"/>
         <source>确定</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="131"/>
+        <location filename="../widget.py" line="133"/>
         <source>关闭</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="132"/>
+        <location filename="../widget.py" line="134"/>
         <source>Qt版本信息</source>
         <translation>Qt版本信息</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="142"/>
-        <source>Qt 版本</source>
-        <translation>Qt 版本</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="147"/>
+        <location filename="../widget.py" line="149"/>
         <source>选择主题风格</source>
         <translation>选择主题风格</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="150"/>
+        <location filename="../widget.py" line="152"/>
         <source>选择主题:</source>
         <translation>选择主题:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="154"/>
+        <location filename="../widget.py" line="156"/>
         <source>选择颜色:</source>
         <translation>选择颜色:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="202"/>
+        <location filename="../widget.py" line="204"/>
         <source>选择绘图数据颜色</source>
         <translation>选择绘图数据颜色</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="212"/>
+        <location filename="../widget.py" line="214"/>
         <source>选择拟合曲线颜色</source>
         <translation>选择拟合曲线颜色</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="222"/>
+        <location filename="../widget.py" line="224"/>
         <location filename="../form.ui" line="483"/>
         <source>设置绘图参数</source>
         <translation>设置绘图参数</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="228"/>
+        <location filename="../widget.py" line="230"/>
         <source>数据曲线标签:</source>
         <translation>数据曲线标签:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="229"/>
-        <location filename="../widget.py" line="267"/>
+        <location filename="../widget.py" line="231"/>
+        <location filename="../widget.py" line="269"/>
         <source>选择颜色</source>
         <translation>选择颜色</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="239"/>
+        <location filename="../widget.py" line="241"/>
         <source>数据曲线颜色:</source>
         <translation>数据曲线颜色:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="243"/>
+        <location filename="../widget.py" line="245"/>
         <source>数据曲线尺寸:</source>
         <translation>数据曲线尺寸:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="254"/>
-        <location filename="../widget.py" line="285"/>
+        <location filename="../widget.py" line="256"/>
+        <location filename="../widget.py" line="287"/>
         <source>实线</source>
         <translation>实线</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="255"/>
-        <location filename="../widget.py" line="286"/>
+        <location filename="../widget.py" line="257"/>
+        <location filename="../widget.py" line="288"/>
         <source>虚线</source>
         <translation>虚线</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="256"/>
-        <location filename="../widget.py" line="287"/>
+        <location filename="../widget.py" line="258"/>
+        <location filename="../widget.py" line="289"/>
         <source>点线</source>
         <translation>点线</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="257"/>
-        <location filename="../widget.py" line="288"/>
+        <location filename="../widget.py" line="259"/>
+        <location filename="../widget.py" line="290"/>
         <source>点划线</source>
         <translation>点划线</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="258"/>
-        <location filename="../widget.py" line="289"/>
+        <location filename="../widget.py" line="260"/>
+        <location filename="../widget.py" line="291"/>
         <source>双点划线</source>
         <translation>双点划线</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="262"/>
+        <location filename="../widget.py" line="264"/>
         <source>数据曲线线型:</source>
         <translation>数据曲线线型:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="266"/>
+        <location filename="../widget.py" line="268"/>
         <source>拟合曲线标签:</source>
         <translation>拟合曲线标签:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="277"/>
+        <location filename="../widget.py" line="279"/>
         <source>拟合曲线颜色:</source>
         <translation>拟合曲线颜色:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="281"/>
+        <location filename="../widget.py" line="283"/>
         <source>拟合曲线尺寸:</source>
         <translation>拟合曲线尺寸:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="293"/>
+        <location filename="../widget.py" line="295"/>
         <source>拟合曲线线型:</source>
         <translation>拟合曲线线型:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="326"/>
+        <location filename="../widget.py" line="328"/>
         <source>保存绘图</source>
         <translation>保存绘图</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="328"/>
+        <location filename="../widget.py" line="330"/>
         <source>SVG Files (*.svg);;PNG Files (*.png);;All Files (*)</source>
         <translation>SVG文件 (*.svg);;PNG文件 (*.png);;所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="353"/>
-        <location filename="../widget.py" line="551"/>
+        <location filename="../widget.py" line="355"/>
+        <location filename="../widget.py" line="561"/>
         <source>保存失败</source>
         <translation>保存失败</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="354"/>
-        <location filename="../widget.py" line="528"/>
-        <location filename="../widget.py" line="551"/>
+        <location filename="../widget.py" line="356"/>
+        <location filename="../widget.py" line="538"/>
+        <location filename="../widget.py" line="561"/>
         <source>不支持的文件格式</source>
         <translation>不支持的文件格式</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="357"/>
+        <location filename="../widget.py" line="359"/>
         <source>保存成功</source>
         <translation>保存成功</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="358"/>
+        <location filename="../widget.py" line="360"/>
         <source>图表已保存为 {fileName}</source>
         <translation>图表已保存为 {fileName}</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="362"/>
+        <location filename="../widget.py" line="364"/>
         <source>选择图片格式</source>
         <translation>选择图片格式</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="364"/>
-        <source>PNG格式</source>
-        <translation>PNG格式</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="365"/>
-        <source>SVG格式</source>
-        <translation>SVG格式</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="441"/>
-        <location filename="../widget.py" line="446"/>
-        <location filename="../widget.py" line="450"/>
-        <location filename="../widget.py" line="691"/>
-        <location filename="../widget.py" line="696"/>
-        <location filename="../widget.py" line="754"/>
-        <location filename="../widget.py" line="817"/>
-        <location filename="../widget.py" line="892"/>
-        <location filename="../widget.py" line="971"/>
-        <location filename="../widget.py" line="984"/>
-        <location filename="../widget.py" line="988"/>
-        <location filename="../widget.py" line="1156"/>
-        <location filename="../widget.py" line="1255"/>
-        <location filename="../widget.py" line="1294"/>
-        <location filename="../widget.py" line="1299"/>
-        <location filename="../widget.py" line="1312"/>
-        <location filename="../widget.py" line="1317"/>
-        <location filename="../widget.py" line="1342"/>
+        <location filename="../widget.py" line="451"/>
+        <location filename="../widget.py" line="456"/>
+        <location filename="../widget.py" line="460"/>
+        <location filename="../widget.py" line="701"/>
+        <location filename="../widget.py" line="706"/>
+        <location filename="../widget.py" line="764"/>
+        <location filename="../widget.py" line="827"/>
+        <location filename="../widget.py" line="902"/>
+        <location filename="../widget.py" line="981"/>
+        <location filename="../widget.py" line="994"/>
+        <location filename="../widget.py" line="998"/>
+        <location filename="../widget.py" line="1166"/>
+        <location filename="../widget.py" line="1265"/>
+        <location filename="../widget.py" line="1304"/>
+        <location filename="../widget.py" line="1309"/>
+        <location filename="../widget.py" line="1322"/>
+        <location filename="../widget.py" line="1327"/>
+        <location filename="../widget.py" line="1352"/>
         <source>输入错误</source>
         <translation>输入错误</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="515"/>
-        <location filename="../widget.py" line="538"/>
+        <location filename="../widget.py" line="525"/>
+        <location filename="../widget.py" line="548"/>
         <source>CSV Files (*.csv);;Excel Files (*.xlsx);;Excel 97-2003 Files (*.xls);;All Files (*)</source>
         <translation>CSV文件 (*.csv);;Excel文件 (*.xlsx);;Excel97-2003文件 (*.xls);;所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="528"/>
+        <location filename="../widget.py" line="538"/>
         <source>加载失败</source>
         <translation>加载失败</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="642"/>
+        <location filename="../widget.py" line="652"/>
         <source>第{}列 : {}</source>
         <translation>第{}列 : {}</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="755"/>
+        <location filename="../widget.py" line="765"/>
         <source>请先输入自定义函数</source>
         <translation>请先输入自定义函数</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="768"/>
-        <location filename="../widget.py" line="835"/>
-        <location filename="../widget.py" line="910"/>
-        <location filename="../widget.py" line="1000"/>
-        <location filename="../widget.py" line="1015"/>
-        <location filename="../widget.py" line="1086"/>
-        <location filename="../widget.py" line="1169"/>
-        <location filename="../widget.py" line="1183"/>
+        <location filename="../widget.py" line="778"/>
+        <location filename="../widget.py" line="845"/>
+        <location filename="../widget.py" line="920"/>
+        <location filename="../widget.py" line="1010"/>
+        <location filename="../widget.py" line="1025"/>
+        <location filename="../widget.py" line="1096"/>
+        <location filename="../widget.py" line="1179"/>
+        <location filename="../widget.py" line="1193"/>
         <source>初始化错误</source>
         <translation>初始化错误</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="769"/>
-        <location filename="../widget.py" line="836"/>
-        <location filename="../widget.py" line="911"/>
-        <location filename="../widget.py" line="1001"/>
-        <location filename="../widget.py" line="1016"/>
-        <location filename="../widget.py" line="1087"/>
-        <location filename="../widget.py" line="1170"/>
-        <location filename="../widget.py" line="1184"/>
+        <location filename="../widget.py" line="779"/>
+        <location filename="../widget.py" line="846"/>
+        <location filename="../widget.py" line="921"/>
+        <location filename="../widget.py" line="1011"/>
+        <location filename="../widget.py" line="1026"/>
+        <location filename="../widget.py" line="1097"/>
+        <location filename="../widget.py" line="1180"/>
+        <location filename="../widget.py" line="1194"/>
         <source>初始化失败，请检查输入数据
 
 %s</source>
@@ -642,12 +627,12 @@ Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
 %s</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="775"/>
-        <location filename="../widget.py" line="843"/>
-        <location filename="../widget.py" line="918"/>
-        <location filename="../widget.py" line="1023"/>
-        <location filename="../widget.py" line="1094"/>
-        <location filename="../widget.py" line="1191"/>
+        <location filename="../widget.py" line="785"/>
+        <location filename="../widget.py" line="853"/>
+        <location filename="../widget.py" line="928"/>
+        <location filename="../widget.py" line="1033"/>
+        <location filename="../widget.py" line="1104"/>
+        <location filename="../widget.py" line="1201"/>
         <source>拟合失败，请检查输入数据
 
 %s</source>
@@ -656,110 +641,125 @@ Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
 %s</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="818"/>
-        <location filename="../widget.py" line="893"/>
+        <location filename="../widget.py" line="828"/>
+        <location filename="../widget.py" line="903"/>
         <source>自变量必须大于0</source>
         <translation>自变量必须大于0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="972"/>
+        <location filename="../widget.py" line="982"/>
         <source>因变量必须大于0</source>
         <translation>因变量必须大于0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="988"/>
+        <location filename="../widget.py" line="998"/>
         <source>截距必须大于0</source>
         <translation>截距必须大于0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1265"/>
+        <location filename="../widget.py" line="1275"/>
         <source>警告</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1266"/>
+        <location filename="../widget.py" line="1276"/>
         <source>细化等级太小可能导致进程假死！</source>
         <translation>细化等级太小可能导致进程假死！</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1342"/>
+        <location filename="../widget.py" line="1352"/>
         <source>解不存在</source>
         <translation>解不存在</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="442"/>
-        <location filename="../widget.py" line="692"/>
+        <location filename="../widget.py" line="452"/>
+        <location filename="../widget.py" line="702"/>
         <source>请先输入X轴和Y轴数据</source>
         <translation>请先输入X轴和Y轴数据</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="129"/>
+        <location filename="../widget.py" line="131"/>
         <source>关于本程序</source>
         <translation>关于本程序</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="447"/>
-        <location filename="../widget.py" line="697"/>
+        <location filename="../widget.py" line="144"/>
+        <source>Qt版本: </source>
+        <translation>Qt版本: </translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="366"/>
+        <source>位图格式</source>
+        <translation>位图格式</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="367"/>
+        <source>矢量格式(SVG)</source>
+        <translation>矢量格式(SVG)</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="457"/>
+        <location filename="../widget.py" line="707"/>
         <source>X轴和Y轴数据长度不一致</source>
         <translation>X轴和Y轴数据长度不一致</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="450"/>
+        <location filename="../widget.py" line="460"/>
         <source>图表标题不能为空</source>
         <translation>图表标题不能为空</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="511"/>
+        <location filename="../widget.py" line="521"/>
         <source>打开文件</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="534"/>
+        <location filename="../widget.py" line="544"/>
         <source>保存文件</source>
         <translation>保存文件</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="559"/>
-        <location filename="../widget.py" line="571"/>
+        <location filename="../widget.py" line="569"/>
+        <location filename="../widget.py" line="581"/>
         <source>操作错误</source>
         <translation>操作错误</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="559"/>
+        <location filename="../widget.py" line="569"/>
         <source>选择的行无效</source>
         <translation>选择的行无效</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="571"/>
+        <location filename="../widget.py" line="581"/>
         <source>选择的列无效</source>
         <translation>选择的列无效</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="775"/>
-        <location filename="../widget.py" line="843"/>
-        <location filename="../widget.py" line="918"/>
-        <location filename="../widget.py" line="1023"/>
-        <location filename="../widget.py" line="1094"/>
-        <location filename="../widget.py" line="1191"/>
+        <location filename="../widget.py" line="785"/>
+        <location filename="../widget.py" line="853"/>
+        <location filename="../widget.py" line="928"/>
+        <location filename="../widget.py" line="1033"/>
+        <location filename="../widget.py" line="1104"/>
+        <location filename="../widget.py" line="1201"/>
         <source>拟合错误</source>
         <translation>拟合错误</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="985"/>
-        <location filename="../widget.py" line="1157"/>
+        <location filename="../widget.py" line="995"/>
+        <location filename="../widget.py" line="1167"/>
         <source>截距必须输入数字</source>
         <translation>截距必须输入数字</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1255"/>
-        <location filename="../widget.py" line="1294"/>
-        <location filename="../widget.py" line="1312"/>
+        <location filename="../widget.py" line="1265"/>
+        <location filename="../widget.py" line="1304"/>
+        <location filename="../widget.py" line="1322"/>
         <source>请先进行拟合</source>
         <translation>请先进行拟合</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1299"/>
-        <location filename="../widget.py" line="1317"/>
+        <location filename="../widget.py" line="1309"/>
+        <location filename="../widget.py" line="1327"/>
         <source>请输入有效的数字</source>
         <translation>请输入有效的数字</translation>
     </message>
