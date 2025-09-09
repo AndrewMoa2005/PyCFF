@@ -166,6 +166,81 @@ class CleverTableWidget(QTableWidget):
         self.selected_corner_cols = []
         self.selected_corner_rows = []
         self.itemSelectionChanged.connect(self._item_selection_changed)
+        
+    def label2index(self, label: str) -> tuple[int, int] | None:
+        """
+        将Excel风格的单元格标签转换为行列索引
+        Args:
+            label (str): Excel风格的单元格标签，如"A1", "B2"
+        Returns:
+            tuple[int, int] | None: 对应的行列索引（行, 列），如果标签无效则返回None
+        """
+        match = re.match(r"([A-Za-z]+)(\d+)", label)
+        if not match:
+            return None
+        col_str, row_str = match.groups()
+        col = 0
+        for char in col_str.upper():
+            col = col * 26 + (ord(char) - ord("A") + 1)
+        col -= 1
+        
+    def index2label(self, row: int, col: int) -> str | None:
+        """
+        将行列索引转换为Excel风格的单元格标签
+        Args:
+            row (int): 行索引，从0开始
+            col (int): 列索引，从0开始
+        Returns:
+            str | None: 对应的Excel风格的单元格标签，如果索引无效则返回None
+        """
+        if row < 0 or col < 0:
+            return None
+        col_str = ""
+        while col >= 0:
+            col_str = chr(col % 26 + ord("A")) + col_str
+            col = col // 26 - 1
+        return f"{col_str}{row + 1}"
+
+    def get_item_from_label(self, label: str) -> CTWItem | None:
+        """
+        根据Excel风格的单元格标签获取对应的单元格对象
+        Args:
+            label (str): Excel风格的单元格标签，如"A1", "B2"
+        Returns:
+            CTWItem | None: 对应的单元格对象，如果标签无效或单元格不存在则返回None
+        """
+        match = re.match(r"([A-Za-z]+)(\d+)", label)
+        if not match:
+            return None
+        col_str, row_str = match.groups()
+        col = 0
+        for char in col_str.upper():
+            col = col * 26 + (ord(char) - ord("A") + 1)
+        col -= 1  # 转换为0基索引
+        row = int(row_str) - 1  # 转换为0基索引
+        if 0 <= col < self.columnCount() and 0 <= row < self.rowCount():
+            return self.item(row, col)
+        return None
+
+    def get_label_from_item(self, item: CTWItem) -> str | None:
+        """
+        根据单元格对象获取对应的Excel风格的单元格标签
+        Args:
+            item (CTWItem): 单元格对象
+        Returns:
+            str | None: 对应的Excel风格的单元格标签，如果单元格对象无效则返回None
+        """
+        if item is None:
+            return None
+        row = item.row()
+        col = item.column()
+        if row < 0 or col < 0:
+            return None
+        col_str = ""
+        while col >= 0:
+            col_str = chr(col % 26 + ord("A")) + col_str
+            col = col // 26 - 1
+        return f"{col_str}{row + 1}"
 
     def _item_selection_changed(self):
         self.whole_cols = self._is_whole_column_selected()
@@ -1306,6 +1381,10 @@ class CleverTableWidget(QTableWidget):
         if self.selected_col is not None:
             self._delete_operations("Delete Selected Cols")
         elif self.selected_row is not None:
+            self._delete_operations("Delete Selected Rows")
+        elif self.whole_cols is not None:
+            self._delete_operations("Delete Selected Cols")
+        elif self.whole_rows is not None:
             self._delete_operations("Delete Selected Rows")
         else:
             delete_dialog = DeleteInsertDialog(dialog_type="delete")
