@@ -55,7 +55,7 @@ from .clevertwitem import CleverTableWidgetItem as CTWItem
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o form_ui.py, or
 #     pyside2-uic form.ui -o form_ui.py
-from pycff.form_ui import Ui_Widget
+from .form_ui import Ui_Widget
 
 
 class Widget(QWidget):
@@ -67,6 +67,7 @@ class Widget(QWidget):
         # Connect signals to slots
         self.ui.aboutBtn.clicked.connect(self.onAboutBtnClicked)
         self.ui.themeBtn.clicked.connect(self.onThemeBtnClicked)
+        self.ui.inputBtn.toggled.connect(self.onInputBtnToggled)
         self.ui.plotBtn.clicked.connect(self.onPlotBtnClicked)
         self.ui.setPlotSizeBtn.clicked.connect(self.onSetPlotSizeBtn)
         self.ui.adjustPlotBtn.clicked.connect(self.onAdjustPlotBtnClicked)
@@ -89,6 +90,13 @@ class Widget(QWidget):
         self.ui.refineSP.setEnabled(self.ui.refineCB.isChecked())
         self.ui.inputTable.enable_infinite()
         self.ui.inputTable.ContentsChangeSignal.connect(self.inputTableChanged)
+        self.ui.inputTable.itemSelectionChanged.connect(self.onItemSelected)
+        self.ui.inputEdit.textChanged.connect(self.onInputEditTextChanged)
+        self.ui.inputLabel.setText("")
+        self.ui.inputEdit.setReadOnly(True)
+        self.link_item: CTWItem = None
+        self.link_row: int = None
+        self.link_col: int = None
         # Add QCharts
         self.chart = QChart()
         self.chartView = QChartView(self.chart)
@@ -125,6 +133,71 @@ class Widget(QWidget):
         # set min size
         self.ui.inputTable.setMinimumHeight(200)
         self.ui.outputTable.setMinimumHeight(200)
+
+    def onInputEditTextChanged(self):
+        if self.link_row is None or self.link_col is None:
+            return
+        text = self.ui.inputEdit.toPlainText()
+        if text in ("", " ", None):
+            return
+        if self.link_item is None:
+            self.link_item = CTWItem(text)
+            self.ui.inputTable.setItem(self.link_row, self.link_col, self.link_item)
+            qDebug(
+                "Item text created: Row: %s, Column: %s, Text: %s"
+                % (self.link_row + 1, self.link_col + 1, text)
+            )
+        else:
+            if self.link_item.text() != text:
+                self.link_item.setText(text)
+                qDebug(
+                    "Item text changed: Row: %s, Column: %s, Text: %s"
+                    % (self.link_row + 1, self.link_col + 1, text)
+                )
+        self.ui.inputTable._max_content_pos()
+
+    def onItemSelected(self):
+        ranges = self.ui.inputTable.selectedRanges()
+        if len(ranges) > 0:
+            self.link_row = ranges[0].topRow()
+            self.link_col = ranges[0].leftColumn()
+            self.link_item = self.ui.inputTable.item(self.link_row, self.link_col)
+            label = self.ui.inputTable.horizontalHeaderItem(self.link_col).text() + str(
+                self.link_row + 1
+            )
+            qDebug(
+                f"Item selected: {label}, Row: {self.link_row + 1}, Column: {self.link_col + 1}"
+            )
+            qDebug(f"Item type: {type(self.link_item)}")
+            self.ui.inputLabel.setText(label + " : ")
+            text = self.link_item.text() if self.link_item else ""
+            self.ui.inputEdit.setText(text)
+            self.ui.inputEdit.setReadOnly(False)
+            self.ui.inputEdit.setFocus()
+        else:
+            self.ui.inputLabel.setText("")
+            self.ui.inputEdit.setText("")
+            self.ui.inputEdit.setReadOnly(True)
+            self.link_item = None
+            self.link_row = None
+            self.link_col = None
+
+    def onInputBtnToggled(self, checked: bool):
+        basesize = 32
+        if checked:
+            self.ui.inputEdit.setMaximumHeight(basesize * 3)
+            self.ui.inputEdit.setMinimumHeight(basesize * 3)
+            self.ui.inputBtn.setMaximumHeight(basesize * 3)
+            self.ui.inputBtn.setMinimumHeight(basesize * 3)
+            self.ui.inputBtn.setText(self.tr("恢复"))
+            self.ui.inputBtn.setToolTip(self.tr("恢复输入框"))
+        else:
+            self.ui.inputEdit.setMinimumHeight(basesize)
+            self.ui.inputEdit.setMaximumHeight(basesize)
+            self.ui.inputBtn.setMinimumHeight(basesize)
+            self.ui.inputBtn.setMaximumHeight(basesize)
+            self.ui.inputBtn.setText(self.tr("展开"))
+            self.ui.inputBtn.setToolTip(self.tr("展开输入框"))
 
     def onAboutBtnClicked(self):
         dialog = QMessageBox(self)
