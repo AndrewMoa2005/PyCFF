@@ -11,18 +11,25 @@ import keyword
 
 
 def pi() -> float:
+    """
+    Return the mathematical constant pi.
+    """
     return np.pi
 
 
 def e() -> float:
+    """
+    Return the base of the natural logarithm.
+    """
     return np.e
 
 
-def parse_expression(expression: str) -> tuple[str, list[str]]:
+def parse_expression(expression: str, have_x: bool = True) -> tuple[str, list[str]]:
     """
     Parse the expression and return the function string and variable list.
     Args:
         expression (str): The expression string.
+        have_x (bool, optional): Whether the expression must contain the independent variable x. Defaults to True.
     Raises:
         ValueError: _description_
     Returns:
@@ -58,7 +65,7 @@ def parse_expression(expression: str) -> tuple[str, list[str]]:
             "The expression contains consecutive 'x', please use operators to separate"
         )
     # 3. Check for the presence of the independent variable x
-    if "x" not in expr:
+    if have_x and "x" not in expr:
         raise ValueError("The expression must contain the independent variable x")
     # 4. Improved scientific notation protection mechanism
     # Use temporary markers to replace scientific notation numbers
@@ -75,9 +82,7 @@ def parse_expression(expression: str) -> tuple[str, list[str]]:
             f"Invalid variable name: {invalid_var} - Variable names must start with a letter"
         )
     # 6. Check for missing operators between numbers and variables on protected expressions
-    if re.search(r"\d+[a-zA-Z_]", protected_expr) or re.search(
-        r"[a-zA-Z_]\d+", protected_expr
-    ):
+    if re.search(r"\d+[a-zA-Z_]", protected_expr):
         raise ValueError("Numbers and variables must be separated by operators")
     # 7. Improved operator overlap detection
     temp_expr = re.sub(r"\s+", "", expr)
@@ -168,6 +173,8 @@ def parse_expression(expression: str) -> tuple[str, list[str]]:
         coefficients = ["x"] + sorted(valid_vars)
     else:
         coefficients = ["x"] + sorted(valid_vars)
+    if have_x is False:
+        coefficients.remove("x")
     return converted, coefficients
 
 
