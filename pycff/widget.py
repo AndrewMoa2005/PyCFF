@@ -18,6 +18,9 @@ from PySide6.QtWidgets import (
     QComboBox,
     QHBoxLayout,
     QApplication,
+    QVBoxLayout,
+    QStyleFactory,
+    QListWidget,
 )
 from PySide6.QtCharts import (
     QChart,
@@ -61,7 +64,7 @@ class Widget(QWidget):
         self.setWindowTitle(self.tr("拟合函数曲线"))
         # Connect signals to slots
         self.ui.aboutBtn.clicked.connect(self.onAboutBtnClicked)
-        self.ui.qtBtn.clicked.connect(self.onQtBtnClicked)
+        self.ui.themeBtn.clicked.connect(self.onThemeBtnClicked)
         self.ui.plotBtn.clicked.connect(self.onPlotBtnClicked)
         self.ui.setPlotSizeBtn.clicked.connect(self.onSetPlotSizeBtn)
         self.ui.adjustPlotBtn.clicked.connect(self.onAdjustPlotBtnClicked)
@@ -122,14 +125,50 @@ class Widget(QWidget):
         self.ui.outputTable.setMinimumHeight(200)
 
     def onAboutBtnClicked(self):
-        QMessageBox.about(
-            self,
-            self.tr("关于本程序"),
-            self.tr("...声明...\n"),
-        )
+        dialog = QMessageBox(self)
+        dialog.setWindowTitle(self.tr("关于本程序"))
+        dialog.setInformativeText(self.tr("...声明...\n"))
+        dialog.addButton(self.tr("关闭"), QMessageBox.ButtonRole.AcceptRole)
+        btn = dialog.addButton(self.tr("Qt版本信息"), QMessageBox.ButtonRole.RejectRole)
+        btn.clicked.connect(self.onQtBtnClicked)
+        dialog.exec()
 
     def onQtBtnClicked(self):
-        QMessageBox.aboutQt(self, self.tr("Qt版本"))
+        from PySide6.QtCore import __version__ as QT_VERSION_STR
+
+        qDebug(f"Qt version: {QT_VERSION_STR}")
+        QMessageBox.aboutQt(
+            self,
+            self.tr("Qt 版本") + f" {QT_VERSION_STR}",
+        )
+
+    def onThemeBtnClicked(self):
+        dialog = QDialog(self)
+        dialog.setWindowTitle(self.tr("选择主题风格"))
+        dialog.setMinimumSize(300, 150)
+        layout = QVBoxLayout(dialog)
+        theme_label = QLabel(self.tr("选择主题:"))
+        theme_list = QListWidget(dialog)
+        theme_list.addItems(QStyleFactory.keys())
+        theme_list.setCurrentRow(0)
+        color_label = QLabel(self.tr("选择颜色:"))
+        color_combo = QComboBox(dialog)
+        color_combo.addItems(["Light", "Dark"])
+        ok_button = QPushButton(self.tr("确定"), dialog)
+        ok_button.clicked.connect(dialog.accept)
+        layout.addWidget(theme_label)
+        layout.addWidget(theme_list)
+        layout.addWidget(color_label)
+        layout.addWidget(color_combo)
+        layout.addWidget(ok_button)
+        if dialog.exec() == QDialog.Accepted:
+            theme = theme_list.selectedItems()[0].text()
+            QApplication.setStyle(theme)
+            color = color_combo.currentText()
+            if color == "Light":
+                QApplication.styleHints().setColorScheme(Qt.ColorScheme.Light)
+            elif color == "Dark":
+                QApplication.styleHints().setColorScheme(Qt.ColorScheme.Dark)
 
     def onSetPlotSizeBtn(self):
         dialog = QDialog(self)

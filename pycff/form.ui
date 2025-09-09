@@ -41,20 +41,15 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="aboutBtn">
+      <widget class="QPushButton" name="themeBtn">
        <property name="toolTip">
-        <string>版本信息</string>
+        <string>更改界面主题风格</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">font: 9pt &quot;Microsoft YaHei UI&quot;;
-text-decoration: underline;
-color: rgb(0, 0, 255);</string>
+        <string notr="true"/>
        </property>
        <property name="text">
-        <string notr="true">About...</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
+        <string>主题</string>
        </property>
        <property name="flat">
         <bool>true</bool>
@@ -62,17 +57,18 @@ color: rgb(0, 0, 255);</string>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="qtBtn">
+      <widget class="QPushButton" name="aboutBtn">
        <property name="toolTip">
-        <string>显示Qt版本</string>
+        <string>关于本软件...</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">font: 9pt &quot;Microsoft YaHei UI&quot;;
-text-decoration: underline;
-color: rgb(0, 0, 255);</string>
+        <string notr="true"/>
        </property>
        <property name="text">
-        <string notr="true">Qt...</string>
+        <string>关于...</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
        </property>
        <property name="flat">
         <bool>true</bool>
@@ -582,7 +578,7 @@ color: rgb(0, 0, 255);</string>
          <property name="orientation">
           <enum>Qt::Orientation::Horizontal</enum>
          </property>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <layout class="QVBoxLayout" name="vl1">
            <item>
             <layout class="QHBoxLayout" name="hl1">
