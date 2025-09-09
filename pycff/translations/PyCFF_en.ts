@@ -4,214 +4,214 @@
 <context>
     <name>CleverTableWidget</name>
     <message>
-        <location filename="../clevertw.py" line="62"/>
+        <location filename="../clevertw.py" line="63"/>
         <source>复制</source>
         <translation>Copy</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="63"/>
+        <location filename="../clevertw.py" line="64"/>
         <source>粘贴</source>
         <translation>Paste</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="64"/>
+        <location filename="../clevertw.py" line="65"/>
         <source>清空</source>
         <translation>Clear</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="65"/>
+        <location filename="../clevertw.py" line="66"/>
         <source>删除</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="66"/>
+        <location filename="../clevertw.py" line="67"/>
         <source>左对齐</source>
         <translation>Left alignment</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="67"/>
+        <location filename="../clevertw.py" line="68"/>
         <source>右对齐</source>
         <translation>Right alignment</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="68"/>
+        <location filename="../clevertw.py" line="69"/>
         <source>居中对齐</source>
         <translation>Center alignment</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="69"/>
+        <location filename="../clevertw.py" line="70"/>
         <source>高亮</source>
         <translation>Highlight</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="70"/>
+        <location filename="../clevertw.py" line="71"/>
         <source>取消高亮</source>
         <translation>Cancel highlight</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="71"/>
+        <location filename="../clevertw.py" line="72"/>
         <source>加粗</source>
         <translation>Bold</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="72"/>
+        <location filename="../clevertw.py" line="73"/>
         <source>取消加粗</source>
         <translation>Cancel bold</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="87"/>
+        <location filename="../clevertw.py" line="88"/>
         <source>上移</source>
         <translation>Move Up</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="88"/>
+        <location filename="../clevertw.py" line="89"/>
         <source>下移</source>
         <translation>Move Down</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="89"/>
+        <location filename="../clevertw.py" line="90"/>
         <source>左移</source>
         <translation>Move Left</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="90"/>
+        <location filename="../clevertw.py" line="91"/>
         <source>右移</source>
         <translation>Move Right</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="100"/>
+        <location filename="../clevertw.py" line="101"/>
         <source>列升序</source>
         <translation>Ascending column</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="101"/>
+        <location filename="../clevertw.py" line="102"/>
         <source>列降序</source>
         <translation>Descending column</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="102"/>
+        <location filename="../clevertw.py" line="103"/>
         <source>列逆序</source>
         <translation>Reverse column</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="103"/>
+        <location filename="../clevertw.py" line="104"/>
         <source>粘贴替换列</source>
         <translation>Paste replace col</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="104"/>
+        <location filename="../clevertw.py" line="105"/>
         <source>上浮数字</source>
         <translation>Floating numbers</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="116"/>
+        <location filename="../clevertw.py" line="117"/>
         <source>设置数字格式</source>
         <translation>Set the number format</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="119"/>
+        <location filename="../clevertw.py" line="120"/>
         <source>列表转置</source>
         <translation>Table transposed</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="422"/>
+        <location filename="../clevertw.py" line="460"/>
         <source>设置列标题</source>
         <translation>Set the column headers</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="423"/>
+        <location filename="../clevertw.py" line="461"/>
         <source>请输入第%s列标题</source>
         <translation>Please input the %s column header</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="444"/>
+        <location filename="../clevertw.py" line="482"/>
         <source>设置行标题</source>
         <translation>Set the row headers</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="445"/>
+        <location filename="../clevertw.py" line="483"/>
         <source>请输入第%s行标题</source>
         <translation>Please input the %s row header</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="507"/>
+        <location filename="../clevertw.py" line="567"/>
         <source>对齐方式</source>
         <translation>Alignment</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="508"/>
-        <location filename="../clevertw.py" line="509"/>
+        <location filename="../clevertw.py" line="568"/>
+        <location filename="../clevertw.py" line="569"/>
         <source>插入</source>
         <translation>Insert</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="521"/>
+        <location filename="../clevertw.py" line="581"/>
         <source>移动单元格</source>
         <translation>Move cells</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="587"/>
-        <location filename="../clevertw.py" line="658"/>
-        <location filename="../clevertw.py" line="875"/>
-        <location filename="../clevertw.py" line="882"/>
-        <location filename="../clevertw.py" line="1028"/>
+        <location filename="../clevertw.py" line="647"/>
+        <location filename="../clevertw.py" line="718"/>
+        <location filename="../clevertw.py" line="935"/>
+        <location filename="../clevertw.py" line="942"/>
+        <location filename="../clevertw.py" line="1088"/>
         <source>警告</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="588"/>
+        <location filename="../clevertw.py" line="648"/>
         <source>已到达顶部，无法向上移动</source>
         <translation>Reached the top and cannot be moved up</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="659"/>
+        <location filename="../clevertw.py" line="719"/>
         <source>已到达最左侧，无法向左移动</source>
         <translation>The leftmost side has been reached, and it cannot be moved to the left</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="876"/>
+        <location filename="../clevertw.py" line="936"/>
         <source>只能选择一列进行粘贴替换操作</source>
         <translation>Only one column can be selected for the paste replacement operation</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="883"/>
+        <location filename="../clevertw.py" line="943"/>
         <source>粘贴数据中不包含有效数字字符</source>
         <translation>The pasted data does not contain valid numeric characters</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1029"/>
+        <location filename="../clevertw.py" line="1089"/>
         <source>表格为空，无法进行转置操作</source>
         <translation>The table is empty and cannot be transposed</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1519"/>
+        <location filename="../clevertw.py" line="1571"/>
         <source>选择工作表</source>
         <translation>Select the worksheet</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1521"/>
+        <location filename="../clevertw.py" line="1573"/>
         <source>请选择要加载的工作表:</source>
         <translation>Please select the worksheet to be loaded:</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1554"/>
-        <location filename="../clevertw.py" line="1584"/>
-        <location filename="../clevertw.py" line="1610"/>
-        <location filename="../clevertw.py" line="1631"/>
-        <location filename="../clevertw.py" line="1657"/>
-        <location filename="../clevertw.py" line="1688"/>
+        <location filename="../clevertw.py" line="1606"/>
+        <location filename="../clevertw.py" line="1636"/>
+        <location filename="../clevertw.py" line="1662"/>
+        <location filename="../clevertw.py" line="1683"/>
+        <location filename="../clevertw.py" line="1709"/>
+        <location filename="../clevertw.py" line="1740"/>
         <source>加载错误</source>
         <translation>Loading error</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1555"/>
+        <location filename="../clevertw.py" line="1607"/>
         <source>CSV文件没有内容</source>
         <translation>CSV file is empty</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1584"/>
-        <location filename="../clevertw.py" line="1631"/>
-        <location filename="../clevertw.py" line="1688"/>
+        <location filename="../clevertw.py" line="1636"/>
+        <location filename="../clevertw.py" line="1683"/>
+        <location filename="../clevertw.py" line="1740"/>
         <source>加载文件失败
 
 %s</source>
@@ -220,36 +220,36 @@
 %s</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1611"/>
-        <location filename="../clevertw.py" line="1658"/>
+        <location filename="../clevertw.py" line="1663"/>
+        <location filename="../clevertw.py" line="1710"/>
         <source>Excel文件没有内容</source>
         <translation>Excel file is empty</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1714"/>
-        <location filename="../clevertw.py" line="1747"/>
-        <location filename="../clevertw.py" line="1779"/>
+        <location filename="../clevertw.py" line="1766"/>
+        <location filename="../clevertw.py" line="1799"/>
+        <location filename="../clevertw.py" line="1831"/>
         <source>保存成功</source>
         <translation>Save success</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1715"/>
-        <location filename="../clevertw.py" line="1748"/>
-        <location filename="../clevertw.py" line="1780"/>
+        <location filename="../clevertw.py" line="1767"/>
+        <location filename="../clevertw.py" line="1800"/>
+        <location filename="../clevertw.py" line="1832"/>
         <source>文件已保存至：{path}</source>
         <translation>File saved to: {path}</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1720"/>
-        <location filename="../clevertw.py" line="1753"/>
-        <location filename="../clevertw.py" line="1785"/>
+        <location filename="../clevertw.py" line="1772"/>
+        <location filename="../clevertw.py" line="1805"/>
+        <location filename="../clevertw.py" line="1837"/>
         <source>保存错误</source>
         <translation>Save error</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1721"/>
-        <location filename="../clevertw.py" line="1754"/>
-        <location filename="../clevertw.py" line="1786"/>
+        <location filename="../clevertw.py" line="1773"/>
+        <location filename="../clevertw.py" line="1806"/>
+        <location filename="../clevertw.py" line="1838"/>
         <source>保存文件时出现错误
 
 %s</source>
@@ -261,54 +261,54 @@
 <context>
     <name>DeleteInsertDialog</name>
     <message>
-        <location filename="../clevertw.py" line="1800"/>
+        <location filename="../clevertw.py" line="1852"/>
         <source>删除</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1801"/>
+        <location filename="../clevertw.py" line="1853"/>
         <source>插入</source>
         <translation>Insert</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1820"/>
+        <location filename="../clevertw.py" line="1872"/>
         <source>确定</source>
         <translation>Confirm</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1821"/>
+        <location filename="../clevertw.py" line="1873"/>
         <source>取消</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1838"/>
+        <location filename="../clevertw.py" line="1890"/>
         <source>右侧单元格左移(L)</source>
         <translation>Right cell shift left (L)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1839"/>
+        <location filename="../clevertw.py" line="1891"/>
         <source>下方单元格上移(U)</source>
         <translation>Lower cell moved up (U)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1840"/>
-        <location filename="../clevertw.py" line="1862"/>
+        <location filename="../clevertw.py" line="1892"/>
+        <location filename="../clevertw.py" line="1914"/>
         <source>整行(R)</source>
         <translation>A row (R)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1841"/>
-        <location filename="../clevertw.py" line="1863"/>
+        <location filename="../clevertw.py" line="1893"/>
+        <location filename="../clevertw.py" line="1915"/>
         <source>整列(C)</source>
         <translation>A column (C)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1860"/>
+        <location filename="../clevertw.py" line="1912"/>
         <source>活动单元格右移(R)</source>
         <translation>Move the active cell right (R)</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="1861"/>
+        <location filename="../clevertw.py" line="1913"/>
         <source>活动单元格下移(D)</source>
         <translation>Move the active cell down (D)</translation>
     </message>
@@ -316,27 +316,27 @@
 <context>
     <name>FormatDialog</name>
     <message>
-        <location filename="../clevertw.py" line="722"/>
+        <location filename="../clevertw.py" line="782"/>
         <source>设置数字格式</source>
         <translation>Set the numeric format</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="727"/>
+        <location filename="../clevertw.py" line="787"/>
         <source>小数点位数:</source>
         <translation>Decimal places:</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="735"/>
+        <location filename="../clevertw.py" line="795"/>
         <source>使用科学计数法</source>
         <translation>Use scientific</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="740"/>
+        <location filename="../clevertw.py" line="800"/>
         <source>确定</source>
         <translation>Confirm</translation>
     </message>
     <message>
-        <location filename="../clevertw.py" line="741"/>
+        <location filename="../clevertw.py" line="801"/>
         <source>取消</source>
         <translation>Cancel</translation>
     </message>
@@ -344,7 +344,7 @@
 <context>
     <name>TestUsingCleverTW</name>
     <message>
-        <location filename="../clevertw.py" line="1923"/>
+        <location filename="../clevertw.py" line="1975"/>
         <source>Test Using CleverTableWidget</source>
         <translation>Test Using CleverTableWidget</translation>
     </message>
@@ -367,7 +367,7 @@
         <translation>Fitted Curve</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="205"/>
+        <location filename="../widget.py" line="204"/>
         <source>...声明...
 </source>
         <translation>      This program is a function curve fitting software implemented in Python, designed to fit discrete data into function curves, aiming to replace the function curve fitting capabilities in Excel and Origin, simplifying user operations while providing simple plotting and data interaction.
@@ -379,246 +379,258 @@ Email:	Andrew.Moa2005@163.com
 Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="250"/>
+        <location filename="../widget.py" line="249"/>
         <source>设置绘图大小</source>
         <translation>Setting plot size</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="254"/>
+        <location filename="../widget.py" line="253"/>
         <source>宽度:</source>
         <translation>Width:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="258"/>
+        <location filename="../widget.py" line="257"/>
         <source>高度:</source>
         <translation>Height:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="232"/>
-        <location filename="../widget.py" line="264"/>
-        <location filename="../widget.py" line="369"/>
+        <location filename="../widget.py" line="231"/>
+        <location filename="../widget.py" line="263"/>
+        <location filename="../widget.py" line="368"/>
         <source>确定</source>
         <translation>Confirm</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="192"/>
+        <location filename="../widget.py" line="191"/>
         <source>恢复</source>
         <translation>Restore</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="193"/>
+        <location filename="../widget.py" line="192"/>
         <source>恢复输入框</source>
         <translation>Restore input entry</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="199"/>
+        <location filename="../widget.py" line="198"/>
         <location filename="../form.ui" line="286"/>
         <source>展开</source>
         <translation>Expand</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="200"/>
+        <location filename="../widget.py" line="199"/>
         <location filename="../form.ui" line="283"/>
         <source>展开输入框</source>
         <translation>Expand input entry</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="206"/>
+        <location filename="../widget.py" line="205"/>
         <source>关闭</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="207"/>
+        <location filename="../widget.py" line="206"/>
         <source>Qt版本信息</source>
         <translation>Qt information</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="222"/>
+        <location filename="../widget.py" line="221"/>
         <source>选择主题风格</source>
         <translation>Select themestyle</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="225"/>
+        <location filename="../widget.py" line="224"/>
         <source>选择主题:</source>
         <translation>Select theme:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="229"/>
+        <location filename="../widget.py" line="228"/>
         <source>选择颜色:</source>
         <translation>Select color:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="277"/>
+        <location filename="../widget.py" line="276"/>
         <source>选择绘图数据颜色</source>
         <translation>Select the plot data color</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="287"/>
+        <location filename="../widget.py" line="286"/>
         <source>选择拟合曲线颜色</source>
         <translation>Select the fit curve color</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="297"/>
+        <location filename="../widget.py" line="296"/>
         <location filename="../form.ui" line="572"/>
         <source>设置绘图参数</source>
         <translation>Set the plot parameters</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="303"/>
+        <location filename="../widget.py" line="302"/>
         <source>数据曲线标签:</source>
         <translation>Data curve label:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="304"/>
-        <location filename="../widget.py" line="342"/>
+        <location filename="../widget.py" line="303"/>
+        <location filename="../widget.py" line="341"/>
         <source>选择颜色</source>
         <translation>Select color</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="314"/>
+        <location filename="../widget.py" line="313"/>
         <source>数据曲线颜色:</source>
         <translation>Data curve color:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="318"/>
+        <location filename="../widget.py" line="317"/>
         <source>数据曲线尺寸:</source>
         <translation>Data curve size:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="329"/>
-        <location filename="../widget.py" line="360"/>
+        <location filename="../widget.py" line="328"/>
+        <location filename="../widget.py" line="359"/>
         <source>实线</source>
         <translation>SolidLine</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="330"/>
-        <location filename="../widget.py" line="361"/>
+        <location filename="../widget.py" line="329"/>
+        <location filename="../widget.py" line="360"/>
         <source>虚线</source>
         <translation>DashLine</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="331"/>
-        <location filename="../widget.py" line="362"/>
+        <location filename="../widget.py" line="330"/>
+        <location filename="../widget.py" line="361"/>
         <source>点线</source>
         <translation>DotLine</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="332"/>
-        <location filename="../widget.py" line="363"/>
+        <location filename="../widget.py" line="331"/>
+        <location filename="../widget.py" line="362"/>
         <source>点划线</source>
         <translation>DashDotLine</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="333"/>
-        <location filename="../widget.py" line="364"/>
+        <location filename="../widget.py" line="332"/>
+        <location filename="../widget.py" line="363"/>
         <source>双点划线</source>
         <translation>DashDotDotLine</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="337"/>
+        <location filename="../widget.py" line="336"/>
         <source>数据曲线线型:</source>
         <translation>Data curve style:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="341"/>
+        <location filename="../widget.py" line="340"/>
         <source>拟合曲线标签:</source>
         <translation>Fit curve label:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="352"/>
+        <location filename="../widget.py" line="351"/>
         <source>拟合曲线颜色:</source>
         <translation>Fitting curve color:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="356"/>
+        <location filename="../widget.py" line="355"/>
         <source>拟合曲线尺寸:</source>
         <translation>Fit curve size:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="368"/>
+        <location filename="../widget.py" line="367"/>
         <source>拟合曲线线型:</source>
         <translation>Fitting curve style:</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="401"/>
+        <location filename="../widget.py" line="400"/>
         <source>保存绘图</source>
         <translation>Save plot</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="403"/>
+        <location filename="../widget.py" line="402"/>
         <source>SVG Files (*.svg);;PNG Files (*.png);;All Files (*)</source>
         <translation>SVG Files (*.svg);;PNG Files (*.png);;All Files (*)</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="428"/>
-        <location filename="../widget.py" line="634"/>
+        <location filename="../widget.py" line="427"/>
+        <location filename="../widget.py" line="633"/>
         <source>保存失败</source>
         <translation>Save failed</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="429"/>
-        <location filename="../widget.py" line="611"/>
-        <location filename="../widget.py" line="634"/>
+        <location filename="../widget.py" line="428"/>
+        <location filename="../widget.py" line="610"/>
+        <location filename="../widget.py" line="633"/>
         <source>不支持的文件格式</source>
         <translation>Unsupported file formats</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="432"/>
+        <location filename="../widget.py" line="431"/>
         <source>保存成功</source>
         <translation>Save success</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="433"/>
+        <location filename="../widget.py" line="432"/>
         <source>图表已保存为 {fileName}</source>
         <translation>The plot is saved as {fileName}</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="437"/>
+        <location filename="../widget.py" line="436"/>
         <source>选择图片格式</source>
         <translation>Image format</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="524"/>
-        <location filename="../widget.py" line="529"/>
-        <location filename="../widget.py" line="533"/>
-        <location filename="../widget.py" line="774"/>
-        <location filename="../widget.py" line="779"/>
-        <location filename="../widget.py" line="837"/>
-        <location filename="../widget.py" line="900"/>
-        <location filename="../widget.py" line="975"/>
-        <location filename="../widget.py" line="1054"/>
-        <location filename="../widget.py" line="1067"/>
-        <location filename="../widget.py" line="1071"/>
-        <location filename="../widget.py" line="1239"/>
-        <location filename="../widget.py" line="1338"/>
-        <location filename="../widget.py" line="1377"/>
-        <location filename="../widget.py" line="1382"/>
-        <location filename="../widget.py" line="1395"/>
-        <location filename="../widget.py" line="1400"/>
-        <location filename="../widget.py" line="1425"/>
+        <location filename="../widget.py" line="523"/>
+        <location filename="../widget.py" line="528"/>
+        <location filename="../widget.py" line="532"/>
+        <location filename="../widget.py" line="773"/>
+        <location filename="../widget.py" line="778"/>
+        <location filename="../widget.py" line="836"/>
+        <location filename="../widget.py" line="899"/>
+        <location filename="../widget.py" line="974"/>
+        <location filename="../widget.py" line="1053"/>
+        <location filename="../widget.py" line="1066"/>
+        <location filename="../widget.py" line="1070"/>
+        <location filename="../widget.py" line="1238"/>
+        <location filename="../widget.py" line="1337"/>
+        <location filename="../widget.py" line="1376"/>
+        <location filename="../widget.py" line="1381"/>
+        <location filename="../widget.py" line="1394"/>
+        <location filename="../widget.py" line="1399"/>
+        <location filename="../widget.py" line="1424"/>
         <source>输入错误</source>
         <translation>Input error</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="598"/>
-        <location filename="../widget.py" line="621"/>
+        <location filename="../widget.py" line="597"/>
+        <location filename="../widget.py" line="620"/>
         <source>CSV Files (*.csv);;Excel Files (*.xlsx);;Excel 97-2003 Files (*.xls);;All Files (*)</source>
         <translation>CSV Files (*.csv);;Excel Files (*.xlsx);;Excel 97-2003 Files (*.xls);;All Files (*)</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="611"/>
+        <location filename="../widget.py" line="610"/>
         <source>加载失败</source>
         <translation>Load failed</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="725"/>
+        <location filename="../widget.py" line="724"/>
         <source>第{}列 : {}</source>
         <translation>Column {} : {}</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="838"/>
+        <location filename="../widget.py" line="837"/>
         <source>请先输入自定义函数</source>
         <translation>Please enter the custom function</translation>
+    </message>
+    <message>
+        <location filename="../widget.py" line="850"/>
+        <location filename="../widget.py" line="917"/>
+        <location filename="../widget.py" line="992"/>
+        <location filename="../widget.py" line="1082"/>
+        <location filename="../widget.py" line="1097"/>
+        <location filename="../widget.py" line="1168"/>
+        <location filename="../widget.py" line="1251"/>
+        <location filename="../widget.py" line="1265"/>
+        <source>初始化错误</source>
+        <translation>Initialization error</translation>
     </message>
     <message>
         <location filename="../widget.py" line="851"/>
@@ -629,18 +641,6 @@ Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
         <location filename="../widget.py" line="1169"/>
         <location filename="../widget.py" line="1252"/>
         <location filename="../widget.py" line="1266"/>
-        <source>初始化错误</source>
-        <translation>Initialization error</translation>
-    </message>
-    <message>
-        <location filename="../widget.py" line="852"/>
-        <location filename="../widget.py" line="919"/>
-        <location filename="../widget.py" line="994"/>
-        <location filename="../widget.py" line="1084"/>
-        <location filename="../widget.py" line="1099"/>
-        <location filename="../widget.py" line="1170"/>
-        <location filename="../widget.py" line="1253"/>
-        <location filename="../widget.py" line="1267"/>
         <source>初始化失败，请检查输入数据
 
 %s</source>
@@ -649,12 +649,12 @@ Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
 %s</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="858"/>
-        <location filename="../widget.py" line="926"/>
-        <location filename="../widget.py" line="1001"/>
-        <location filename="../widget.py" line="1106"/>
-        <location filename="../widget.py" line="1177"/>
-        <location filename="../widget.py" line="1274"/>
+        <location filename="../widget.py" line="857"/>
+        <location filename="../widget.py" line="925"/>
+        <location filename="../widget.py" line="1000"/>
+        <location filename="../widget.py" line="1105"/>
+        <location filename="../widget.py" line="1176"/>
+        <location filename="../widget.py" line="1273"/>
         <source>拟合失败，请检查输入数据
 
 %s</source>
@@ -663,125 +663,125 @@ Web:	https://github.com/AndrewMoa2005/PyCFF</translation>
 %s</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="901"/>
-        <location filename="../widget.py" line="976"/>
+        <location filename="../widget.py" line="900"/>
+        <location filename="../widget.py" line="975"/>
         <source>自变量必须大于0</source>
         <translation>X variable must be greater than 0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1055"/>
+        <location filename="../widget.py" line="1054"/>
         <source>因变量必须大于0</source>
         <translation>Y variable must be greater than 0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1071"/>
+        <location filename="../widget.py" line="1070"/>
         <source>截距必须大于0</source>
         <translation>The intercept value must be greater than 0</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1348"/>
+        <location filename="../widget.py" line="1347"/>
         <source>警告</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1349"/>
+        <location filename="../widget.py" line="1348"/>
         <source>细化等级太小可能导致进程假死！</source>
         <translation>Too small refine level may cause the process to hang !</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1425"/>
+        <location filename="../widget.py" line="1424"/>
         <source>解不存在</source>
         <translation>The solution does not exist</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="525"/>
-        <location filename="../widget.py" line="775"/>
+        <location filename="../widget.py" line="524"/>
+        <location filename="../widget.py" line="774"/>
         <source>请先输入X轴和Y轴数据</source>
         <translation>Please enter the X and Y axis data first</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="204"/>
+        <location filename="../widget.py" line="203"/>
         <source>关于本程序</source>
         <translation>About Me</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="217"/>
+        <location filename="../widget.py" line="216"/>
         <source>Qt版本: </source>
         <translation>Qt version : </translation>
     </message>
     <message>
-        <location filename="../widget.py" line="439"/>
+        <location filename="../widget.py" line="438"/>
         <source>位图格式</source>
         <translation>Bitmap format</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="440"/>
+        <location filename="../widget.py" line="439"/>
         <source>矢量格式(SVG)</source>
         <translation>Vector format (SVG)</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="530"/>
-        <location filename="../widget.py" line="780"/>
+        <location filename="../widget.py" line="529"/>
+        <location filename="../widget.py" line="779"/>
         <source>X轴和Y轴数据长度不一致</source>
         <translation>The data length of the X and Y axis is inconsistent</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="533"/>
+        <location filename="../widget.py" line="532"/>
         <source>图表标题不能为空</source>
         <translation>The chart title cannot be empty</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="594"/>
+        <location filename="../widget.py" line="593"/>
         <source>打开文件</source>
         <translation>Open file</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="617"/>
+        <location filename="../widget.py" line="616"/>
         <source>保存文件</source>
         <translation>Save file</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="642"/>
-        <location filename="../widget.py" line="654"/>
+        <location filename="../widget.py" line="641"/>
+        <location filename="../widget.py" line="653"/>
         <source>操作错误</source>
         <translation>Operation error</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="642"/>
+        <location filename="../widget.py" line="641"/>
         <source>选择的行无效</source>
         <translation>The selected row is invalid</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="654"/>
+        <location filename="../widget.py" line="653"/>
         <source>选择的列无效</source>
         <translation>The selected columns is invalid</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="858"/>
-        <location filename="../widget.py" line="926"/>
-        <location filename="../widget.py" line="1001"/>
-        <location filename="../widget.py" line="1106"/>
-        <location filename="../widget.py" line="1177"/>
-        <location filename="../widget.py" line="1274"/>
+        <location filename="../widget.py" line="857"/>
+        <location filename="../widget.py" line="925"/>
+        <location filename="../widget.py" line="1000"/>
+        <location filename="../widget.py" line="1105"/>
+        <location filename="../widget.py" line="1176"/>
+        <location filename="../widget.py" line="1273"/>
         <source>拟合错误</source>
         <translation>Fitting error</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1068"/>
-        <location filename="../widget.py" line="1240"/>
+        <location filename="../widget.py" line="1067"/>
+        <location filename="../widget.py" line="1239"/>
         <source>截距必须输入数字</source>
         <translation>The intercept must be entered with a number</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1338"/>
-        <location filename="../widget.py" line="1377"/>
-        <location filename="../widget.py" line="1395"/>
+        <location filename="../widget.py" line="1337"/>
+        <location filename="../widget.py" line="1376"/>
+        <location filename="../widget.py" line="1394"/>
         <source>请先进行拟合</source>
         <translation>Please do the fitting first</translation>
     </message>
     <message>
-        <location filename="../widget.py" line="1382"/>
-        <location filename="../widget.py" line="1400"/>
+        <location filename="../widget.py" line="1381"/>
+        <location filename="../widget.py" line="1399"/>
         <source>请输入有效的数字</source>
         <translation>Please enter a valid number</translation>
     </message>

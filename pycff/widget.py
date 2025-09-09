@@ -90,7 +90,7 @@ class Widget(QWidget):
         self.ui.refineSP.setEnabled(self.ui.refineCB.isChecked())
         self.ui.inputTable.enable_infinite()
         self.ui.inputTable.ContentsChangeSignal.connect(self.inputTableChanged)
-        self.ui.inputTable.itemSelectionChanged.connect(self.onItemSelected)
+        self.ui.inputTable.ItemSelectionSignal.connect(self.onItemSelected)
         self.ui.inputEdit.textChanged.connect(self.onInputEditTextChanged)
         self.ui.inputLabel.setText("")
         self.ui.inputEdit.setReadOnly(True)
@@ -144,16 +144,15 @@ class Widget(QWidget):
             self.link_item = CTWItem(text)
             self.ui.inputTable.setItem(self.link_row, self.link_col, self.link_item)
             qDebug(
-                "Item text created: Row: %s, Column: %s, Text: %s"
+                "Item created new: Row: %s, Column: %s, Text: %s"
                 % (self.link_row + 1, self.link_col + 1, text)
             )
-        else:
-            if self.link_item.text() != text:
-                self.link_item.setText(text)
-                qDebug(
-                    "Item text changed: Row: %s, Column: %s, Text: %s"
-                    % (self.link_row + 1, self.link_col + 1, text)
-                )
+        elif self.link_item.text() != text:
+            self.link_item.setText(text)
+            qDebug(
+                "Item text changed: Row: %s, Column: %s, Text: %s"
+                % (self.link_row + 1, self.link_col + 1, text)
+            )
         self.ui.inputTable._max_content_pos()
 
     def onItemSelected(self):

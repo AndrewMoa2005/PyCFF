@@ -34,6 +34,7 @@ from .clevertwitem import CleverTableWidgetItem as CTWItem
 
 class CleverTableWidget(QTableWidget):
     ContentsChangeSignal = Signal(int, int)
+    ItemSelectionSignal = Signal()
 
     # 构造函数
     def __init__(
@@ -160,6 +161,25 @@ class CleverTableWidget(QTableWidget):
         self.max_content_row = 0
         self.max_content_col = 0
         self.cellChanged.connect(self._max_content_pos)
+        self.whole_rows = []
+        self.whole_cols = []
+        self.selected_corner_cols = []
+        self.selected_corner_rows = []
+        self.itemSelectionChanged.connect(self._item_selection_changed)
+
+    def _item_selection_changed(self):
+        self.whole_cols = self._is_whole_column_selected()
+        qDebug(f"Selected whole columns: {self.whole_cols}")
+        self.whole_rows = self._is_whole_row_selected()
+        qDebug(f"Selected whole rows: {self.whole_rows}")
+        self.selected_corner_cols, self.selected_corner_rows = (
+            self._get_selected_items_right_down_corner()
+        )
+        qDebug(
+            f"Selected items right down corner: {self.selected_corner_cols, self.selected_corner_rows}"
+        )
+        self._max_content_pos()
+        self.ItemSelectionSignal.emit()
 
     def resizeEvent(self, event):
         # 窗口大小调整时，自动填充可见区域
@@ -356,27 +376,45 @@ class CleverTableWidget(QTableWidget):
         """在末尾添加新行"""
         current_count = self.rowCount()
         self.setRowCount(current_count + 1)
+        qDebug(f"Added new row {current_count} at end")
 
     def _remove_rows_at_end(self):
         """移除末尾不可见空行"""
         if self.rowCount() <= 0:
             return
         rows = self.rowCount() - 1
-        if self.row_is_empty(rows):
+        if rows >= 0 and self.row_is_empty(rows):
+            if self.whole_rows is not None and rows in self.whole_rows:
+                return
+            elif (
+                self.selected_corner_rows is not None
+                and rows in self.selected_corner_rows
+            ):
+                return
             self.removeRow(rows)
+            qDebug(f"Removed empty row {rows} at end")
 
     def _add_columns_at_end(self):
         """在末尾添加新列"""
         current_count = self.columnCount()
         self.setColumnCount(current_count + 1)
+        qDebug(f"Added new column {current_count} at end")
 
     def _remove_columns_at_end(self):
         """移除末尾不可见空列"""
         if self.columnCount() <= 0:
             return
         cols = self.columnCount() - 1
-        if self.col_is_empty(cols):
+        if cols >= 0 and self.col_is_empty(cols):
+            if self.whole_cols is not None and cols in self.whole_cols:
+                return
+            elif (
+                self.selected_corner_cols is not None
+                and cols in self.selected_corner_cols
+            ):
+                return
             self.removeColumn(cols)
+            qDebug(f"Removed empty column {cols} at end")
 
     def disable_infinite(self):
         """
@@ -449,18 +487,37 @@ class CleverTableWidget(QTableWidget):
         if ok_pressed:
             item.setText(new_header)
 
+    def _get_selected_items_right_down_corner(self):
+        """
+        获取选中区域的右下角坐标
+        """
+        selected_ranges = self.selectedRanges()
+        if not selected_ranges:
+            return None
+        corner_x = []
+        corner_y = []
+        for selected in selected_ranges:
+            corner_x.append(selected.rightColumn())
+            corner_y.append(selected.bottomRow())
+        return corner_x, corner_y
+
     def _is_whole_row_selected(self):
         """
         判断是否选择了整行，返回选中的行号
         """
         selected_ranges = self.selectedRanges()
-        if len(selected_ranges) > 1:
-            return None
         if not selected_ranges:
             return None
-        selected = selected_ranges[0]
-        if (selected.rightColumn() - selected.leftColumn() + 1) == self.columnCount():
-            return selected.topRow()
+        row_list = []
+        for selected in selected_ranges:
+            if (
+                selected.rightColumn() - selected.leftColumn() + 1
+            ) == self.columnCount():
+                for row in range(selected.topRow(), selected.bottomRow() + 1):
+                    if row not in row_list:
+                        row_list.append(row)
+        if len(row_list) > 0:
+            return row_list
         return None
 
     def _is_whole_column_selected(self):
@@ -468,13 +525,16 @@ class CleverTableWidget(QTableWidget):
         判断是否选择了整列，返回选中的列号
         """
         selected_ranges = self.selectedRanges()
-        if len(selected_ranges) > 1:
-            return None
         if not selected_ranges:
             return None
-        selected = selected_ranges[0]
-        if (selected.bottomRow() - selected.topRow() + 1) == self.rowCount():
-            return selected.leftColumn()
+        col_list = self.whole_rows = []
+        for selected in selected_ranges:
+            if (selected.bottomRow() - selected.topRow() + 1) == self.rowCount():
+                for col in range(selected.leftColumn(), selected.rightColumn() + 1):
+                    if col not in col_list:
+                        col_list.append(col)
+        if len(col_list) > 0:
+            return col_list
         return None
 
     def showContextMenu(self, pos):
@@ -1247,10 +1307,6 @@ class CleverTableWidget(QTableWidget):
             self._delete_operations("Delete Selected Cols")
         elif self.selected_row is not None:
             self._delete_operations("Delete Selected Rows")
-        elif self._is_whole_row_selected() is not None:
-            self._delete_operations("Delete Selected Rows")
-        elif self._is_whole_column_selected() is not None:
-            self._delete_operations("Delete Selected Cols")
         else:
             delete_dialog = DeleteInsertDialog(dialog_type="delete")
             delete_dialog.DelSignal.connect(self._delete_operations)
@@ -1334,10 +1390,6 @@ class CleverTableWidget(QTableWidget):
             self.insert_whole_base_on_selection(insert_type="C")
         elif self.selected_row is not None:
             self.insert_whole_base_on_selection(insert_type="R")
-        elif self._is_whole_row_selected() is not None:
-            self.insert_whole_base_on_selection(insert_type="R")
-        elif self._is_whole_column_selected() is not None:
-            self.insert_whole_base_on_selection(insert_type="C")
         else:
             insert_dialog = DeleteInsertDialog(dialog_type="insert")
             insert_dialog.InsertSignal.connect(self._insert_operations)
