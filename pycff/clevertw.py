@@ -160,12 +160,28 @@ class CleverTableWidget(QTableWidget):
         # 内容所覆盖的最大坐标，以0为起始
         self.max_content_row = 0
         self.max_content_col = 0
-        self.cellChanged.connect(self._max_content_pos)
+        self.cellChanged.connect(self._cell_change_)
         self.whole_rows = []
         self.whole_cols = []
         self.selected_corner_cols = []
         self.selected_corner_rows = []
         self.itemSelectionChanged.connect(self._item_selection_changed)
+
+    def _cell_change_(self, row: int, col: int):
+        """
+        单元格内容改变时触发，将默认的QTableWidgetItem替换为CleverTableWidgetItem
+        """
+        item = self.item(row, col)
+        if item is None:
+            return
+        text = item.text() if item.text() else ""
+        if not isinstance(item, CTWItem):
+            self.setItem(row, col, CTWItem(""))
+            item = self.item(row, col)
+            item.setText(text)
+            # del item
+            qDebug(f"Replace item {row, col} with CTWItem")
+        self._max_content_pos()
 
     def get_item_from_label(self, label: str) -> CTWItem | None:
         """
@@ -213,9 +229,7 @@ class CleverTableWidget(QTableWidget):
         qDebug(f"Selected whole columns: {self.whole_cols}")
         self.whole_rows = self._is_whole_row_selected()
         qDebug(f"Selected whole rows: {self.whole_rows}")
-        self.selected_corner_cols, self.selected_corner_rows = (
-            self._get_selected_items_right_down_corner()
-        )
+        self._get_selected_items_right_down_corner()
         qDebug(
             f"Selected items right down corner: {self.selected_corner_cols, self.selected_corner_rows}"
         )
@@ -540,7 +554,8 @@ class CleverTableWidget(QTableWidget):
         for selected in selected_ranges:
             corner_x.append(selected.rightColumn())
             corner_y.append(selected.bottomRow())
-        return corner_x, corner_y
+        self.selected_corner_cols = corner_x
+        self.selected_corner_rows = corner_y
 
     def _is_whole_row_selected(self):
         """
@@ -860,7 +875,7 @@ class CleverTableWidget(QTableWidget):
             for column in range(left_column, right_column + 1):
                 item = self.item(row, column)
                 if item:
-                    if type(item) is not CTWItem:
+                    if not isinstance(item, CTWItem):
                         item = CTWItem(item.text())
                         self.setItem(row, column, item)
                     try:
@@ -870,7 +885,7 @@ class CleverTableWidget(QTableWidget):
                         else:
                             fmt = f"{{:.{decimals}f}}"
                         # item.setText(fmt.format(num))
-                        item.setDisplayText(item.text() , fmt.format(num))
+                        item.setDisplayText(item.text(), fmt.format(num))
                     except Exception:
                         continue
 

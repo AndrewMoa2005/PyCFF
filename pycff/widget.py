@@ -147,7 +147,7 @@ class Widget(QWidget):
                 "Item created new: Row: %s, Column: %s, Text: %s"
                 % (self.link_row + 1, self.link_col + 1, text)
             )
-        elif self.link_item.text() != text:
+        elif self.link_item.rawText() != text:
             self.link_item.setText(text)
             qDebug(
                 "Item text changed: Row: %s, Column: %s, Text: %s"
@@ -169,7 +169,14 @@ class Widget(QWidget):
             )
             qDebug(f"Item type: {type(self.link_item)}")
             self.ui.inputLabel.setText(label + " : ")
-            text = self.link_item.text() if self.link_item else ""
+            if self.link_item is None:
+                text = ""
+            elif not isinstance(self.link_item, CTWItem):
+                text = self.link_item.text()
+            elif self.link_item.is_formula:
+                text = "=" + self.link_item.formulaText()
+            else:
+                text = self.link_item.text()
             self.ui.inputEdit.setText(text)
             self.ui.inputEdit.setReadOnly(False)
             self.ui.inputEdit.setFocus()

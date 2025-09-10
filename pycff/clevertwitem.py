@@ -80,6 +80,7 @@ class CleverTableWidgetItem(QTableWidgetItem):
             self.result = f"#ERR: {e}"
             self.value = None
             return self.result, self.value
+        calc_formula = str(self.formula)
         for arg in self.args:
             a = arg.upper()
             table = self.tableWidget()
@@ -105,9 +106,9 @@ class CleverTableWidgetItem(QTableWidgetItem):
                 self.result = f"#ERR: {a} is not a value"
                 self.value = None
                 return self.result, self.value
-            self.formula = self.formula.replace(arg, str(self.value))
+            calc_formula = calc_formula.replace(arg, str(self.value))
         try:
-            self.value = eval(self.formula)
+            self.value = eval(calc_formula)
             self.result = str(self.value)
         except Exception as e:
             self.result = f"#ERR: {e}"
@@ -142,9 +143,9 @@ class CleverTableWidgetItem(QTableWidgetItem):
 
     def formulaResult(self) -> tuple[str, float] | None:
         """
-        获取公式结果
+        获取公式的计算结果
         Returns:
-            tuple[str, float] | None: 公式结果和值，如果不是公式则返回None
+            tuple[str, float] | None: 公式计算结果的文本和值，如果不是公式则返回None
         """
         if self.is_formula:
             return self.result, self.value
@@ -162,6 +163,36 @@ class CleverTableWidgetItem(QTableWidgetItem):
             return self.result
         else:
             return self._raw_data
+
+    def editText(self) -> str:
+        """
+        获取编辑文本
+        Returns:
+            str: 编辑文本
+        """
+        return self.data(Qt.EditRole)
+
+    def formulaText(self) -> str | None:
+        """
+        获取重整后的公式文本（不包含等号）
+        可以直接通过eval方法计算取值（需要import numpy并且重命名为np）
+        一般不建议使用，建议通过rawText获取原始文本，通过text方法获取计算结果
+        Returns:
+            str | None: 公式文本，如果不是公式则返回None
+        """
+        if self.is_formula:
+            return self.formula
+        else:
+            return None
+
+    def rawText(self) -> str:
+        """
+        获取原始文本
+        可以直接获取公式，不建议通过formulaText获取转换后的公式文本
+        Returns:
+            str: 原始文本
+        """
+        return self._raw_data
 
     def displayText(self):
         """
