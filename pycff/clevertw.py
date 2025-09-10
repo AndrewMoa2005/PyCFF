@@ -140,18 +140,6 @@ class CleverTableWidget(QTableWidget):
         self.vh.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.vh.customContextMenuRequested.connect(self.showContextMenu)
         self.selected_row = None
-        if self.editable:
-            pass
-            """
-            # 不使用编辑列标题功能
-            self.horizontalHeader().sectionDoubleClicked.connect(
-                self.change_horizontal_header
-            )
-            # 不使用编辑行标题功能
-            self.verticalHeader().sectionDoubleClicked.connect(
-                self.change_vertical_header
-            )
-            """
         if not self.editable:
             self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.shortcut_init = False  # 快捷键初始化标识
@@ -166,6 +154,22 @@ class CleverTableWidget(QTableWidget):
         self.selected_corner_cols = []
         self.selected_corner_rows = []
         self.itemSelectionChanged.connect(self._item_selection_changed)
+        self.cellDoubleClicked.connect(self._cell_double_clicked_)
+
+    def _cell_double_clicked_(self, row: int, col: int):
+        """
+        单元格双击时触发
+        """
+        item = self.item(row, col)
+        text = item.text() if item is not None else ""
+        if item is None or not isinstance(item, CTWItem):
+            self.setItem(row, col, CTWItem(""))
+            item = self.item(row, col)
+            item.setText(text)
+            qDebug(f"Replace item {row, col} with CTWItem")
+        display_text = item.data(Qt.ItemDataRole.DisplayRole)
+        if display_text != text:
+            item.setData(Qt.ItemDataRole.DisplayRole, text)
 
     def _cell_change_(self, row: int, col: int):
         """
@@ -179,7 +183,6 @@ class CleverTableWidget(QTableWidget):
             self.setItem(row, col, CTWItem(""))
             item = self.item(row, col)
             item.setText(text)
-            # del item
             qDebug(f"Replace item {row, col} with CTWItem")
         self._max_content_pos()
 
@@ -832,8 +835,29 @@ class CleverTableWidget(QTableWidget):
         在弹出对话框设置选中单元格的数字格式
         """
 
+        selected_ranges = self.selectedRanges()
+        if not selected_ranges:
+            return
+        selected = selected_ranges[0]
+        r = selected.topRow()
+        c = selected.leftColumn()
+        i = self.item(r, c)
+        if i is None:
+            i_sci = False
+            i_dec = None
+        else:
+            i_sci = i.sci
+            i_dec = i.dec
+
         class FormatDialog(QDialog):
-            def __init__(self, parent=None):
+            def __init__(self, parent=None, sci: bool = False, dec: int = None):
+                """
+                数字格式对话框
+                Args:
+                    parent (QWidget, optional): 父窗口. Defaults to None.
+                    sci (bool, optional): 是否使用科学计数法. Defaults to False.
+                    dec (int, optional): 小数点位数. Defaults to None.
+                """
                 super().__init__(parent)
                 self.setWindowTitle(self.tr("设置数字格式"))
                 self.resize(300, 150)
@@ -843,27 +867,47 @@ class CleverTableWidget(QTableWidget):
                 hbox1.addWidget(QLabel(self.tr("小数点位数:")))
                 self.decimal_spin = QSpinBox()
                 self.decimal_spin.setRange(0, 15)
-                self.decimal_spin.setValue(2)
+                self.decimal_spin.setValue(dec if dec is not None else 2)
                 hbox1.addWidget(self.decimal_spin)
                 layout.addLayout(hbox1)
                 # 科学计数法
                 hbox2 = QHBoxLayout()
                 self.sci_checkbox = QCheckBox(self.tr("使用科学计数法"))
+                self.sci_checkbox.setChecked(sci)
                 hbox2.addWidget(self.sci_checkbox)
                 layout.addLayout(hbox2)
                 # 按钮
                 btn_box = QHBoxLayout()
+                self.clear_btn = QPushButton(self.tr("清除格式"))
                 self.ok_btn = QPushButton(self.tr("确定"))
                 self.cancel_btn = QPushButton(self.tr("取消"))
+                btn_box.addWidget(self.clear_btn)
                 btn_box.addWidget(self.ok_btn)
                 btn_box.addWidget(self.cancel_btn)
                 layout.addLayout(btn_box)
                 self.ok_btn.clicked.connect(self.accept)
                 self.cancel_btn.clicked.connect(self.reject)
+                self.clear_btn.clicked.connect(self.clear_format)
+                self.clear_label = False
 
-        dlg = FormatDialog(self)
+            def clear_format(self):
+                self.clear_label = True
+                qDebug("clear format")
+                super().accept()
+
+            def accept(self):
+                self.clear_label = False
+                qDebug(
+                    "set format: decimals = {}, use_sci = {}".format(
+                        self.decimal_spin.value(), self.sci_checkbox.isChecked()
+                    )
+                )
+                super().accept()
+
+        dlg = FormatDialog(self, i_sci, i_dec)
         if dlg.exec() != QDialog.Accepted:
             return
+        should_clear = dlg.clear_label
         decimals = dlg.decimal_spin.value()
         use_sci = dlg.sci_checkbox.isChecked()
         selected = self.selectedRanges()
@@ -874,20 +918,14 @@ class CleverTableWidget(QTableWidget):
         for row in range(top_row, bottom_row + 1):
             for column in range(left_column, right_column + 1):
                 item = self.item(row, column)
-                if item:
+                if item is not None:
                     if not isinstance(item, CTWItem):
                         item = CTWItem(item.text())
                         self.setItem(row, column, item)
-                    try:
-                        num = float(item.text())
-                        if use_sci:
-                            fmt = f"{{:.{decimals}e}}"
-                        else:
-                            fmt = f"{{:.{decimals}f}}"
-                        # item.setText(fmt.format(num))
-                        item.setDisplayText(item.text(), fmt.format(num))
-                    except Exception:
-                        continue
+                    if should_clear:
+                        item.clearFormat()
+                    else:
+                        item.setFormat(decimals, use_sci)
 
     def get_selected_columns_list(self):
         """

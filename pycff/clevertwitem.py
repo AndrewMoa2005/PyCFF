@@ -19,13 +19,49 @@ class CleverTableWidgetItem(QTableWidgetItem):
             text (str): 初始文本，默认空字符串
         """
         super().__init__(text)
-        self._raw_data: str = None
+        self._raw_data: str = text
         self.is_formula: bool = False
         self.formula: str = None
         self.args: list[str] = None
         self.result: str = None
         self.value: float = None
+        self.format: bool = False
+        self.sci: bool = False
+        self.dec: int = None
         self.setText(text)
+
+    def setFormat(self, dec: int, sci: bool = False):
+        """
+        设置数字格式
+        Args:
+            dec (int): 小数点位数
+            sci (bool, optional): 是否使用科学计数法. Defaults to False.
+        """
+        self.format = True
+        self.sci = sci
+        self.dec = dec
+        if self.is_formula:
+            if self.value is None:
+                return
+            val = self.value
+        else:
+            try:
+                val = float(self.rawText())
+            except Exception as e:
+                return
+        if self.sci:
+            self.setDisplayText(f"{val:.{self.dec}e}")
+        else:
+            self.setDisplayText(f"{val:.{self.dec}f}")
+
+    def clearFormat(self):
+        """
+        取消数字格式
+        """
+        self.format = False
+        self.sci = False
+        self.dec = None
+        self.setText(self._raw_data)
 
     def label2index(self, label: str) -> tuple[int, int] | None:
         """
@@ -119,27 +155,27 @@ class CleverTableWidgetItem(QTableWidgetItem):
         self._raw_data = text
         if text.strip().startswith("="):
             self.is_formula = True
-            display_text, _ = self._calc_formula(text)
-            self.setDisplayText(text, display_text)
+            _display_data, _ = self._calc_formula(text)
+            self.setEditText(text)
+            self.setDisplayText(_display_data)
         else:
             self.is_formula = False
             self.formula = None
             self.args = None
             self.result = None
             self.value = None
-            self.setDisplayText(text, text)
+            self.setEditText(text)
+            self.setDisplayText(text)
+        if self.format:
+            self.setFormat(self.dec, self.sci)
 
-    def setDisplayText(self, edit_text: str, display_text: str):
+    def setDisplayText(self, display_text: str):
         """
-        设置编辑文本和显示文本
+        设置显示文本
         Args:
-            edit_text (str): 可编辑文本
             display_text (str): 显示文本
         """
-        # 注意次序，这两个方法要一起调用，不然显示出错
-        # 不知道Qt底层是怎么实现的，目前只能这样处理╮(╯▽╰)╭
-        self.setData(Qt.EditRole, edit_text)
-        self.setData(Qt.DisplayRole, display_text)
+        return self.setData(Qt.ItemDataRole.DisplayRole, display_text)
 
     def formulaResult(self) -> tuple[str, float] | None:
         """
@@ -164,13 +200,21 @@ class CleverTableWidgetItem(QTableWidgetItem):
         else:
             return self._raw_data
 
+    def setEditText(self, edit_text: str):
+        """
+        设置编辑文本
+        Args:
+            edit_text (str): 编辑文本
+        """
+        return self.setData(Qt.ItemDataRole.EditRole, edit_text)
+
     def editText(self) -> str:
         """
         获取编辑文本
         Returns:
             str: 编辑文本
         """
-        return self.data(Qt.EditRole)
+        return self.data(Qt.ItemDataRole.EditRole)
 
     def formulaText(self) -> str | None:
         """
@@ -200,4 +244,4 @@ class CleverTableWidgetItem(QTableWidgetItem):
         Returns:
             str: 显示文本
         """
-        return self.data(Qt.DisplayRole)
+        return self.data(Qt.ItemDataRole.DisplayRole)

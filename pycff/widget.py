@@ -174,7 +174,7 @@ class Widget(QWidget):
             elif not isinstance(self.link_item, CTWItem):
                 text = self.link_item.text()
             elif self.link_item.is_formula:
-                text = "=" + self.link_item.formulaText()
+                text = self.link_item.rawText()
             else:
                 text = self.link_item.text()
             self.ui.inputEdit.setText(text)
@@ -195,8 +195,8 @@ class Widget(QWidget):
             self.ui.inputEdit.setMinimumHeight(basesize * 3)
             self.ui.inputBtn.setMaximumHeight(basesize * 3)
             self.ui.inputBtn.setMinimumHeight(basesize * 3)
-            self.ui.inputBtn.setText(self.tr("恢复"))
-            self.ui.inputBtn.setToolTip(self.tr("恢复输入框"))
+            self.ui.inputBtn.setText(self.tr("折叠"))
+            self.ui.inputBtn.setToolTip(self.tr("折叠输入框"))
         else:
             self.ui.inputEdit.setMinimumHeight(basesize)
             self.ui.inputEdit.setMaximumHeight(basesize)

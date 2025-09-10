@@ -297,6 +297,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </item>
        <item>
         <widget class="CleverTableWidget" name="inputTable">
+         <property name="editTriggers">
+          <set>QAbstractItemView::EditTrigger::DoubleClicked</set>
+         </property>
          <row/>
          <row/>
          <row/>
@@ -643,8 +646,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>756</width>
-            <height>412</height>
+            <width>98</width>
+            <height>28</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
