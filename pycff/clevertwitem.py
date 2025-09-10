@@ -12,21 +12,20 @@ from .cff import parse_expression, pi, e
 
 
 class CleverTableWidgetItem(QTableWidgetItem):
-    def __init__(self, text: str = "", display_text: str = None):
+    def __init__(self, text: str = ""):
+        """
+        初始化CleverTableWidgetItem
+        Args:
+            text (str): 初始文本，默认空字符串
+        """
         super().__init__(text)
         self._raw_data: str = None
-        self.setRawText(text)
+        self.is_formula: bool = False
         self.formula: str = None
         self.args: list[str] = None
         self.result: str = None
-        if self.rawText().strip().startswith("="):
-            self.is_formula: bool = True
-            display_text = self._set_formula(self.rawText())
-        else:
-            self.is_formula: bool = False
-        self.setDisplayText(
-            display_text if display_text is not None else self._raw_data
-        )
+        self.value: float = None
+        self.setText(text)
 
     def label2index(self, label: str) -> tuple[int, int] | None:
         """
@@ -64,9 +63,14 @@ class CleverTableWidgetItem(QTableWidgetItem):
             col = col // 26 - 1
         return f"{col_str}{row + 1}"
 
-    def _set_formula(self, text: str) -> str:
-        from .clevertw import CleverTableWidget as CTW
-
+    def _calc_formula(self, text: str) -> tuple[str, float]:
+        """
+        解析公式文本，设置公式和参数
+        Args:
+            text (str): 公式文本，如"=A1+B2"
+        Returns:
+            str: 公式求解输出的字符串和值
+        """
         if self.is_formula is False:
             return None
         try:
@@ -74,62 +78,95 @@ class CleverTableWidgetItem(QTableWidgetItem):
             qDebug(f"Parsed formula: {self.formula}, args: {self.args}")
         except Exception as e:
             self.result = f"#ERR: {e}"
-            return self.result
+            self.value = None
+            return self.result, self.value
         for arg in self.args:
             a = arg.upper()
-            table: CTW = self.tableWidget()
-            row, col = self.label2index(a)
+            table = self.tableWidget()
+            try:
+                row, col = self.label2index(a)
+            except Exception:
+                self.result = f"#ERR: {a} is invalid"
+                self.value = None
+                return self.result, self.value
             if row == self.row() and col == self.column():
                 self.result = f"#ERR: {a} is self-referencing"
-                return self.result
+                self.value = None
+                return self.result, self.value
             qDebug(f"label2index({a}) = ({row}, {col})")
             item = table.item(row, col) if table else None
             if item is None:
                 self.result = f"#ERR: {a} is empty"
-                return self.result
-            val = item.text()
+                self.value = None
+                return self.result, self.value
             try:
-                val = float(val)
+                self.value = float(item.text())
             except ValueError:
                 self.result = f"#ERR: {a} is not a value"
-                return self.result
-            self.formula = self.formula.replace(arg, str(val))
+                self.value = None
+                return self.result, self.value
+            self.formula = self.formula.replace(arg, str(self.value))
         try:
-            self.result = str(eval(self.formula))
-            return self.result
+            self.value = eval(self.formula)
+            self.result = str(self.value)
         except Exception as e:
             self.result = f"#ERR: {e}"
-            return self.result
+            self.value = None
+        return self.result, self.value
 
     def setText(self, text: str):
-        self.setRawText(text)
-        if self.rawText().strip().startswith("="):
+        self._raw_data = text
+        if text.strip().startswith("="):
             self.is_formula = True
-            display_text = self._set_formula(self.rawText())
-            self.setDisplayText(display_text)
+            display_text, _ = self._calc_formula(text)
+            self.setDisplayText(text, display_text)
         else:
             self.is_formula = False
             self.formula = None
             self.args = None
             self.result = None
-            self.setDisplayText(text)
-        self.setData(Qt.EditRole, self._raw_data)
+            self.value = None
+            self.setDisplayText(text, text)
 
-    def setRawText(self, text: str):
-        self._raw_data = text
-        self.setData(Qt.EditRole, self._raw_data)
+    def setDisplayText(self, edit_text: str, display_text: str):
+        """
+        设置编辑文本和显示文本
+        Args:
+            edit_text (str): 可编辑文本
+            display_text (str): 显示文本
+        """
+        # 注意次序，这两个方法要一起调用，不然显示出错
+        # 不知道Qt底层是怎么实现的，目前只能这样处理╮(╯▽╰)╭
+        self.setData(Qt.EditRole, edit_text)
+        self.setData(Qt.DisplayRole, display_text)
 
-    def rawText(self):
-        return self._raw_data
+    def formulaResult(self) -> tuple[str, float] | None:
+        """
+        获取公式结果
+        Returns:
+            tuple[str, float] | None: 公式结果和值，如果不是公式则返回None
+        """
+        if self.is_formula:
+            return self.result, self.value
+        else:
+            return None
 
-    def setDisplayText(self, text: str):
-        self.setData(Qt.DisplayRole, text)
-
-    def text(self):
+    def text(self) -> str:
+        """
+        重载父类的text方法，获取可编辑文本
+        考虑兼容性，没有增加公式判断，需要手动判断并获取公式文本
+        Returns:
+            str: 编辑文本
+        """
         if self.is_formula:
             return self.result
         else:
             return self._raw_data
 
     def displayText(self):
+        """
+        获取显示文本
+        Returns:
+            str: 显示文本
+        """
         return self.data(Qt.DisplayRole)

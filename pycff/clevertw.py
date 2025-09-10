@@ -870,7 +870,7 @@ class CleverTableWidget(QTableWidget):
                         else:
                             fmt = f"{{:.{decimals}f}}"
                         # item.setText(fmt.format(num))
-                        item.setDisplayText(fmt.format(num))
+                        item.setDisplayText(item.text() , fmt.format(num))
                     except Exception:
                         continue
 
