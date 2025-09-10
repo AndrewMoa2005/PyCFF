@@ -155,15 +155,10 @@ class CleverTableWidget(QTableWidget):
         self.selected_corner_rows = []
         self.itemSelectionChanged.connect(self._item_selection_changed)
         self.cellDoubleClicked.connect(self._cell_double_clicked_)
-        
+
     def _cell_double_clicked_(self, row: int, col: int):
         """
         单元格双击时触发:
-        1\如果单元格为空，则创建一个CTWItem对象
-        2\如果单元格为其他类型的对象，则将其转换为CTWItem对象        
-        3\获取'显示文本'和'编辑文本'，如果'显示文本'和'编辑文本'不同，则设置'显示文本'为'编辑文本'
-        4\获取输入焦点，监测输入字符串变化，在输入回车后结束，保存当前字符串为'输入文本'
-        5\当'输入文本'与'编辑文本'不同时，设置'编辑文本'为'输入文本'
         """
         item = self.item(row, col)
         text = item.text() if item is not None else ""
@@ -172,12 +167,12 @@ class CleverTableWidget(QTableWidget):
             item = self.item(row, col)
             item.setText(text)
             qDebug(f"Replace item {row, col} with CTWItem")
-        display_text = item.data(Qt.ItemDataRole.DisplayRole)
-        if display_text != text:
-            item.setData(Qt.ItemDataRole.DisplayRole, text)
         self.editItem(item)
         if self.isPersistentEditorOpen(item):
+            editor = self.findChild(QLineEdit)
             qDebug(f"Editor is open for item {item.row(), item.column()}")
+            editor.setText(item.rawText())
+            editor.editingFinished.connect(lambda: item.setText(editor.text()))
 
     def _cell_change_(self, row: int, col: int):
         """
