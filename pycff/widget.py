@@ -1168,6 +1168,7 @@ class Widget(QWidget):
         of1_f = of1_c.replace("exp", "e^")
         of1_ps = of1_py.replace("math.exp", "[math]::exp")
         of1_ps = of1_ps.replace("x", "$x")
+        of1_ps = of1_ps.replace("[math]::e$xp", "[math]::exp")
         of1_ps = of1_ps.replace("y", "$y")
         of2 = f"r2 = {r2}"
         qDebug("Output formula: %s" % of1_f)
@@ -1242,6 +1243,7 @@ class Widget(QWidget):
         of1_f = of1_c.replace("exp", "e^")
         of1_ps = of1_py.replace("math.exp", "[math]::exp")
         of1_ps = of1_ps.replace("x", "$x")
+        of1_ps = of1_ps.replace("[math]::e$xp", "[math]::exp")
         of1_ps = of1_ps.replace("y", "$y")
         of2 = f"r2 = {r2}"
         qDebug("Output formula: %s" % of1_f)
