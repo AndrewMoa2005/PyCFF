@@ -35,6 +35,8 @@ from .clevertwitem import CleverTableWidgetItem as CTWItem
 class CleverTableWidget(QTableWidget):
     ContentsChangeSignal = Signal(int, int)
     ItemSelectionSignal = Signal()
+    ItemTextChangedSignal = Signal(CTWItem, str)
+    ItemTextFinishedSignal = Signal(CTWItem, str)
 
     # 构造函数
     def __init__(
@@ -172,7 +174,12 @@ class CleverTableWidget(QTableWidget):
             editor = self.findChild(QLineEdit)
             qDebug(f"Editor is open for item {item.row(), item.column()}")
             editor.setText(item.rawText())
-            editor.editingFinished.connect(lambda: item.setText(editor.text()))
+            editor.textChanged.connect(
+                lambda: self.ItemTextChangedSignal.emit(item, editor.text())
+            )
+            editor.editingFinished.connect(
+                lambda: self.ItemTextFinishedSignal.emit(item, editor.text())
+            )
 
     def _cell_change_(self, row: int, col: int):
         """

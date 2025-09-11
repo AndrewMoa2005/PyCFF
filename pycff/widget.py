@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QStyleFactory,
     QListWidget,
+    QTextEdit,
 )
 from PySide6.QtCharts import (
     QChart,
@@ -35,6 +36,7 @@ from PySide6.QtGui import (
     QColor,
     QImage,
     QBrush,
+    QKeyEvent,
 )
 from PySide6.QtCore import (
     Qt,
@@ -44,6 +46,7 @@ from PySide6.QtCore import (
     QByteArray,
     QIODevice,
     QMimeData,
+    QTimer,
     qDebug,
 )
 from PySide6.QtSvg import QSvgGenerator
@@ -92,6 +95,8 @@ class Widget(QWidget):
         self.ui.inputTable.ContentsChangeSignal.connect(self.inputTableChanged)
         self.ui.inputTable.ItemSelectionSignal.connect(self.onItemSelected)
         self.ui.inputEdit.textChanged.connect(self.onInputEditTextChanged)
+        self.ui.inputEdit.keyPressEvent = self.onInputEditKeyPressEvent
+        self.ui.inputTable.ItemTextFinishedSignal.connect(self.onCellTextFinished)
         self.ui.inputLabel.setText("")
         self.ui.inputEdit.setReadOnly(True)
         self.link_item: CTWItem = None
@@ -134,6 +139,31 @@ class Widget(QWidget):
         self.ui.inputTable.setMinimumHeight(200)
         self.ui.outputTable.setMinimumHeight(200)
 
+    def onInputEditKeyPressEvent(self, event: QKeyEvent):
+        if (
+            event.key() in (Qt.Key_Enter, Qt.Key_Return)
+            and event.modifiers() & Qt.AltModifier
+        ):
+            self.ui.inputEdit.textCursor().insertText("\n")
+            event.accept()
+        elif event.key() in (Qt.Key_Enter, Qt.Key_Return, Qt.Key_Escape):
+            self.ui.inputEdit.clearFocus()
+        else:
+            QTextEdit.keyPressEvent(self.ui.inputEdit, event)
+
+    def onCellTextFinished(self, item: CTWItem, text: str):
+        self.link_item = item
+        self.link_row = item.row()
+        self.link_col = item.column()
+        self._delay_timer = QTimer()
+        self._delay_timer.setSingleShot(True)
+        self._delay_timer.timeout.connect(
+            lambda: [
+                self.ui.inputEdit.setText(text),
+            ]
+        )
+        self._delay_timer.start(100)
+
     def onInputEditTextChanged(self):
         if self.link_row is None or self.link_col is None:
             return
@@ -147,7 +177,7 @@ class Widget(QWidget):
                 "Item created new: Row: %s, Column: %s, Text: %s"
                 % (self.link_row + 1, self.link_col + 1, text)
             )
-        elif self.link_item.rawText() != text:
+        else:
             self.link_item.setText(text)
             qDebug(
                 "Item text changed: Row: %s, Column: %s, Text: %s"
