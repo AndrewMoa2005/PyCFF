@@ -6,7 +6,8 @@ import re
 import openpyxl
 import xlrd, xlwt
 import csv
-from PySide6.QtCore import Qt, Signal, Slot, qDebug
+import numpy as np
+from PySide6.QtCore import Qt, Signal, Slot, QTimer, qDebug
 from PySide6.QtGui import QAction, QKeySequence, QShortcut, QColor
 from PySide6.QtWidgets import (
     QTableWidget,
@@ -30,6 +31,7 @@ from PySide6.QtWidgets import (
 )
 
 from .clevertwitem import CleverTableWidgetItem as CTWItem
+from .cff import parse_expression, pi, e
 
 
 class CleverTableWidget(QTableWidget):
@@ -118,6 +120,9 @@ class CleverTableWidget(QTableWidget):
         # 设置浮点数的显示格式
         self.digital_format_action = QAction(self.tr("设置数字格式"), self)
         self.digital_format_action.triggered.connect(self.digital_format)
+        # 拓展公式
+        self.expand_formula_action = QAction(self.tr("拓展公式"), self)
+        self.expand_formula_action.triggered.connect(self.expand_formula)
         # 列表转置
         self.transpose_action = QAction(self.tr("列表转置"), self)
         self.transpose_action.triggered.connect(self.transpose_table)
@@ -157,6 +162,188 @@ class CleverTableWidget(QTableWidget):
         self.selected_corner_rows = []
         self.itemSelectionChanged.connect(self._item_selection_changed)
         self.cellDoubleClicked.connect(self._cell_double_clicked_)
+
+    def expand_formula(self):
+        """
+        拓展公式
+        """
+        selected_ranges = self.selectedRanges()
+        if len(selected_ranges) != 1:
+            return
+        selected = selected_ranges[0]
+        if selected.rowCount() <= 1 and selected.columnCount() <= 1:
+            return
+
+        class FormulaExpander(QDialog):
+            ButtonStateSignal = Signal()
+
+            def __init__(
+                self,
+                parent: CleverTableWidget,
+                selected_region: QTableWidgetSelectionRange,
+            ):
+                """
+                公式拓展器
+                Args:
+                    parent (CleverTableWidget): 父窗口实例
+                    selected_region (QTableWidgetSelectionRange): 选中区域实例
+                """
+                self.label_ok = True
+                self.formula_ok = False
+                self.selected_region = selected_region
+                self.base_item = parent.item(
+                    selected_region.topRow(), selected_region.leftColumn()
+                )
+                if self.base_item is None or not isinstance(self.base_item, CTWItem):
+                    text = self.base_item.text() if self.base_item is not None else ""
+                    self.base_item = CTWItem(text)
+                    parent.setItem(
+                        selected_region.topRow(),
+                        selected_region.leftColumn(),
+                        self.base_item,
+                    )
+                self.base_label = parent.get_label_from_item(self.base_item)
+                self.last_item = parent.item(
+                    selected_region.bottomRow(), selected_region.rightColumn()
+                )
+                if self.last_item is None or not isinstance(self.last_item, CTWItem):
+                    text = self.last_item.text() if self.last_item is not None else ""
+                    self.last_item = CTWItem(text)
+                    parent.setItem(
+                        selected_region.bottomRow(),
+                        selected_region.rightColumn(),
+                        self.last_item,
+                    )
+                self.last_label = parent.get_label_from_item(self.last_item)
+                self.table = parent
+                super().__init__(parent)
+                self.initUI()
+
+            def initUI(self):
+                """
+                初始化用户界面
+                """
+                self.setWindowTitle(self.tr("应用拓展公式"))
+                self.layout = QVBoxLayout()
+                hbox1 = QHBoxLayout()
+                self.item_label = QLabel(self.tr("基准单元格:"))
+                self.item_edit = QLineEdit(self.base_label)
+                self.item_edit.textChanged.connect(self._item_edit_text_changed_)
+                hbox1.addWidget(self.item_label)
+                hbox1.addWidget(self.item_edit)
+                self.layout.addLayout(hbox1)
+                hbox2 = QHBoxLayout()
+                self.formula_label = QLabel(self.tr("基准公式:"))
+                self.formula_edit = QLineEdit()
+                if self.base_item.is_formula:
+                    self.formula_ok = True
+                    self.formula_edit.setText(self.base_item.rawText())
+                self.formula_edit.textChanged.connect(self._formula_edit_text_changed_)
+                hbox2.addWidget(self.formula_label)
+                hbox2.addWidget(self.formula_edit)
+                self.layout.addLayout(hbox2)
+                hbox3 = QHBoxLayout()
+                self.range_label = QLabel(self.tr("范围:"))
+                self.range_edit = QLineEdit(f"{self.base_label}:{self.last_label}")
+                self.range_edit.setReadOnly(True)
+                hbox3.addWidget(self.range_label)
+                hbox3.addWidget(self.range_edit)
+                self.layout.addLayout(hbox3)
+                self.ok_button = QPushButton(self.tr("确定"))
+                self.ok_button.clicked.connect(self.accept)
+                self.layout.addWidget(self.ok_button)
+                self.setLayout(self.layout)
+                self.ButtonStateSignal.connect(self._set_ok_button_state_)
+                self._item_edit_text_changed_(self.base_label)
+                self._formula_edit_text_changed_(self.base_item.rawText())
+
+            def _set_ok_button_state_(self):
+                """
+                设置确定按钮状态
+                """
+                self.ok_button.setEnabled(self.label_ok and self.formula_ok)
+
+            def _item_edit_text_changed_(self, text: str):
+                """
+                基准单元格标签改变时触发
+                """
+                rc = self.base_item.label2index(text)
+                if rc is None:
+                    self.label_ok = False
+                    self.ButtonStateSignal.emit()
+                    return
+                base_row, base_col = rc
+                if base_row is None or base_col is None:
+                    self.label_ok = False
+                    self.ButtonStateSignal.emit()
+                    return
+                if base_row in range(
+                    self.selected_region.topRow(), self.selected_region.bottomRow() + 1
+                ) and base_col in range(
+                    self.selected_region.leftColumn(),
+                    self.selected_region.rightColumn() + 1,
+                ):
+                    self.label_ok = True
+                else:
+                    self.label_ok = False
+                self.base_label = text
+                self.base_item = self.table.get_item_from_label(text)
+                if self.base_item is None or not isinstance(self.base_item, CTWItem):
+                    text = self.base_item.text() if self.base_item is not None else ""
+                    self.base_item = CTWItem(text)
+                    self.table.setItem(base_row, base_col, self.base_item)
+                if self.base_item.is_formula:
+                    self.formula_edit.setText(self.base_item.rawText())
+                else:
+                    self.formula_edit.setText("")
+                self.ButtonStateSignal.emit()
+
+            def _formula_edit_text_changed_(self, text: str):
+                """
+                基准公式改变时触发
+                """
+                if text.strip().startswith("="):
+                    formula_text = text.strip()[1:]
+                    try:
+                        parse_expression(formula_text, False)
+                        self.formula_ok = True
+                    except:
+                        self.formula_ok = False
+                else:
+                    self.formula_ok = False
+                self.ButtonStateSignal.emit()
+
+        dialog = FormulaExpander(self, selected)
+        if dialog.exec() != QDialog.Accepted:
+            return
+        base_formula = dialog.formula_edit.text()
+        base_label = dialog.item_edit.text()
+        base_item = self.get_item_from_label(base_label)
+        if base_item is None or not isinstance(base_item, CTWItem):
+            base_item = CTWItem("")
+            _index = base_item.label2index(base_label)
+            if _index is None:
+                return
+            else:
+                base_row, base_col = _index
+                self.setItem(base_row, base_col, base_item)
+        else:
+            base_row = self.row(base_item)
+            base_col = self.column(base_item)
+        if base_formula != base_item.rawText():
+            base_item.setText(base_formula)
+            qDebug(f"base item({base_row}, {base_col}) set formula: {base_formula}")
+        for row in range(selected.topRow(), selected.bottomRow() + 1):
+            for col in range(selected.leftColumn(), selected.rightColumn() + 1):
+                item = self.item(row, col)
+                if item is None or not isinstance(item, CTWItem):
+                    item = CTWItem("")
+                    self.setItem(row, col, item)
+                offset_row = row - base_row
+                offset_col = col - base_col
+                new_formula = base_item.formulaOffset(offset_row, offset_col) or ""
+                item.setText(f"={new_formula.lstrip('=')}")
+                qDebug(f"item({row}, {col}) set formula: {item.rawText()}")
 
     def _cell_double_clicked_(self, row: int, col: int):
         """
@@ -695,6 +882,7 @@ class CleverTableWidget(QTableWidget):
         menu.addSeparator()
         if self.editable:
             menu.addAction(self.digital_format_action)
+            menu.addAction(self.expand_formula_action)
         menu.addAction(self.transpose_action)
         menu.exec(self.viewport().mapToGlobal(pos))
 

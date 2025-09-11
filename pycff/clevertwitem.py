@@ -100,6 +100,37 @@ class CleverTableWidgetItem(QTableWidgetItem):
             col = col // 26 - 1
         return f"{col_str}{row + 1}"
 
+    def formulaOffset(self, row: int, col: int) -> str:
+        """
+        偏移公式中的变量
+        Args:
+            row (int): 行偏移量，0表示不偏移
+            col (int): 列偏移量，0表示不偏移
+        Returns:
+            str: 输出新公式
+        """
+        if self.is_formula is False:
+            return None
+        if self.args is None:
+            return None
+        if row == 0 and col == 0:
+            return self.rawText()
+        new_formula = self.rawText()
+        for arg in self.args:
+            pos = self.label2index(arg)
+            if pos is None:
+                continue
+            original_row, original_col = pos
+            new_row = original_row + row
+            new_col = original_col + col
+            pattern = rf"(?<![A-Za-z0-9]){re.escape(arg)}(?![A-Za-z0-9])"
+            new_label = self.index2label(new_row, new_col)
+            if new_label:
+                new_formula = re.sub(
+                    pattern, new_label, new_formula, flags=re.IGNORECASE
+                )
+        return new_formula.lower()
+
     def _calc_formula(self, text: str) -> tuple[str, float]:
         """
         解析公式文本，设置公式和参数
