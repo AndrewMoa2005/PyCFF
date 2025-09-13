@@ -116,7 +116,8 @@ class CleverTableWidgetItem(QTableWidgetItem):
         if row == 0 and col == 0:
             return self.rawText()
         new_formula = self.rawText()
-        for arg in self.args:
+        replacements = []
+        for arg in sorted(self.args):
             pos = self.label2index(arg)
             if pos is None:
                 continue
@@ -126,10 +127,13 @@ class CleverTableWidgetItem(QTableWidgetItem):
             pattern = rf"(?<![A-Za-z0-9]){re.escape(arg)}(?![A-Za-z0-9])"
             new_label = self.index2label(new_row, new_col)
             if new_label:
-                new_formula = re.sub(
-                    pattern, new_label, new_formula, flags=re.IGNORECASE
-                )
-        return new_formula.lower()
+                pattern = rf"(?<![A-Za-z0-9]){re.escape(arg)}(?![A-Za-z0-9])"
+                replacements.append((pattern, new_label))
+        for pattern, new_label in reversed(replacements):
+            new_formula = re.sub(
+                pattern, new_label, new_formula, flags=re.IGNORECASE
+            )
+        return new_formula
 
     def _calc_formula(self, text: str) -> tuple[str, float]:
         """
