@@ -4,32 +4,35 @@
 - zh_CN [简体中文](README.zh_CN.md)
 
 # PyCFF
-a Python-based curve fitting tool
+A Python-based curve fitting tool
 
 ---
 
-A simple program written in Python, which implements function fitting through numpy and scipy, and uses PySide to write the user interface. It implements the function of fitting function parameters from input data to output, and supports data prediction and custom function functions.
-
 ## 1. Introduction
+
+A simple program written in Python, which implements function fitting through numpy and scipy, and uses PySide to write the user interface. It implements the function of fitting function parameters from input data to output, and supports data prediction and custom function functions.
 
 Repository：[PyCFF](https://github.com/AndrewMoa2005/PyCFF/)
 
-### 1.1 User Interface
+## 2. User Interface
 
-Below is the software's startup interface. The software interface is implemented using PySide (Qt). It supports function drawing, allowing users to customize drawing content and save output images.
-![c6219195050ac1b0866829f371239172.png](./images/c6219195050ac1b0866829f371239172.png)
+The software interface is implemented using Qt6 (PySide6). It supports function drawing, allowing users to customize drawing content and save output images.
+![1.1-MainWindow-en.png](./images/1.1-MainWindow-en.png)
 
-The image below shows the software's input interface. Input data is presented in a table format, and users select the independent variable (x) and dependent variable (y) to be fitted by specifying columns. Users can enter data manually in the table, paste data from spreadsheet software like Excel, and quickly enter large amounts of data using the **Paste Replace Columns** feature.
-![1dbefea8b95c2677587b4f885c9df838.png](./images/1dbefea8b95c2677587b4f885c9df838.png)
+## 3. Input data
 
-The image below shows the software's output interface. The software pre-defines some common functions. Clicking an operation displays the function parameters in the table on the left and the complete function expression in the text box. Users can customize the precision of the output parameters and whether to use scientific notation. The default setting is scientific notation with six decimal places, which meets the needs of most engineering calculations.
-![98ecd6a60f59bed8a70596750a11fd4d.png](./images/98ecd6a60f59bed8a70596750a11fd4d.png)
+The software uses Excel spreadsheets for data input. Users select the independent variable (x) and dependent variable (y) to fit the function by specifying columns. Data can be entered manually or pasted from spreadsheet software like Excel. The **Paste Replace Column** method allows for rapid data entry. Tabular data supports formula operations and simple function calculations (see [Custom Function Description](#5.-Custom-Functions) for supported functions).
+![1.2-Input-en.png](./images/1.2-Input-en.png)
 
-### 1.2 Custom Functions
+## 4. Output Window
 
-The software includes predefined functions such as polynomials, exponentials, logarithms, and power functions. In addition to these predefined functions, the software also supports user-defined functions. Custom functions such as `a+b*x**1+c*x**2` and `-omega-alpha * exp(x)` automatically extract their parameters and fit them to the input data. Custom functions support not only the four arithmetic operations (+, -, *, /) and power operations (** or ^), but also common functions. See the table below for specific functions and their descriptions.
-![cc51005d3b909b23abebc855fbc2e641.png](./images/cc51005d3b909b23abebc855fbc2e641.png)
+The software's output interface displays the coefficients and expressions of the output function in both table and text format. The software pre-defines some common functions. Selecting a function displays the function parameters in the table on the left and the complete function expression in the text box. Users can customize the precision of the output parameters and whether to use scientific notation. The default setting is scientific notation with six decimal places, which meets the needs of most engineering calculations.
+![1.3-Output-en.png](./images/1.3-Output-en.png)
 
+## 5. Custom Functions
+
+The software includes predefined functions such as polynomials, exponentials, logarithms, and power functions. In addition to these predefined functions, the software also supports user-defined functions. Custom functions such as `a+b*x**1+c*x**2` and `-omega-alpha * exp(x)` automatically extract their parameters and fit them to the input data. 
+Custom functions support not only the four arithmetic operations (+, -, *, /) and power operations (** or ^), but also common functions. See the table below for specific functions and their descriptions.
 
 | Function | Usage | Description |
 |---|---|---|
@@ -44,124 +47,37 @@ The software includes predefined functions such as polynomials, exponentials, lo
 | min | min(x) | Calculates the minimum value of x |
 | max | max(x) | Calculates the maximum value of x |
 | sin | sin(x) | Calculates the sine of x |
-| cos | cos(x) | Find the cosine of x |
-| tan | tan(x) | Find the tangent of x |
-| asin | asin(x) | Find the inverse sine of x |
-| acos | acos(x) | Find the inverse cosine of x |
-| atan | atan(x) | Find the inverse tangent of x |
-| sinh | sinh(x) | Find the hyperbolic sine of x |
-| cosh | cosh(x) | Find the hyperbolic cosine of x |
-| tanh | tanh(x) | Find the hyperbolic tangent of x |
-| asinh | asinh(x) | Find the inverse hyperbolic sine of x |
-| acosh | acosh(x) | Find the inverse hyperbolic cosine of x |
-| atanh | atanh(x) | Find the inverse hyperbolic tangent of x |
+| cos | cos(x) | Calculates the cosine of x |
+| tan | tan(x) | Calculates the tangent of x |
+| asin | asin(x) | Calculates the inverse sine of x |
+| acos | acos(x) | Calculates the inverse cosine of x |
+| atan | atan(x) | Calculates the inverse tangent of x |
+| sinh | sinh(x) | Calculates the hyperbolic sine of x |
+| cosh | cosh(x) | Calculates the hyperbolic cosine of x |
+| tanh | tanh(x) | Calculates the hyperbolic tangent of x |
+| asinh | asinh(x) | Calculates the inverse hyperbolic sine of x |
+| acosh | acosh(x) | Calculates the inverse hyperbolic cosine of x |
+| atanh | atanh(x) | Calculates the inverse hyperbolic tangent of x |
 | pi | pi() | Pi |
-| e | e() | base of natural logarithms |
+| e | e() | Base of natural logarithms |
 
-## 2. Build
+## 6. Release Notes
 
-### 2.1 Build Environment
+Currently, this application has been tested and verified on Windows amd64 and Linux x86-64 platforms, but has not yet been fully tested on MacOS and Linux Aarch64 platforms.
 
-Build dependencies:
- - Python >= 3.12
- - Git (optional) : update version number when building
- - C/C++ Compiler (optional) : required when building pyd/so files
+## 7. License
 
-The source code provides a `build.py` script for quick and easy building. Users should create a virtual environment before building:
-```bash
-python -m venv myvenv # myvenv is the name of the virtual environment, which can be defined as needed
-```
+This software is open source under the LGPL license, and you are free to use, modify and distribute it under the terms of the license.
 
-On Windows, use the following command to activate the virtual environment:
-```powershell
-./myvenv/Scripts/activate # in windows, it is recommended to run under posershell
-```
+## 8. Acknowledgements
 
-On Linux, use the following command to activate the virtual environment:
-```bash
-source ./myvenv/bin/activate # in posix
-```
+The development of this software relies on the following projects:
 
-After activating the virtual environment, the `(myvenv)` character will be displayed at the beginning of the command line, indicating that Python under the command line is running in the virtual environment `myvenv`. Install the dependencies using the following command:
-```bash
-pip install -r requirements.txt
-```
+ - [PySide6](https://pypi.org/project/PySide6/)
+ - [NumPy](https://numpy.org/)
+ - [SciPy](https://scipy.org/)
+ - [openpyxl](https://pypi.org/project/openpyxl/)
+ - [xlrd](https://pypi.org/project/xlrd/)
+ - [xlwt](https://pypi.org/project/xlwt/)
 
-After the build is complete, exit the virtual environment by deactivating it:
-```bash
-deactivate # The same command is used under windows and posix
-```
-
-### 2.2 Build Script
-
-Run the following command to display help information for the build script:
-```
-python build.py -h
-```
-![c526195ad4f9c0928665d83df792851b.png](./images/c526195ad4f9c0928665d83df792851b.png)
-
- - Option `-h`/`--help` displays command-line help.
- - Option `-v`/`--version` displays the software version information.
- - Option `-d`/`--dir` specifies the build directory name, usually under the source code directory, defaults to `build`.
- - Option `-b`/`--build` generates `whl` file while running `pyinstaller` to package the source code into executable files, where `dir` means packaging into a directory (default), and `one` means packaging into a single executable file.
- - Option `-u`/`--update` compiles `.ui` and `.qrc` files in the source code into `.py` files for debugging purposes.
- - Option `-t`/`--translate` allows for multi-language translation. `up` updates `.ts` files in the source code, `gui` launches the `linguistgui` interface and opens `.ts` files, and `gen` compiles `.ts` files into `.qm` files. This switch is typically used for debugging purposes only.
- - Option `-p`/`--pyd`, whether to compile `.py` files into `.pyd`/`.so`.
-
-In general, you can quickly build an executable program using the following command:
-```bash
-python build.py -b
-```
-The generated executable file/compressed package is located in the `[source_dir]/build/pkg` directory, and the whl file generated at the same time is located in the `[source_dir]/build/dist` path.
-
-After generating the whl file, install it using the following command:
-```bash
-pip install pycff-{version}-py3-none-{platform}_{machine}.whl
-```
-After the release package is installed, you can start the main program through `pycff` or `python -m pycff`.
-
-## 3. Quick Start
-
-### 3.1 Input
-
-Perform data input operations in the `Input` tag.
-
- - The program initially displays a 2×5 table. You can resize the table using the top input bar and the "Insert" and "Delete" options on the right-click menu.
- - You can copy and paste Excel spreadsheets to access data, or load and save data by reading and writing files (currently only CSV files are supported).
- - You can define row and column headers to distinguish data.
- - You can use the "Paste Replace Column" option on the right-click menu to quickly load data from the clipboard into a specified column. The data is automatically split by non-numeric characters, making it easy to quickly read large amounts of data.
- - After entering data, select the columns corresponding to the independent variable (x) and dependent variable (y) using the checkboxes on the right, then click the "Refresh" button to load the table data.
-![08d924f7c34483ac3b9fac9ab3bcfcaa.png](./images/08d924f7c34483ac3b9fac9ab3bcfcaa.png)
-
-### 3.2 Plot
-
-Perform simple plotting operations in the Plot tab.
-
- - The initial plot displays the scatter plot data (red solid lines) and the fitted curve (black smooth dashed line) from the previous 5×2 table.
- - Click the Refresh button in this tab to draw the scatter plot using the input data.
- - You can customize the plot title, axis labels, and number format, as well as curve labels, colors, line types, and thickness.
- - You can save plots, currently supporting SVG and PNG formats.
-![6781c6902ea52192aac443d99ae10d08.png](./images/6781c6902ea52192aac443d99ae10d08.png)
-
-### 3.3 Output
-
-Perform function fitting in the "Output" tab.
-
- - Select the function type from the checkbox at the top left: a predefined function or a custom function.
- - Click the "Calculate" button at the top right. The calculated function parameters and R<sup>2</sup> value will be displayed in the table on the left, and the complete function expression will be displayed in the text box on the right.
- - You can customize the numeric format of the displayed parameters using the checkbox at the top right.
- - After calculating the function parameters, click the "Refresh" button to plot a scatter plot and function curve in the "Plot" tab. You can customize the level of detail of the function curve.
- - In the two sets of input boxes at the bottom, you can calculate the Y value of the function by entering an X value, or predict the X value given a Y value for data prediction.
-![363f66cf5fc80ae388534d21623831ca.png](./images/363f66cf5fc80ae388534d21623831ca.png)
-![4d24afb2912539b86aa61ece5ff11e07.png](./images/4d24afb2912539b86aa61ece5ff11e07.png)
-
-## 4. Plan
-
-Currently, the program implements basic functions such as table input and output, plotting, and function fitting. Future plans include the following features:
-
- - Formula calculation in tables
- - Reading and writing Excel files
- - Copying plotted data to the clipboard
- - Other user concerns...
-
-For further comments and suggestions, please submit [Issues](https://github.com/AndrewMoa2005/PyCFF/issues).
+For more suggestions and feedback, please submit [Issues](https://github.com/AndrewMoa2005/PyCFF/issues). You can also contribute code via [Pull Requests](https://github.com/AndrewMoa2005/PyCFF/pulls).
