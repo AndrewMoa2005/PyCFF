@@ -17,17 +17,17 @@
 ## 2. 用户界面
 
 软件界面通过Qt6(PySide6)实现。支持函数绘图功能，用户可以自定义绘图内容及输出保存图片。
-![1.1-MainWindow-zh-cn.png](./images/1.1-MainWindow-zh-cn.png)
+![1.1-MainWindow-zh-cn.png](https://raw.githubusercontent.com/AndrewMoa2005/PyCFF/main/images/1.1-MainWindow-zh-cn.png)
 
 ## 3. 数据输入
 
 软件通过Excel形式的表格输入数据，用户通过指定列来选择要拟合函数的自变量(x)和因变量(y)。用户不仅可以在表格中手动输入数据，也可以通过Excel等表格软件粘贴输入，还可以通过**粘贴替换列**的方式快速输入大量数据。表格数据支持公式运算，支持简单的函数运算(支持的函数见[自定义函数说明](#5.-自定义函数))。
-![1.2-Input-zh-cn.png](./images/1.2-Input-zh-cn.png)
+![1.2-Input-zh-cn.png](https://raw.githubusercontent.com/AndrewMoa2005/PyCFF/main/images/1.2-Input-zh-cn.png)
 
 ## 4. 输出窗口
 
 软件的输出界面通过表格和文本的形式展示输出函数的系数和表达式。软件预定义了一些常用函数，用户点击运算后在左侧表格中输出函数参数，并且在文本框中输出函数的完整表达式。用户可以自定义输出参数的精度和是否采用科学计数法，输出参数默认采用的是6位小数的科学计数法表示，满足大部分工程计算的需求。
-![1.3-Output-zh-cn.png](./images/1.3-Output-zh-cn.png)
+![1.3-Output-zh-cn.png](https://raw.githubusercontent.com/AndrewMoa2005/PyCFF/main/images/1.3-Output-zh-cn.png)
 
 ## 5. 自定义函数
 

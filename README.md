@@ -17,17 +17,17 @@ Repository：[PyCFF](https://github.com/AndrewMoa2005/PyCFF/)
 ## 2. User Interface
 
 The software interface is implemented using Qt6 (PySide6). It supports function drawing, allowing users to customize drawing content and save output images.
-![1.1-MainWindow-en.png](./images/1.1-MainWindow-en.png)
+![1.1-MainWindow-en.png](https://raw.githubusercontent.com/AndrewMoa2005/PyCFF/main/images/1.1-MainWindow-en.png)
 
 ## 3. Input data
 
 The software uses Excel spreadsheets for data input. Users select the independent variable (x) and dependent variable (y) to fit the function by specifying columns. Data can be entered manually or pasted from spreadsheet software like Excel. The **Paste Replace Column** method allows for rapid data entry. Tabular data supports formula operations and simple function calculations (see [Custom Function Description](#5.-Custom-Functions) for supported functions).
-![1.2-Input-en.png](./images/1.2-Input-en.png)
+![1.2-Input-en.png](https://raw.githubusercontent.com/AndrewMoa2005/PyCFF/main/images/1.2-Input-en.png)
 
 ## 4. Output Window
 
 The software's output interface displays the coefficients and expressions of the output function in both table and text format. The software pre-defines some common functions. Selecting a function displays the function parameters in the table on the left and the complete function expression in the text box. Users can customize the precision of the output parameters and whether to use scientific notation. The default setting is scientific notation with six decimal places, which meets the needs of most engineering calculations.
-![1.3-Output-en.png](./images/1.3-Output-en.png)
+![1.3-Output-en.png](https://raw.githubusercontent.com/AndrewMoa2005/PyCFF/main/images/1.3-Output-en.png)
 
 ## 5. Custom Functions
 
